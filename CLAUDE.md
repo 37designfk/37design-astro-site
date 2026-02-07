@@ -148,6 +148,21 @@ tags: ["タグ1", "タグ2"]
 - **CRM**: 顧客管理、営業管理関連
 - **お知らせ**: 会社のお知らせ
 
+## Dify AI チャットボット統合
+
+### セットアップ手順
+1. Difyをセルフホストでデプロイ（docker-compose）
+2. リバースプロキシ設定（nginx）: https://dify.37d.jp
+3. Difyでチャットアプリ作成
+4. Claude APIキー設定
+5. FAQデータベース構築（ナレッジベース）
+6. 埋め込みトークンを取得
+7. `src/components/ChatWidget.astro` の `DIFY_TOKEN` を更新
+
+### 参考情報
+- Dify GitHub: https://github.com/langgenius/dify
+- Dify Docs: https://docs.dify.ai/
+
 ## 次回の予定
 
 ### ブログ記事自動化の検討
