@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   /* Primary: Dark Gray → Dark Blue gradient (37design + AI tech) */
