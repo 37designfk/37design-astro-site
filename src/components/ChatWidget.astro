@@ -47,4 +47,42 @@
     height: 40rem !important;
     z-index: 50 !important;
   }
+
+  /* チャットウィンドウ内のカスタマイズ */
+  #dify-chatbot-bubble-window iframe {
+    border-radius: 1rem !important;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* ヘッダーの色（Dify内部のクラスを上書き） */
+  #dify-chatbot-bubble-window .dify-chat-header,
+  #dify-chatbot-bubble-window [class*="header"] {
+    background-color: #0a0f1e !important; /* 37Designダークブルー */
+  }
+
+  /* ユーザーメッセージバブルの色 */
+  #dify-chatbot-bubble-window .user-message,
+  #dify-chatbot-bubble-window [class*="user"] {
+    background-color: #f5d020 !important; /* 37Designイエロー */
+    color: #0a0f1e !important;
+  }
+
+  /* ボットメッセージバブルの色 */
+  #dify-chatbot-bubble-window .bot-message,
+  #dify-chatbot-bubble-window [class*="bot"] {
+    background-color: #f0f2f5 !important;
+    color: #2a2f3a !important;
+  }
+
+  /* 送信ボタンの色 */
+  #dify-chatbot-bubble-window button[type="submit"],
+  #dify-chatbot-bubble-window .send-button {
+    background-color: #f5d020 !important;
+    color: #0a0f1e !important;
+  }
+
+  #dify-chatbot-bubble-window button[type="submit"]:hover,
+  #dify-chatbot-bubble-window .send-button:hover {
+    background-color: #d4a520 !important;
+  }
 </style>
