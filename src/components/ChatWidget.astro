@@ -18,9 +18,31 @@
   /* 37Design カスタムカラー */
   #dify-chatbot-bubble-button {
     background-color: #f5d020 !important; /* 37Designイエロー */
+    z-index: 50 !important; /* StickyCTAより上に表示 */
   }
+
+  /* モバイル：StickyCTAの上に表示 */
+  @media (max-width: 768px) {
+    #dify-chatbot-bubble-button {
+      bottom: 5rem !important; /* StickyCTAバー（約4rem）の上 */
+      right: 1rem !important;
+    }
+    #dify-chatbot-bubble-window {
+      bottom: 8rem !important; /* チャットウィンドウも上に */
+    }
+  }
+
+  /* デスクトップ：通常の位置 */
+  @media (min-width: 769px) {
+    #dify-chatbot-bubble-button {
+      bottom: 1.5rem !important;
+      right: 1.5rem !important;
+    }
+  }
+
   #dify-chatbot-bubble-window {
     width: 24rem !important;
     height: 40rem !important;
+    z-index: 50 !important;
   }
 </style>
