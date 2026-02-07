@@ -104,96 +104,55 @@ const cases = [
       </h2>
     </div>
 
-    <div class="flex flex-col gap-8 md:gap-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {cases.map((c, i) => (
         <div
-          class="animate-on-scroll rounded-2xl border border-border overflow-hidden card-hover"
-          data-anim={i % 2 === 0 ? "left" : "right"}
-          style={`animation-delay: ${i * 0.1}s`}
+          class="animate-on-scroll rounded-xl border border-border overflow-hidden card-hover"
+          data-anim="scale"
+          style={`animation-delay: ${i * 0.08}s`}
         >
           <div class={`h-1 bg-gradient-to-r ${c.gradient}`}></div>
-          <div class="p-5 md:p-7">
-            <!-- Header: Icon + Industry + Company -->
-            <div class="flex items-center gap-4 mb-5">
-              <div class={`w-11 h-11 rounded-xl ${c.iconBg} ${c.iconColor} flex items-center justify-center shrink-0`}>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <div class="p-4">
+            <!-- Header -->
+            <div class="flex items-center gap-2.5 mb-3">
+              <div class={`w-9 h-9 rounded-lg ${c.iconBg} ${c.iconColor} flex items-center justify-center shrink-0`}>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <Fragment set:html={c.icon} />
                 </svg>
               </div>
-              <div class="flex items-center gap-3 flex-wrap">
-                <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white bg-gradient-to-r ${c.gradient}`}>
-                  {c.industry}
-                </span>
-                <p class="text-sm font-medium text-text-secondary">{c.company}</p>
+              <div>
+                <span class={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold text-white bg-gradient-to-r ${c.gradient}`}>{c.industry}</span>
+                <p class="text-xs text-text-muted mt-0.5">{c.company}</p>
               </div>
             </div>
 
-            <!-- Two columns on desktop -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <!-- Left: Problem + Solution -->
-              <div class="space-y-4">
+            <!-- Problem → Solution (1 line each) -->
+            <div class="text-xs text-text-body space-y-1.5 mb-3">
+              <p><span class="text-red-400 font-bold mr-1">課題</span>{c.problem}</p>
+              <p><span class="text-blue-500 font-bold mr-1">導入</span>{c.solution}</p>
+            </div>
+
+            <!-- Results -->
+            <div class="space-y-2 mb-3">
+              {c.results.map((r) => (
                 <div>
-                  <div class="flex items-center gap-2 mb-1.5">
-                    <span class="w-4 h-4 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-[9px] font-bold shrink-0">!</span>
-                    <h4 class="text-[11px] font-bold text-text-muted uppercase tracking-wider">課題</h4>
+                  <div class="flex items-center justify-between text-[11px] mb-0.5">
+                    <span class="text-text-muted">{r.label}</span>
+                    <span class="font-bold text-accent-600">{r.highlight}</span>
                   </div>
-                  <p class="text-sm text-text-body leading-relaxed ml-6">{c.problem}</p>
-                </div>
-
-                <div>
-                  <div class="flex items-center gap-2 mb-1.5">
-                    <span class="w-4 h-4 rounded-full bg-blue-100 text-link flex items-center justify-center shrink-0">
-                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.193-.14 1.743" />
-                      </svg>
-                    </span>
-                    <h4 class="text-[11px] font-bold text-text-muted uppercase tracking-wider">導入内容</h4>
-                  </div>
-                  <p class="text-sm text-text-body leading-relaxed ml-6">{c.solution}</p>
-                </div>
-
-                <!-- Quote -->
-                <div class="flex items-start gap-2.5 ml-6 p-3 bg-surface-alt rounded-lg">
-                  <div class="w-8 h-8 rounded-full bg-primary-950 text-white flex items-center justify-center text-xs font-bold shrink-0">
-                    {c.avatar}
-                  </div>
-                  <div>
-                    <p class="text-[13px] text-text-body italic leading-relaxed">「{c.quote}」</p>
-                    <p class="text-[11px] text-text-muted mt-1 font-medium">{c.name}</p>
+                  <div class="h-1 bg-surface-dark rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-accent-400 to-accent-500 rounded-full" style={`width: ${r.percent}%`}></div>
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              <!-- Right: Results -->
+            <!-- Quote -->
+            <div class="flex items-start gap-2 p-2.5 bg-surface-alt rounded-lg">
+              <div class="w-6 h-6 rounded-full bg-primary-950 text-white flex items-center justify-center text-[10px] font-bold shrink-0">{c.avatar}</div>
               <div>
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
-                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
-                    </svg>
-                  </span>
-                  <h4 class="text-[11px] font-bold text-text-muted uppercase tracking-wider">成果</h4>
-                </div>
-                <div class="space-y-3 ml-6">
-                  {c.results.map((r) => (
-                    <div>
-                      <div class="flex items-center justify-between mb-1">
-                        <span class="text-xs text-text-secondary">{r.label}</span>
-                        <span class="text-[11px] font-bold text-accent-600 bg-accent-400/20 px-2 py-0.5 rounded-full">{r.highlight}</span>
-                      </div>
-                      <div class="flex items-center gap-3">
-                        <span class="text-[11px] text-text-muted line-through w-16 shrink-0">{r.before}</span>
-                        <div class="flex-1 h-1.5 bg-surface-dark rounded-full overflow-hidden">
-                          <div
-                            class="h-full bg-gradient-to-r from-accent-400 to-accent-500 rounded-full transition-all duration-1000"
-                            style={`width: ${r.percent}%`}
-                          ></div>
-                        </div>
-                        <span class="text-xs font-bold text-text-primary w-16 shrink-0 text-right">{r.after}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <p class="text-[11px] text-text-body italic leading-snug">「{c.quote}」</p>
+                <p class="text-[10px] text-text-muted mt-0.5">{c.name}</p>
               </div>
             </div>
           </div>
