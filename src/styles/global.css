@@ -164,6 +164,15 @@
 /* ========================================
    Wave Section Dividers
    ======================================== */
+@keyframes wave-flow {
+  0% {
+    background-position: 0 bottom;
+  }
+  100% {
+    background-position: 1440px bottom;
+  }
+}
+
 .wave-divider {
   position: relative;
 }
@@ -175,8 +184,9 @@
   transform: translateX(-50%);
   width: 100vw;
   height: 60px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f8f9fb' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,40 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom center;
-  background-size: 100% 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f8f9fb' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,40 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") repeat-x bottom;
+  background-size: 1440px 100%;
+  animation: wave-flow 20s linear infinite;
   pointer-events: none;
 }
 .wave-divider-white::after {
