@@ -32,6 +32,13 @@ const {
   <body class="bg-surface text-text-body font-sans antialiased overflow-x-hidden">
     <slot />
     <script>
+      import { init } from "@plausible-analytics/tracker";
+
+      init({
+        domain: "37design.co.jp",
+        endpoint: "https://plausible.37d.jp/api/event",
+      });
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
