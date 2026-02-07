@@ -1,0 +1,218 @@
+---
+// AI診断フォームモーダル
+---
+
+<div id="diagnosis-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 relative animate-modal">
+    <!-- Close button -->
+    <button
+      id="close-modal"
+      class="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface-alt hover:bg-surface-dark flex items-center justify-center transition-colors"
+      aria-label="閉じる"
+    >
+      <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="w-12 h-12 rounded-xl bg-accent-400/10 flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-text-primary mb-2">無料AI診断</h3>
+      <p class="text-sm text-text-secondary">あなたの会社に最適なAI活用方法を診断します（所要時間：1分）</p>
+    </div>
+
+    <!-- Form -->
+    <form id="diagnosis-form" class="space-y-4">
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-text-primary mb-2">お名前 <span class="text-red-500">*</span></label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+          placeholder="山田 太郎"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-text-primary mb-2">メールアドレス <span class="text-red-500">*</span></label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+          placeholder="example@company.com"
+        />
+      </div>
+
+      <!-- Company -->
+      <div>
+        <label for="company" class="block text-sm font-medium text-text-primary mb-2">会社名</label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          class="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+          placeholder="株式会社○○"
+        />
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label for="phone" class="block text-sm font-medium text-text-primary mb-2">電話番号</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          class="w-full px-4 py-3 rounded-lg border border-border focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+          placeholder="080-1234-5678"
+        />
+      </div>
+
+      <!-- Submit button -->
+      <button
+        type="submit"
+        class="w-full px-6 py-4 bg-accent-400 text-primary-950 font-bold rounded-lg hover:bg-accent-300 transition-colors flex items-center justify-center gap-2"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+        </svg>
+        診断を開始する
+      </button>
+
+      <p class="text-xs text-text-muted text-center">
+        送信いただいた情報は、AI診断結果のご提供と、弊社サービスのご案内に利用させていただきます。
+      </p>
+    </form>
+
+    <!-- Success message (hidden by default) -->
+    <div id="success-message" class="hidden text-center py-8">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+      </div>
+      <h4 class="text-xl font-bold text-text-primary mb-2">送信完了！</h4>
+      <p class="text-text-secondary mb-6">ありがとうございます。<br />診断結果を準備中です。<br />メールでお送りしますので、少々お待ちください。</p>
+      <button
+        id="close-success"
+        class="px-6 py-3 bg-primary-950 text-white font-semibold rounded-lg hover:bg-primary-800 transition-colors"
+      >
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('diagnosis-modal');
+    const form = document.getElementById('diagnosis-form');
+    const successMessage = document.getElementById('success-message');
+    const openButtons = document.querySelectorAll('[data-open-diagnosis]');
+    const closeButton = document.getElementById('close-modal');
+    const closeSuccessButton = document.getElementById('close-success');
+
+    console.log('DiagnosisModal initialized', { modal, openButtons: openButtons.length });
+
+  // Open modal
+  openButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // Close modal
+  const closeModal = () => {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+    document.body.style.overflow = '';
+    // Reset form
+    form?.reset();
+    form?.classList.remove('hidden');
+    successMessage?.classList.add('hidden');
+  };
+
+  closeButton?.addEventListener('click', closeModal);
+  closeSuccessButton?.addEventListener('click', closeModal);
+
+  // Close on backdrop click
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  // Form submission
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      company: formData.get('company'),
+      phone: formData.get('phone'),
+    };
+
+    try {
+      // Send to n8n webhook
+      const response = await fetch('https://n8n-onprem.37d.jp/webhook-test/ai-diagnosis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        // Show success message
+        form?.classList.add('hidden');
+        successMessage?.classList.remove('hidden');
+      } else {
+        alert('送信に失敗しました。もう一度お試しください。');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('送信に失敗しました。もう一度お試しください。');
+    }
+  });
+  }); // End DOMContentLoaded
+</script>
+
+<style>
+  @keyframes modal {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-modal {
+    animation: modal 0.2s ease-out;
+  }
+</style>

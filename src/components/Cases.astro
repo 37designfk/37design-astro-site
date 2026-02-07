@@ -1,0 +1,189 @@
+---
+const cases = [
+  {
+    industry: "製造業",
+    company: "金属加工メーカー（従業員30名）",
+    problem: "受発注・在庫管理をExcelで手作業。月40時間の残業が常態化していた",
+    solution: "受発注の自動化 + 在庫管理ダッシュボード構築",
+    results: [
+      { label: "残業時間", before: "月40時間", after: "月8時間", highlight: "80%削減", percent: 80 },
+      { label: "発注ミス", before: "月5件", after: "月0件", highlight: "ゼロに", percent: 100 },
+    ],
+    quote: "まさかここまで変わるとは。もっと早くお願いすればよかった",
+    name: "A社 製造部長",
+    avatar: "A",
+    imageLabel: "ダッシュボード画面",
+    gradient: "from-blue-600 to-blue-800",
+  },
+  {
+    industry: "不動産業",
+    company: "賃貸管理会社（従業員15名）",
+    problem: "顧客情報がスタッフ個人のスマホに散在。引き継ぎのたびに顧客を失っていた",
+    solution: "CRM導入 + 自動フォローアップメール設定",
+    results: [
+      { label: "追客率", before: "30%", after: "85%", highlight: "2.8倍", percent: 85 },
+      { label: "成約率", before: "8%", after: "15%", highlight: "1.9倍", percent: 75 },
+    ],
+    quote: "営業が仕組みになった。個人のがんばりに頼らなくてよくなった",
+    name: "B社 代表取締役",
+    avatar: "B",
+    imageLabel: "CRM管理画面",
+    gradient: "from-violet-600 to-purple-800",
+  },
+  {
+    industry: "士業",
+    company: "税理士事務所（従業員8名）",
+    problem: "毎月の請求書作成・送付に丸2日かかっていた。繁忙期はミスも頻発",
+    solution: "請求書自動生成 + AIによる入力チェック",
+    results: [
+      { label: "作業時間", before: "16時間/月", after: "30分/月", highlight: "97%削減", percent: 97 },
+      { label: "入力ミス", before: "月3件", after: "月0件", highlight: "ゼロに", percent: 100 },
+    ],
+    quote: "2日かかっていた作業が30分。スタッフが本業に集中できるようになった",
+    name: "C事務所 所長",
+    avatar: "C",
+    imageLabel: "自動化フロー図",
+    gradient: "from-emerald-600 to-teal-800",
+  },
+];
+---
+
+<section id="cases" class="py-16 md:py-20 lg:py-24 bg-white wave-divider">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
+      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Case Studies</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">
+        導入事例<span class="marker-highlight"> ── こう変わりました</span>
+      </h2>
+    </div>
+
+    <div class="flex flex-col gap-10 md:gap-12">
+      {cases.map((c, i) => (
+        <div
+          class="animate-on-scroll rounded-2xl border border-border overflow-hidden card-hover"
+          data-anim={i % 2 === 0 ? "left" : "right"}
+          style={`animation-delay: ${i * 0.1}s`}
+        >
+          <div class="grid grid-cols-1 lg:grid-cols-5">
+            <!-- Case study image area -->
+            <div class={`lg:col-span-2 relative overflow-hidden min-h-[200px] lg:min-h-0`}>
+              {i === 0 && (
+                <img
+                  src="/images/case-dashboard.jpg"
+                  alt="製造業向け在庫管理ダッシュボード画面"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              )}
+              {i === 1 && (
+                <img
+                  src="/images/case-crm.jpg"
+                  alt="不動産業向けCRM顧客管理画面"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              )}
+              {i === 2 && (
+                <img
+                  src="/images/case-automation-flow.jpg"
+                  alt="士業向け請求書自動化フロー図"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              )}
+              {i !== 0 && i !== 1 && i !== 2 && (
+                <div class={`bg-gradient-to-br ${c.gradient} p-8 flex flex-col items-center justify-center h-full relative`}>
+                  <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-4 right-4 w-32 h-32 border border-white/30 rounded-full"></div>
+                    <div class="absolute bottom-4 left-4 w-20 h-20 border border-white/20 rounded-lg rotate-12"></div>
+                  </div>
+                  <div class="relative text-center text-white/60">
+                    <svg class="w-16 h-16 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                    </svg>
+                    <p class="text-sm font-medium">{c.imageLabel}</p>
+                    <p class="text-xs mt-1 text-white/40">推奨: 600x400px</p>
+                  </div>
+                </div>
+              )}
+              <!-- Industry badge -->
+              <span class="absolute top-4 left-4 inline-block text-xs font-bold tracking-wider text-white bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full z-10">
+                {c.industry}
+              </span>
+            </div>
+
+            <!-- Content -->
+            <div class="lg:col-span-3 p-6 md:p-8">
+              <p class="text-sm font-medium text-text-secondary mb-4">{c.company}</p>
+
+              <!-- Problem -->
+              <div class="mb-5">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="w-5 h-5 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
+                  <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">課題</h4>
+                </div>
+                <p class="text-sm text-text-body leading-relaxed ml-7">{c.problem}</p>
+              </div>
+
+              <!-- Solution -->
+              <div class="mb-5">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="w-5 h-5 rounded-full bg-blue-100 text-link flex items-center justify-center shrink-0">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.193-.14 1.743" />
+                    </svg>
+                  </span>
+                  <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">導入内容</h4>
+                </div>
+                <p class="text-sm text-text-body leading-relaxed ml-7">{c.solution}</p>
+              </div>
+
+              <!-- Results with progress bars -->
+              <div class="mb-5">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="w-5 h-5 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                    </svg>
+                  </span>
+                  <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">成果</h4>
+                </div>
+                <div class="space-y-3 ml-7">
+                  {c.results.map((r) => (
+                    <div>
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-text-secondary">{r.label}</span>
+                        <span class="text-xs font-bold text-accent-600 bg-accent-400/20 px-2 py-0.5 rounded-full">{r.highlight}</span>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-xs text-text-muted line-through w-16 shrink-0">{r.before}</span>
+                        <div class="flex-1 h-2 bg-surface-dark rounded-full overflow-hidden">
+                          <div
+                            class="h-full bg-gradient-to-r from-accent-400 to-accent-500 rounded-full transition-all duration-1000"
+                            style={`width: ${r.percent}%`}
+                          ></div>
+                        </div>
+                        <span class="text-xs font-bold text-text-primary w-16 shrink-0 text-right">{r.after}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Quote with avatar -->
+              <div class="flex items-start gap-3 ml-7 p-4 bg-surface-alt rounded-xl">
+                <div class="w-10 h-10 rounded-full bg-primary-950 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                  {c.avatar}
+                </div>
+                <div>
+                  <p class="text-sm text-text-body italic leading-relaxed">「{c.quote}」</p>
+                  <p class="text-xs text-text-muted mt-1 font-medium">{c.name}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

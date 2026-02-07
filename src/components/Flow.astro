@@ -1,0 +1,50 @@
+---
+const steps = [
+  {
+    number: "01",
+    title: "無料ヒアリング",
+    description: "現在の業務フローや課題をお伺いし、自動化・AI活用の可能性を診断します。",
+  },
+  {
+    number: "02",
+    title: "プラン設計",
+    description: "ヒアリング結果をもとに、最適なツール・導入スケジュールをご提案します。",
+  },
+  {
+    number: "03",
+    title: "導入・構築",
+    description: "最短1週間でツール導入から初期設定、データ移行まで一気に実施します。",
+  },
+  {
+    number: "04",
+    title: "研修・伴走",
+    description: "社内研修と運用マニュアル提供。導入後も成果が出るまで伴走サポートします。",
+  },
+];
+---
+
+<section id="flow" class="py-16 md:py-20 lg:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
+      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Flow</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">ご依頼の流れ</h2>
+    </div>
+
+    <div class="relative">
+      <!-- Connecting line (desktop) -->
+      <div class="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5 bg-border"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6">
+        {steps.map((step, i) => (
+          <div class="animate-on-scroll text-center" style={`animation-delay: ${i * 0.1}s`}>
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary-950 text-accent-400 text-2xl font-black mb-5 relative z-10 shadow-[4px_4px_0_rgba(0,0,0,0.1)]">
+              {step.number}
+            </div>
+            <h3 class="text-lg font-bold text-text-primary mb-2">{step.title}</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">{step.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

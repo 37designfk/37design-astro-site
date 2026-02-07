@@ -1,0 +1,343 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+const companyInfo = [
+  { label: "社名", value: "株式会社37Design" },
+  { label: "設立", value: "2012年6月1日" },
+  { label: "代表者", value: "代表取締役　古田 健" },
+  { label: "資本金", value: "3,000千円" },
+  { label: "電話番号", value: "080-2412-2556" },
+  { label: "受付時間", value: "平日 9:00～18:00" },
+  { label: "メールアドレス", value: "info@37design.co.jp" },
+];
+
+const offices = [
+  {
+    name: "本社",
+    zip: "〒651-1223",
+    address: "兵庫県神戸市北区桂木2-35-C604",
+    mapUrl: "https://www.google.com/maps?q=兵庫県神戸市北区桂木2-35-C604"
+  },
+  {
+    name: "東京営業所",
+    zip: "〒104-0061",
+    address: "東京都中央区銀座4-10-14 ACN銀座4ビルディング11F",
+    mapUrl: "https://www.google.com/maps?q=東京都中央区銀座4-10-14"
+  }
+];
+
+const advisors = [
+  {
+    category: "顧問税理士",
+    name: "柳生俊哉税理士事務所",
+    person: "税理士　柳生俊哉",
+    icon: "M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
+  },
+  {
+    category: "顧問弁護士",
+    name: "弁護士法人 ラポール綜合法律事務所",
+    person: "弁護士　大西信幸",
+    icon: "M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+  }
+];
+
+const banks = [
+  "三井住友銀行",
+  "三菱東京UFJ銀行",
+  "兵庫信用金庫"
+];
+
+const businessAreas = [
+  {
+    title: "AI開発・導入支援",
+    description: "生成AI、機械学習を活用したビジネスソリューションの提供"
+  },
+  {
+    title: "業務自動化・RPA",
+    description: "Power Automate等を活用した業務プロセスの自動化支援"
+  },
+  {
+    title: "Webシステム開発",
+    description: "カスタムWebアプリケーション・モバイルアプリの設計・開発"
+  },
+  {
+    title: "Webサイト制作",
+    description: "コーポレートサイト、ECサイト、ランディングページ制作"
+  },
+  {
+    title: "Webマーケティング",
+    description: "SEO、広告運用、MA導入、アクセス解析"
+  },
+  {
+    title: "デザイン",
+    description: "ロゴ、チラシ、パッケージ等のグラフィックデザイン"
+  }
+];
+---
+
+<Layout
+  title="会社概要 | 株式会社37Design"
+  description="株式会社37Designの会社概要。2012年設立、AI開発・業務自動化・Webシステム開発を手掛けるテクノロジー企業。本社は兵庫県神戸市、東京営業所は銀座。"
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[40vh] flex items-center hero-gradient overflow-hidden">
+      <!-- Background elements -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
+      </div>
+
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-16 md:py-20 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+          <span class="text-white/70 text-xs font-medium">Company</span>
+        </div>
+
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black text-white leading-[1.15] mb-4">
+          会社概要
+        </h1>
+
+        <p class="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+          AIと自動化でビジネスを進化させる
+        </p>
+      </div>
+    </section>
+
+    <!-- Company Info Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+          <!-- Basic Info -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h2 class="text-2xl font-bold text-text-primary mb-6 pb-4 border-b border-border flex items-center gap-2">
+              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+              </svg>
+              基本情報
+            </h2>
+            <dl class="space-y-4">
+              {companyInfo.map((info) => (
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-2 border-b border-border/50 last:border-0">
+                  <dt class="text-sm font-semibold text-text-secondary sm:w-32 shrink-0">{info.label}</dt>
+                  <dd class="text-sm text-text-body font-medium">
+                    {info.label === "メールアドレス" ? (
+                      <a href={`mailto:${info.value}`} class="text-link hover:underline">{info.value}</a>
+                    ) : info.label === "電話番号" ? (
+                      <a href={`tel:${info.value.replace(/-/g, '')}`} class="text-link hover:underline">{info.value}</a>
+                    ) : (
+                      info.value
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <!-- Offices -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h2 class="text-2xl font-bold text-text-primary mb-6 pb-4 border-b border-border flex items-center gap-2">
+              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+              </svg>
+              所在地
+            </h2>
+            <div class="space-y-6">
+              {offices.map((office) => (
+                <div class="pb-6 border-b border-border/50 last:border-0 last:pb-0">
+                  <h3 class="text-lg font-bold text-text-primary mb-3">{office.name}</h3>
+                  <p class="text-sm text-text-secondary mb-1">{office.zip}</p>
+                  <p class="text-sm text-text-body mb-3">{office.address}</p>
+                  <a
+                    href={office.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 text-xs text-link hover:underline"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+                    </svg>
+                    Google Mapで見る
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Advisors & Banks -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-12">
+          <!-- Advisors -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h2 class="text-2xl font-bold text-text-primary mb-6 pb-4 border-b border-border">
+              アドバイザリー体制
+            </h2>
+            <div class="space-y-6">
+              {advisors.map((advisor) => (
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d={advisor.icon} />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-xs text-text-muted mb-1">{advisor.category}</p>
+                    <p class="text-sm font-bold text-text-primary mb-1">{advisor.name}</p>
+                    <p class="text-sm text-text-secondary">{advisor.person}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Banks -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h2 class="text-2xl font-bold text-text-primary mb-6 pb-4 border-b border-border flex items-center gap-2">
+              <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+              </svg>
+              取引銀行
+            </h2>
+            <ul class="space-y-3">
+              {banks.map((bank) => (
+                <li class="flex items-center gap-2 text-sm text-text-body">
+                  <div class="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                  {bank}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Business Areas -->
+        <div class="bg-white rounded-2xl p-8 md:p-10 border border-border">
+          <h2 class="text-2xl font-bold text-text-primary mb-8 pb-4 border-b border-border text-center">
+            事業内容
+          </h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {businessAreas.map((area) => (
+              <div class="group p-6 rounded-xl border border-border hover:border-accent-400/40 hover:shadow-lg transition-all">
+                <h3 class="text-lg font-bold text-text-primary mb-2 group-hover:text-accent-600 transition-colors">
+                  {area.title}
+                </h3>
+                <p class="text-sm text-text-secondary leading-relaxed">
+                  {area.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-8 text-center">
+            <a
+              href="/service"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
+            >
+              詳しいサービス一覧を見る
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="py-16 md:py-20 bg-surface-alt">
+      <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-10 text-center">沿革</h2>
+
+        <div class="relative">
+          <!-- Timeline line -->
+          <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-primary-200"></div>
+
+          <div class="space-y-8">
+            <div class="relative pl-12">
+              <div class="absolute left-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
+                <div class="w-3 h-3 rounded-full bg-white"></div>
+              </div>
+              <div class="bg-white rounded-xl p-6 border border-border">
+                <p class="text-sm font-bold text-primary-600 mb-2">2012年6月</p>
+                <p class="text-text-body">株式会社37Design設立。Webデザイン・制作事業を開始</p>
+              </div>
+            </div>
+
+            <div class="relative pl-12">
+              <div class="absolute left-0 w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
+                <div class="w-3 h-3 rounded-full bg-white"></div>
+              </div>
+              <div class="bg-white rounded-xl p-6 border border-border">
+                <p class="text-sm font-bold text-primary-600 mb-2">2023年</p>
+                <p class="text-text-body">AI開発・自動化分野への本格参入を決定。新事業「LexionHub」立ち上げ</p>
+              </div>
+            </div>
+
+            <div class="relative pl-12">
+              <div class="absolute left-0 w-8 h-8 rounded-full bg-accent-400 flex items-center justify-center">
+                <div class="w-3 h-3 rounded-full bg-white"></div>
+              </div>
+              <div class="bg-white rounded-xl p-6 border border-accent-400/40 shadow-lg">
+                <p class="text-sm font-bold text-accent-600 mb-2">2024年</p>
+                <p class="text-text-body">外部出資を受け、「AIと自動化でビジネスを進化させる企業」へ転換</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          お気軽にお問い合わせください
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8">
+          ご質問・ご相談はお気軽にどうぞ
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/#contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+            </svg>
+            お問い合わせ
+          </a>
+          <a
+            href="https://jmp9xv65.autosns.app/line"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#06C755] text-white font-semibold rounded-full hover:bg-[#05B34A] transition-colors text-base"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+            </svg>
+            LINEで相談
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

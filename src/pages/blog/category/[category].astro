@@ -1,0 +1,223 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import "../../../styles/global.css";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const categories = ['AI', '業務自動化', 'マーケティング', 'CRM', 'お知らせ'];
+
+  return categories.map((category) => ({
+    params: { category: category },
+    props: {
+      posts: allPosts
+        .filter((post) => post.data.category === category)
+        .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()),
+      category: category,
+    },
+  }));
+}
+
+const { posts, category } = Astro.props;
+
+const categoryColors: Record<string, string> = {
+  'AI': 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+  '業務自動化': 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+  'マーケティング': 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  'CRM': 'bg-green-500/10 text-green-600 border-green-500/20',
+  'お知らせ': 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+};
+
+const categoryBadgeColors: Record<string, string> = {
+  'AI': 'bg-amber-500/10 text-amber-600',
+  '業務自動化': 'bg-purple-500/10 text-purple-600',
+  'マーケティング': 'bg-blue-500/10 text-blue-600',
+  'CRM': 'bg-green-500/10 text-green-600',
+  'お知らせ': 'bg-gray-500/10 text-gray-600',
+};
+---
+
+<Layout
+  title={`${category}の記事一覧 | ブログ | 株式会社37Design`}
+  description={`株式会社37Designのブログ「${category}」カテゴリの記事一覧。AI活用、業務自動化、マーケティングなど、ビジネスに役立つ情報を発信しています。`}
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[40vh] flex items-center hero-gradient overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
+      </div>
+
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-24 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+          <span class="text-white/70 text-xs font-medium">Blog Category</span>
+        </div>
+
+        <div class="flex justify-center mb-6">
+          <span class={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold border ${categoryColors[category]}`}>
+            {category}
+          </span>
+        </div>
+
+        <h1 class="text-[clamp(2rem,5vw,3rem)] font-black text-white leading-[1.15] mb-4">
+          {category}の記事
+        </h1>
+
+        <p class="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+          {posts.length}件の記事
+        </p>
+      </div>
+    </section>
+
+    <!-- Breadcrumb & Category Filter -->
+    <section class="py-8 bg-surface border-b border-border">
+      <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+          <ol class="flex items-center gap-2 text-sm text-text-muted">
+            <li><a href="/" class="hover:text-text-primary transition-colors">ホーム</a></li>
+            <li>/</li>
+            <li><a href="/blog" class="hover:text-text-primary transition-colors">ブログ</a></li>
+            <li>/</li>
+            <li class="text-text-primary">{category}</li>
+          </ol>
+        </nav>
+
+        <!-- Category Filter -->
+        <div class="flex flex-wrap gap-3">
+          <a
+            href="/blog"
+            class="px-4 py-2 rounded-full border border-border text-sm font-semibold text-text-secondary hover:bg-surface-alt transition-colors"
+          >
+            すべて
+          </a>
+          {['AI', '業務自動化', 'マーケティング', 'CRM', 'お知らせ'].map((cat) => (
+            <a
+              href={`/blog/category/${cat}`}
+              class={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                cat === category
+                  ? categoryColors[cat] + ' border'
+                  : 'border border-border text-text-secondary hover:bg-surface-alt'
+              }`}
+            >
+              {cat}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog List -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+        {posts.length > 0 ? (
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {posts.map((post) => (
+              <article class="bg-white rounded-2xl overflow-hidden border border-border hover:border-accent-400/40 hover:shadow-lg transition-all group">
+                <a href={`/blog/${post.slug}`} class="block">
+                  <div class="p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                      <time class="text-xs font-semibold text-text-muted">
+                        {post.data.publishDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.')}
+                      </time>
+                      <span class={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${categoryBadgeColors[post.data.category]}`}>
+                        {post.data.category}
+                      </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-text-primary mb-3 group-hover:text-accent-600 transition-colors line-clamp-2">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-sm text-text-secondary leading-relaxed line-clamp-3 mb-4">
+                      {post.data.description}
+                    </p>
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-text-muted">{post.data.author}</span>
+                      <span class="text-accent-600 text-sm font-semibold group-hover:gap-2 flex items-center gap-1 transition-all">
+                        続きを読む
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-16">
+            <p class="text-text-secondary text-lg mb-4">このカテゴリの記事はまだありません</p>
+            <a
+              href="/blog"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
+            >
+              すべての記事を見る
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          サービスについて相談する
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8">
+          AI導入・業務自動化のご相談はお気軽に
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            無料相談を申し込む
+          </a>
+          <a
+            href="/service"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-full hover:bg-white/15 transition-colors text-base border border-white/20"
+          >
+            サービス一覧を見る
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

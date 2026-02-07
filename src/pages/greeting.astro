@@ -1,0 +1,202 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+---
+
+<Layout
+  title="代表挨拶 | 株式会社37Design"
+  description="株式会社37Design代表取締役 古田 健からのご挨拶。2012年の設立から10年以上、Web制作・広告運用を手掛け、2023年にAI開発と自動化分野へ本格転換。技術で人を幸せにする企業を目指します。"
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[40vh] flex items-center hero-gradient overflow-hidden">
+      <!-- Background elements -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
+      </div>
+
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-16 md:py-20 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+          <span class="text-white/70 text-xs font-medium">Greeting</span>
+        </div>
+
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black text-white leading-[1.15] mb-4">
+          代表挨拶
+        </h1>
+
+        <p class="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+          株式会社37Design 代表取締役<br />
+          古田 健
+        </p>
+      </div>
+    </section>
+
+    <!-- CEO Message Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <!-- CEO Profile -->
+        <div class="flex flex-col lg:flex-row gap-10 mb-16">
+          <!-- Photo -->
+          <div class="lg:w-80 shrink-0">
+            <div class="aspect-[3/4] rounded-2xl overflow-hidden border-4 border-white shadow-xl">
+              <img
+                src="/images/ceo-photo.jpg"
+                alt="代表取締役 古田 健"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="text-center mt-6">
+              <p class="text-xl font-bold text-text-primary mb-1">古田 健</p>
+              <p class="text-sm text-text-secondary">ふるた けん</p>
+              <p class="text-sm text-primary-600 font-semibold mt-2">代表取締役</p>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="flex-1">
+            <div class="bg-white rounded-2xl p-8 md:p-10 border border-border">
+              <h2 class="text-2xl font-bold text-text-primary mb-6 pb-4 border-b border-border">
+                ご挨拶
+              </h2>
+
+              <div class="space-y-6 text-text-body leading-relaxed">
+                <p>はじめまして、代表の古田（ふるた）と申します。2012年に小さなWebデザイン会社として創業し、おかげさまで10年以上にわたり、多くの企業さまのWebサイト制作・広告運用に携わってきました。</p>
+
+                <p>Webの世界は変化が激しく、2〜3年前の常識がすぐに通用しなくなる業界です。何度も壁にぶつかり、自分の力不足を痛感しながら、それでも必死で学び、乗り越える。その繰り返しで視界が開けていく──そんな10年間でした。</p>
+
+                <p>しかし、私と37Designにとっての大きな転換点は2023年に訪れました。世の中が急速に生成AIへとシフトしていく中で、これまでのWeb制作や広告の知識だけでは、「お客様の未来を本当の意味で守り抜くことはできない」と強烈に感じたのです。</p>
+
+                <p>そこから私は、自分でも驚くほどの熱量でAI開発と自動化の世界に没頭しました。来る日も来る日もコードを書き、仕組みを分解し、失敗しては組み直す。安定していた業務を離れ、退路を断ち、開発にすべてを注ぎ込みました。</p>
+
+                <p>正直に言えば、経営的な不安で押しつぶされそうな夜もありました。それでも「ここで止まれば、次はない」という覚悟だけで前に進んできました。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LexionHub Section -->
+        <div class="bg-gradient-to-br from-primary-900 to-primary-800 rounded-2xl p-8 md:p-10 mb-16 text-white">
+          <div class="max-w-4xl mx-auto">
+            <div class="space-y-6 text-white/90 leading-relaxed mb-10">
+              <p>その極限の挑戦から誕生したのが、私たちの新たな事業「LexionHub（レクションハブ）」です。営業音声をAIで解析し、組織の営業力を底上げするLexionHub Sales。四柱推命とAIを融合し、人の心に寄り添うLexionHub Fortune。</p>
+
+              <p>そして──企業の業務そのものを"自走する仕組み"へと進化させるLexionHub Autopoiesis（レクションハブ・オートポイエーシス）。Autopoiesisとは「自己創発・自己組織化」を意味します。人が管理し続けなければ動かない仕組みではなく、"企業が自ら成長し続けるためのAIエコシステム"をつくること。</p>
+
+              <p>営業・マーケティング・顧客管理・社内共有。これらを人が手で回すのではなく、AIと自動化が"勝手に最適化し続ける状態"を作ること。</p>
+
+              <p>私は、この仕組みこそが日本の中小企業に必要だと確信しています。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div class="w-12 h-12 rounded-lg bg-accent-400/20 flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6 text-accent-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
+                  </svg>
+                </div>
+                <h4 class="text-lg font-bold mb-2">Sales</h4>
+                <p class="text-sm text-white/70">営業音声をAI解析し、組織の営業力を底上げ</p>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div class="w-12 h-12 rounded-lg bg-accent-400/20 flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6 text-accent-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                  </svg>
+                </div>
+                <h4 class="text-lg font-bold mb-2">Fortune</h4>
+                <p class="text-sm text-white/70">四柱推命とAIを融合し、人の心に寄り添う</p>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div class="w-12 h-12 rounded-lg bg-accent-400/20 flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6 text-accent-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 9.137l-1.15-.964m1.005 10.572-.834-1.277m12.345-6.936L18.5 9.5m-13.005 3.568L5.5 14.5" />
+                  </svg>
+                </div>
+                <h4 class="text-lg font-bold mb-2">Autopoiesis</h4>
+                <p class="text-sm text-white/70">企業が自ら成長し続けるAIエコシステム</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Philosophy Section -->
+        <div class="bg-white rounded-2xl p-8 md:p-10 border border-border">
+          <div class="space-y-6 text-text-body leading-relaxed mb-8">
+            <p>2025年には体制を変え、37Designは"Web制作会社"から"AIと自動化でビジネスを進化させる企業"へ、正式に生まれ変わりました。</p>
+
+            <p>「技術で人を幸せにする」「誰かの世界を一歩広げる」という想いは創業当時から変わりません。ですが、AIを武器にし、自動化を実装し、さらに人の心（占い・心理）までも統合した今、私はより強くこう確信しています。</p>
+
+            <p>"人の人生を、ビジネスを、劇的に良くする仕組みをつくることこそ、私の使命だ"と。</p>
+
+            <p>Webは私の世界を広げてくれました。AIは可能性を無限に伸ばしてくれました。そしてそれを使うのは、やっぱり「人」です。</p>
+
+            <p>技術と心の両方を扱えるパートナーとして、37Designはこれからも、関わるすべての方の未来のために挑戦を続けていきます。</p>
+          </div>
+
+          <!-- Signature -->
+          <div class="flex justify-end">
+            <div class="flex items-center gap-4">
+              <div class="text-right">
+                <p class="text-sm text-text-secondary mb-1">株式会社37Design</p>
+                <p class="text-base font-bold text-text-primary">代表取締役</p>
+              </div>
+              <img
+                src="/images/ceo-signature.png"
+                alt="代表取締役 古田 健 サイン"
+                class="h-12 w-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          一緒にビジネスを進化させませんか？
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8">
+          お気軽にご相談ください
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/#contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            お問い合わせ
+          </a>
+          <a
+            href="/service"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-full hover:bg-white/15 transition-colors text-base border border-white/20"
+          >
+            サービス一覧を見る
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

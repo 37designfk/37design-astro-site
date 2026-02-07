@@ -1,0 +1,89 @@
+---
+const navLinks = [
+  { label: "サービス", href: "/service" },
+  { label: "会社概要", href: "/company" },
+  { label: "代表挨拶", href: "/greeting" },
+  { label: "採用情報", href: "/recruit" },
+  { label: "お知らせ", href: "/news" },
+  { label: "ブログ", href: "/blog" },
+  { label: "お問い合わせ", href: "/contact" },
+];
+
+const socialLinks = [
+  { label: "Facebook", href: "https://www.facebook.com/37designfk", icon: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" },
+  { label: "Instagram", href: "https://www.instagram.com/37design_fk/", icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2zm4.2 5a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.2-3.5a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z" },
+  { label: "X", href: "https://twitter.com/37designfk", icon: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
+];
+---
+
+<footer class="bg-primary-950 text-white">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <!-- Brand -->
+      <div>
+        <a href="/" class="inline-block mb-4">
+          <img src="/images/logo-gold.svg" alt="株式会社37Design" class="h-7 w-auto" />
+        </a>
+        <p class="text-white/60 text-sm leading-relaxed">
+          あなたの会社を1週間でAI企業へ。<br />
+          業務自動化・AI導入のパートナー。
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <div>
+        <h3 class="font-semibold text-xs uppercase tracking-[.15em] text-white/40 mb-4">Menu</h3>
+        <nav class="flex flex-col gap-2">
+          {navLinks.map((link) => (
+            <a href={link.href} class="text-sm text-white/70 hover:text-white transition-colors">
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <!-- Social & Contact -->
+      <div>
+        <h3 class="font-semibold text-xs uppercase tracking-[.15em] text-white/40 mb-4">Connect</h3>
+        <div class="flex flex-col gap-3 text-sm text-white/70">
+          <a href="tel:080-2412-2556" class="hover:text-white transition-colors">
+            TEL: 080-2412-2556
+          </a>
+          <a href="mailto:info@37design.co.jp" class="hover:text-white transition-colors">
+            info@37design.co.jp
+          </a>
+          <div class="flex items-center gap-4 mt-2">
+            {socialLinks.map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-400 flex items-center justify-center text-white hover:text-primary-950 transition-all"
+                aria-label={s.label}
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d={s.icon} /></svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="border-t border-white/10">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-xs text-white/40">
+        &copy; 2012-2026 株式会社37Design. All rights reserved.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="/privacy" class="text-xs text-white/40 hover:text-white/70 transition-colors">
+          プライバシーポリシー
+        </a>
+        <a href="/tokushoho" class="text-xs text-white/40 hover:text-white/70 transition-colors">
+          特定商取引法表記
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

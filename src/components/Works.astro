@@ -1,0 +1,142 @@
+---
+const plans = [
+  {
+    name: "スターターパック",
+    subtitle: "まずは体感する",
+    price: "30",
+    unit: "万円〜",
+    period: "初期費用",
+    features: [
+      "現状業務のヒアリング・分析",
+      "自動化ツール1業務の導入",
+      "操作マニュアル作成",
+      "導入後2週間のサポート",
+    ],
+    cta: "無料診断を受ける",
+    popular: false,
+  },
+  {
+    name: "スタンダードパック",
+    subtitle: "本格的にDXを進める",
+    price: "80",
+    unit: "万円〜",
+    period: "初期費用",
+    features: [
+      "業務フロー全体の分析・設計",
+      "自動化ツール複数導入",
+      "CRM（顧客管理）初期構築",
+      "AIチャットボット導入",
+      "社内研修（2回）",
+      "導入後1ヶ月のサポート",
+    ],
+    cta: "無料診断を受ける",
+    popular: true,
+  },
+  {
+    name: "フルパッケージ",
+    subtitle: "会社全体をAI企業に",
+    price: "要相談",
+    unit: "",
+    period: "",
+    features: [
+      "スタンダードの全内容",
+      "全部門の業務自動化設計",
+      "カスタムAIモデル構築",
+      "外部システム連携",
+      "社内研修（無制限）",
+      "導入後3ヶ月の伴走サポート",
+    ],
+    cta: "まずは相談する",
+    popular: false,
+  },
+];
+---
+
+<section id="pricing" class="py-16 md:py-20 lg:py-24 bg-surface-alt wave-divider wave-divider-white">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
+      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Pricing</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">料金プラン</h2>
+      <p class="text-text-secondary text-sm mt-3 max-w-lg mx-auto">
+        すべてのプランに<span class="marker-highlight">無料ヒアリング・診断</span>が含まれます。<br />
+        まずはお気軽にご相談ください。
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-5 items-start">
+      {plans.map((plan, i) => (
+        <div
+          class:list={[
+            "animate-on-scroll rounded-2xl overflow-hidden border relative",
+            plan.popular
+              ? "bg-gradient-to-b from-accent-400/5 to-white border-accent-400 shadow-[0_8px_32px_rgba(255,220,64,0.15)] md:scale-[1.06] md:-my-4 z-10"
+              : "bg-white border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] card-hover",
+          ]}
+          data-anim="scale"
+          style={`animation-delay: ${i * 0.1}s`}
+        >
+          {plan.popular && (
+            <div class="bg-accent-400 text-primary-950 text-xs font-bold text-center py-2 tracking-wider uppercase flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+              </svg>
+              人気 No.1
+            </div>
+          )}
+
+          <div class={plan.popular ? "p-7 md:p-9" : "p-6 md:p-8"}>
+            <p class="text-xs font-semibold text-text-muted tracking-wider uppercase mb-1">{plan.subtitle}</p>
+            <h3 class:list={[
+              "font-bold text-text-primary mb-5",
+              plan.popular ? "text-2xl" : "text-xl",
+            ]}>{plan.name}</h3>
+
+            <div class="mb-6 pb-6 border-b border-border">
+              {plan.price === "要相談" ? (
+                <p class="text-2xl md:text-3xl font-black text-primary-950">要相談</p>
+              ) : (
+                <div class="flex items-baseline gap-1">
+                  <span class:list={[
+                    "font-black text-primary-950",
+                    plan.popular ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl",
+                  ]}>{plan.price}</span>
+                  <span class="text-base font-bold text-text-secondary">{plan.unit}</span>
+                </div>
+              )}
+              {plan.period && (
+                <p class="text-xs text-text-muted mt-1">{plan.period}（税別）</p>
+              )}
+            </div>
+
+            <ul class="space-y-3 mb-8">
+              {plan.features.map((feature) => (
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4.5 h-4.5 text-accent-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  <span class="text-sm text-text-body">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#contact"
+              class:list={[
+                "block text-center px-6 font-bold rounded-full transition-all text-sm",
+                plan.popular
+                  ? "py-4 bg-accent-400 text-primary-950 hover:bg-accent-300 btn-pulse text-base"
+                  : "py-3.5 bg-primary-950 text-white hover:bg-primary-800",
+              ]}
+            >
+              {plan.cta}
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-center text-xs text-text-muted mt-10 animate-on-scroll">
+      ※ 上記は目安です。ヒアリング後に正式なお見積りをご提示します。追加料金が発生する場合は事前にご説明します。
+    </p>
+  </div>
+</section>

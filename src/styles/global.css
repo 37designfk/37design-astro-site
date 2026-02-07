@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary: Dark Gray → Dark Blue gradient (37design + AI tech) */
+  --color-primary-50: #f0f4fa;
+  --color-primary-100: #dce4f0;
+  --color-primary-200: #b8c9e1;
+  --color-primary-300: #8da8d2;
+  --color-primary-400: #6688b8;
+  --color-primary-500: #4a6a9a;
+  --color-primary-600: #3a5580;
+  --color-primary-700: #2d4166;
+  --color-primary-800: #1e2d4d;
+  --color-primary-900: #121c33;
+  --color-primary-950: #0a0f1e;
+
+  /* Accent: Yellow marker (37design brand) */
+  --color-accent-300: #ffe566;
+  --color-accent-400: #ffdc40;
+  --color-accent-500: #f5d020;
+  --color-accent-600: #d4a520;
+
+  /* Blue link / glow */
+  --color-link: #0d77d9;
+  --color-glow: #3b82f6;
+
+  /* Surface & Text */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8f9fb;
+  --color-surface-dark: #f0f2f5;
+  --color-text-primary: #0a0f1e;
+  --color-text-body: #2a2f3a;
+  --color-text-secondary: #5a6070;
+  --color-text-muted: #9099a8;
+  --color-border: #e2e6ee;
+
+  /* Font */
+  --font-sans: "Noto Sans JP", "メイリオ", Meiryo, sans-serif;
+}
+
+/* ========================================
+   Scroll Animations (variety)
+   ======================================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-on-scroll {
+  opacity: 0;
+}
+.animate-on-scroll.is-visible {
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-on-scroll.is-visible[data-anim="left"] {
+  animation-name: fadeInLeft;
+}
+.animate-on-scroll.is-visible[data-anim="right"] {
+  animation-name: fadeInRight;
+}
+.animate-on-scroll.is-visible[data-anim="scale"] {
+  animation-name: fadeInScale;
+}
+
+/* ========================================
+   Hero Animations
+   ======================================== */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 220, 64, 0.5); }
+  50%      { box-shadow: 0 0 0 16px rgba(255, 220, 64, 0); }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+
+.hero-gradient {
+  background: linear-gradient(-45deg, #0a0f1e, #121c33, #1a2844, #0d1b33);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+.hero-float { animation: float 6s ease-in-out infinite; }
+.hero-float-delay { animation: float 6s ease-in-out infinite 2s; }
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 220, 64, 0.3);
+  animation: particleFloat linear infinite;
+}
+
+.btn-pulse {
+  position: relative;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+.btn-pulse::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(255, 220, 64, 0.6);
+  animation: pulse-ring 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ========================================
+   Scroll Down Indicator
+   ======================================== */
+@keyframes scrollDown {
+  0%   { transform: translateY(0); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateY(16px); opacity: 0; }
+}
+.scroll-indicator::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: #fff;
+  margin: 8px auto 0;
+  animation: scrollDown 2.5s infinite;
+}
+
+/* ========================================
+   Yellow Marker Highlight
+   ======================================== */
+.marker-highlight {
+  background: linear-gradient(transparent 60%, rgba(255, 220, 64, 0.4) 60%);
+}
+
+/* ========================================
+   Wave Section Dividers
+   ======================================== */
+.wave-divider {
+  position: relative;
+}
+.wave-divider::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f8f9fb' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,40 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom center;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+.wave-divider-white::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23ffffff' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,40 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E");
+}
+.wave-divider-dark::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%230a0f1e' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,40 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E");
+}
+
+/* ========================================
+   Glow Effects
+   ======================================== */
+.glow-blue {
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 0 80px rgba(59, 130, 246, 0.05);
+}
+.glow-accent {
+  box-shadow: 0 0 40px rgba(255, 220, 64, 0.12), 0 0 80px rgba(255, 220, 64, 0.04);
+}
+
+/* ========================================
+   Card Hover Effects
+   ======================================== */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+/* ========================================
+   Gradient Accent Line
+   ======================================== */
+.gradient-line-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffdc40, #3b82f6, #ffdc40);
+  border-radius: 3px 3px 0 0;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Sticky CTA bar */
+.sticky-cta {
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.sticky-cta.is-visible {
+  transform: translateY(0);
+}

@@ -1,0 +1,173 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+---
+
+<Layout
+  title="特定商取引法に基づく表記 | 株式会社37Design"
+  description="株式会社37Designの特定商取引法に基づく表記。販売事業者の情報、商品・サービスの詳細を記載しています。"
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[30vh] flex items-center hero-gradient overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-16 w-full text-center">
+        <h1 class="text-[clamp(2rem,5vw,3rem)] font-black text-white leading-[1.15] mb-4">
+          特定商取引法に基づく表記
+        </h1>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl p-8 md:p-10 border border-border">
+          <div class="space-y-8">
+            <!-- 販売事業者 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">販売事業者</h2>
+              <p class="text-text-body">株式会社37Design</p>
+            </div>
+
+            <!-- 運営統括責任者 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">運営統括責任者</h2>
+              <p class="text-text-body">古田 健</p>
+            </div>
+
+            <!-- 所在地 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">所在地</h2>
+              <p class="text-text-body mb-2">〒651-1223 兵庫県神戸市北区桂木2-35-C604</p>
+              <p class="text-text-secondary text-sm">※ お客様の個人情報保護の観点から、正確な所在地についてはお問い合わせいただいた方にのみ開示しております。</p>
+            </div>
+
+            <!-- 電話番号 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">電話番号</h2>
+              <p class="text-text-body mb-2">
+                <a href="tel:080-2412-2556" class="text-link hover:underline">080-2412-2556</a>
+              </p>
+              <p class="text-text-secondary text-sm">受付時間：平日 9:00〜18:00</p>
+            </div>
+
+            <!-- メールアドレス -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">メールアドレス</h2>
+              <p class="text-text-body">
+                <a href="mailto:info@37design.co.jp" class="text-link hover:underline">info@37design.co.jp</a>
+              </p>
+            </div>
+
+            <!-- 販売価格 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">販売価格</h2>
+              <p class="text-text-body mb-4">各サービスページに記載された価格、またはお見積りにて提示する価格</p>
+              <ul class="list-disc list-inside space-y-2 text-text-body text-sm pl-4">
+                <li>AI導入支援スターターパック：300,000円〜</li>
+                <li>業務自動化スタンダードパック：800,000円〜</li>
+                <li>その他のサービス：個別お見積り</li>
+              </ul>
+              <p class="text-text-secondary text-sm mt-3">※ 価格は全て税込表示です</p>
+            </div>
+
+            <!-- 商品代金以外の必要料金 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">商品代金以外の必要料金</h2>
+              <p class="text-text-body mb-2">銀行振込手数料（お客様負担）</p>
+              <p class="text-text-secondary text-sm">※ その他、サービス内容により別途費用が発生する場合は、事前にお見積りにてご提示いたします。</p>
+            </div>
+
+            <!-- 支払方法 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">支払方法</h2>
+              <ul class="list-disc list-inside space-y-2 text-text-body pl-4">
+                <li>銀行振込（前払い）</li>
+                <li>請求書払い（後払い・法人のみ、審査あり）</li>
+              </ul>
+              <p class="text-text-secondary text-sm mt-3">※ 分割払いをご希望の場合は、個別にご相談ください。</p>
+            </div>
+
+            <!-- 支払時期 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">支払時期</h2>
+              <ul class="list-disc list-inside space-y-2 text-text-body pl-4">
+                <li>銀行振込（前払い）：ご契約後7日以内</li>
+                <li>請求書払い（後払い）：サービス提供完了後、請求書発行から30日以内</li>
+              </ul>
+            </div>
+
+            <!-- サービス提供時期 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">サービス提供時期</h2>
+              <p class="text-text-body">ご入金確認後、またはご契約後速やかに開始いたします。</p>
+              <p class="text-text-secondary text-sm mt-2">※ 具体的なスケジュールは、ご契約時に個別にご提示いたします。</p>
+            </div>
+
+            <!-- 返品・キャンセルポリシー -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">返品・キャンセルポリシー</h2>
+              <p class="text-text-body mb-4"><strong>キャンセルについて</strong></p>
+              <ul class="list-disc list-inside space-y-2 text-text-body text-sm pl-4 mb-4">
+                <li>サービス開始前：契約締結日から7日以内であれば、無条件でキャンセル可能（全額返金）</li>
+                <li>サービス開始後：原則としてキャンセル不可。ただし、当社の都合による場合はこの限りではありません</li>
+              </ul>
+              <p class="text-text-body mb-4"><strong>返品について</strong></p>
+              <p class="text-text-body text-sm">当社が提供するサービスは役務提供であるため、商品の返品はございません。</p>
+            </div>
+
+            <!-- 不良品の対応 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">不良品の対応</h2>
+              <p class="text-text-body mb-2">
+                提供したサービスに瑕疵があった場合、無償で修正・再提供いたします。瑕疵の内容によっては、ご返金にて対応させていただく場合もございます。
+              </p>
+              <p class="text-text-secondary text-sm">※ お客様の都合による仕様変更は、別途お見積りとなります。</p>
+            </div>
+
+            <!-- 引渡時期 -->
+            <div class="pb-6 border-b border-border">
+              <h2 class="text-lg font-bold text-text-primary mb-3">引渡時期</h2>
+              <p class="text-text-body">契約時に個別に定めた納期に準じます。</p>
+            </div>
+
+            <!-- 表現及び商品に関する注意書き -->
+            <div>
+              <h2 class="text-lg font-bold text-text-primary mb-3">表現及び商品に関する注意書き</h2>
+              <p class="text-text-body text-sm">
+                本サイトの内容、テキスト、画像等の無断転載・複製を固く禁じます。また、本サイトに掲載されている情報は、予告なく変更される場合があります。
+              </p>
+            </div>
+          </div>
+
+          <!-- お問い合わせ -->
+          <div class="mt-12 pt-8 border-t border-border">
+            <h3 class="text-lg font-bold text-text-primary mb-4">お問い合わせ</h3>
+            <p class="text-text-body mb-6">
+              ご不明な点がございましたら、お気軽にお問い合わせください。
+            </p>
+            <a
+              href="/contact"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-accent-400 text-primary-950 font-semibold rounded-full hover:bg-accent-300 transition-colors text-sm"
+            >
+              お問い合わせフォームへ
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

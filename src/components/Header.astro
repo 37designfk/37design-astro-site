@@ -1,0 +1,79 @@
+---
+const navLinks = [
+  { label: "サービス", href: "/service" },
+  { label: "会社概要", href: "/company" },
+  { label: "代表挨拶", href: "/greeting" },
+  { label: "採用情報", href: "/recruit" },
+  { label: "ニュースレター", href: "/newsletter" },
+];
+
+const socialLinks = [
+  { label: "Facebook", href: "https://www.facebook.com/37designfk", icon: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" },
+  { label: "Instagram", href: "https://www.instagram.com/37design_fk/", icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2zm4.2 5a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.2-3.5a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z" },
+  { label: "X", href: "https://twitter.com/37designfk", icon: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-primary-950/95 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between h-16 md:h-18">
+    <!-- Logo -->
+    <a href="/" class="flex items-center">
+      <img src="/images/logo-gold.svg" alt="株式会社37Design" class="h-6 md:h-7 w-auto" />
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-6">
+      {navLinks.map((link) => (
+        <a href={link.href} class="text-sm font-medium text-white/80 hover:text-white transition-colors">
+          {link.label}
+        </a>
+      ))}
+      <div class="flex items-center gap-3 ml-2">
+        {socialLinks.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-white transition-colors" aria-label={s.label}>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d={s.icon} /></svg>
+          </a>
+        ))}
+      </div>
+      <a
+        href="/contact"
+        class="ml-2 inline-flex items-center px-5 py-2.5 bg-accent-400 text-primary-900 text-sm font-bold rounded-full hover:bg-accent-300 transition-colors"
+      >
+        お問い合わせ
+      </a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <input type="checkbox" id="menu-toggle" class="hidden peer" />
+    <label for="menu-toggle" class="lg:hidden flex flex-col gap-1.5 cursor-pointer p-2">
+      <span class="block w-6 h-0.5 bg-white transition-all"></span>
+      <span class="block w-6 h-0.5 bg-white transition-all"></span>
+      <span class="block w-6 h-0.5 bg-white transition-all"></span>
+    </label>
+  </div>
+
+  <!-- Mobile Menu -->
+  <nav class="hidden peer-checked:flex lg:hidden flex-col bg-primary-950 border-t border-white/10 px-4 pb-4">
+    {navLinks.map((link) => (
+      <a href={link.href} class="py-3 text-sm font-medium text-white/80 hover:text-white border-b border-white/10">
+        {link.label}
+      </a>
+    ))}
+    <div class="flex items-center gap-4 py-3">
+      {socialLinks.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-white transition-colors" aria-label={s.label}>
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d={s.icon} /></svg>
+        </a>
+      ))}
+    </div>
+    <a
+      href="/contact"
+      class="mt-2 inline-flex items-center justify-center px-5 py-2.5 bg-accent-400 text-primary-900 text-sm font-bold rounded-full hover:bg-accent-300 transition-colors"
+    >
+      お問い合わせ
+    </a>
+  </nav>
+</header>
+
+<!-- Spacer for fixed header -->
+<div class="h-16 md:h-18"></div>

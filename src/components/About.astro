@@ -1,0 +1,126 @@
+---
+const values = [
+  { title: "Mission", text: "テクノロジーの力で、すべての企業にDXを。" },
+  { title: "Vision", text: "AI活用が当たり前の社会をつくる。" },
+  { title: "Value", text: "スピード・成果・伴走。" },
+];
+---
+
+<section id="about" class="py-16 md:py-20 lg:py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
+      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">About</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">会社概要</h2>
+    </div>
+
+    <!-- Representative Section -->
+    <div class="animate-on-scroll mb-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <!-- CEO Photo -->
+        <div class="md:col-span-1">
+          <div class="relative">
+            <!-- Accent background shape -->
+            <div class="absolute -top-3 -left-3 w-full h-full rounded-2xl bg-accent-400/20"></div>
+            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
+              <img
+                src="/images/ceo-photo.jpg"
+                alt="株式会社37Design 代表取締役 古田 健"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div class="mt-5 text-center">
+            <p class="text-xs text-text-muted tracking-wider uppercase mb-1">代表取締役</p>
+            <p class="text-lg font-bold text-text-primary">古田 健</p>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="md:col-span-2">
+          <h3 class="text-xl font-bold text-text-primary mb-4">
+            <span class="marker-highlight">代表挨拶</span>
+          </h3>
+          <p class="text-text-body leading-relaxed mb-4">
+            「もっとラクに、もっと賢く働ける社会を」——
+            私たちは、テクノロジーの力を最大限に活かし、中小企業のDX推進を支援しています。
+          </p>
+          <p class="text-text-body leading-relaxed mb-4">
+            AI・自動化・CRM導入を通じて、属人化した業務を仕組み化し、
+            お客様が本来の事業に集中できる環境を整えます。
+            導入して終わりではなく、<strong class="text-text-primary">成果が出るまで伴走する</strong>ことが私たちの強みです。
+          </p>
+          <p class="text-text-body leading-relaxed mb-6">
+            300サイト以上のWordPressサイト制作と運用管理実績を持ち、
+            Web制作からAI活用まで幅広く対応できるのが37Designの特徴です。
+            「何から始めればいいかわからない」という状態から一緒に走り出しましょう。
+          </p>
+
+          <!-- Credentials -->
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
+              AI活用アドバイザー
+            </span>
+            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
+              WordPress 300サイト以上
+            </span>
+            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
+              DXコンサルティング
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Info + MVV -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+      <!-- Company Info Table -->
+      <div class="animate-on-scroll">
+        <div class="border border-border rounded-2xl overflow-hidden">
+          <table class="w-full text-sm">
+            <tbody>
+              <tr class="border-b border-border">
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt w-28">会社名</th>
+                <td class="py-4 px-5 text-text-body">株式会社37Design</td>
+              </tr>
+              <tr class="border-b border-border">
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">所在地</th>
+                <td class="py-4 px-5 text-text-body">〒651-1223 兵庫県神戸市北区桂木2-35-C604</td>
+              </tr>
+              <tr class="border-b border-border">
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">電話番号</th>
+                <td class="py-4 px-5 text-text-body">
+                  <a href="tel:080-2412-2556" class="text-link hover:underline">080-2412-2556</a>
+                </td>
+              </tr>
+              <tr class="border-b border-border">
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">メール</th>
+                <td class="py-4 px-5 text-text-body">
+                  <a href="mailto:info@37design.co.jp" class="text-link hover:underline">info@37design.co.jp</a>
+                </td>
+              </tr>
+              <tr class="border-b border-border">
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">設立</th>
+                <td class="py-4 px-5 text-text-body">2012年</td>
+              </tr>
+              <tr>
+                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">事業内容</th>
+                <td class="py-4 px-5 text-text-body">業務自動化支援 / AI導入コンサルティング / CRM構築 / Web制作</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mission Vision Value -->
+      <div class="animate-on-scroll flex flex-col gap-5" style="animation-delay: 0.15s">
+        {values.map((v) => (
+          <div class="p-6 md:p-8 rounded-2xl bg-primary-950 text-white">
+            <p class="text-xs font-bold tracking-[.2em] text-accent-400 uppercase mb-2">{v.title}</p>
+            <p class="text-lg md:text-xl font-bold leading-snug">{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

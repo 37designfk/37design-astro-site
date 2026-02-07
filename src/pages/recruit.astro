@@ -1,0 +1,392 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+const jobDetails = [
+  { label: "給与", value: "時給 1,250円 〜 2,000円" },
+  { label: "雇用形態", value: "アルバイト・パート" },
+  { label: "勤務地", value: "兵庫県神戸市（在宅勤務OK）" },
+  { label: "勤務日数", value: "週2日 〜 5日勤務" },
+  { label: "勤務時間", value: "9:00 〜 20:00の間で2時間 〜 6時間" },
+  { label: "服装", value: "自由" },
+];
+
+const jobTasks = [
+  "SNSアカウント運用（Facebook、Twitter、Instagram）",
+  "投稿テキストや画像編集作業",
+  "投稿作業",
+  "チャットを使った問合せ業務",
+  "リサーチ作業"
+];
+
+const qualifications = [
+  "普段からSNSを使っている",
+  "WEBや広告の仕事に関心がある",
+  "副業やWワークを始めようと思っている",
+  "インターネット環境が整っている"
+];
+
+const idealPerson = [
+  "在宅でのお仕事になりますので自己管理ができる方",
+  "コミュニケーションをとることが出来る方",
+  "積極的にお仕事に取り組むことが出来る方"
+];
+
+const benefits = [
+  { icon: "M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25", label: "テレワーク・在宅OK" },
+  { icon: "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z", label: "柔軟な勤務時間" },
+  { icon: "M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z", label: "服装自由" },
+  { icon: "M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5", label: "未経験OK" },
+];
+---
+
+<Layout
+  title="採用情報 | 株式会社37Design"
+  description="株式会社37DesignのWebサイト運用アシスタント募集。在宅勤務OK、柔軟な勤務時間で働けるアルバイト・パート求人。SNS運用に興味がある方、未経験でも大歓迎です。"
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[50vh] flex items-center hero-gradient overflow-hidden">
+      <!-- Background elements -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
+      </div>
+
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-24 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+          <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
+          <span class="text-white/70 text-xs font-medium">採用情報</span>
+        </div>
+
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black text-white leading-[1.15] mb-6">
+          一緒に働く仲間を<br />
+          <span class="text-accent-400">募集中</span>
+        </h1>
+
+        <p class="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+          在宅勤務OK、柔軟な働き方ができる環境です。<br class="hidden md:block" />
+          未経験でも1から学べる、成長できる職場で一緒に働きませんか？
+        </p>
+      </div>
+    </section>
+
+    <!-- Full-time Section -->
+    <section class="py-12 md:py-16 bg-surface-alt">
+      <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl p-8 md:p-10 border border-border text-center">
+          <h2 class="text-2xl font-bold text-text-primary mb-3">正社員募集</h2>
+          <p class="text-text-secondary">現在募集は行っていません。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part-time Job Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-400/10 border border-accent-400/20 mb-4">
+            <span class="text-accent-600 text-xs font-semibold">募集中</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-4">パート・アルバイト募集</h2>
+          <p class="text-text-secondary">下記の条件で募集します。お問合せフォームより、お申し込みください。</p>
+        </div>
+
+        <!-- Job Title -->
+        <div class="bg-gradient-to-r from-primary-800 to-primary-900 rounded-2xl p-8 mb-8 text-center">
+          <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Webサイト運用アシスタント</h3>
+          <p class="text-accent-400 text-xl font-bold">時給 1,250円 〜 2,000円</p>
+        </div>
+
+        <!-- Benefits -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {benefits.map((benefit) => (
+            <div class="bg-white rounded-xl p-5 border border-border text-center hover:border-accent-400/30 transition-all">
+              <svg class="w-8 h-8 text-accent-600 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d={benefit.icon} />
+              </svg>
+              <p class="text-xs font-semibold text-text-primary">{benefit.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Job Details -->
+        <div class="bg-white rounded-2xl p-8 border border-border mb-8">
+          <h4 class="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.25m-12 0A2.25 2.25 0 0 0 4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 4.5 7.5h15a2.25 2.25 0 0 1 2.25 2.25v7.5" />
+            </svg>
+            募集要項
+          </h4>
+          <div class="space-y-4">
+            {jobDetails.map((detail) => (
+              <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-3 border-b border-border last:border-0">
+                <dt class="text-sm font-semibold text-text-secondary sm:w-28 shrink-0">{detail.label}</dt>
+                <dd class="text-sm text-text-body font-medium">{detail.value}</dd>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Job Description -->
+        <div class="bg-white rounded-2xl p-8 border border-border mb-8">
+          <h4 class="text-lg font-bold text-text-primary mb-4">職務内容</h4>
+          <p class="text-text-body leading-relaxed mb-6">
+            在宅勤務可能なWebサイトとECサイトとSNS運用アシスタント業務のお仕事になります。<br /><br />
+            SNS（Facebook、Twitter、Instagram）を普段から利用している方はとてもお仕事しやすいです！<br /><br />
+            あまり経験がない方でも、1から学びながら進めていきます。
+          </p>
+
+          <h5 class="text-md font-bold text-text-primary mb-3">主な仕事内容</h5>
+          <ul class="space-y-2 mb-6">
+            {jobTasks.map((task) => (
+              <li class="flex items-start gap-2 text-sm text-text-body">
+                <svg class="w-5 h-5 text-accent-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                {task}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Qualifications -->
+        <div class="grid md:grid-cols-2 gap-6 mb-10">
+          <!-- 応募資格 -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h4 class="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+              </svg>
+              応募資格
+            </h4>
+            <ul class="space-y-2">
+              {qualifications.map((q) => (
+                <li class="flex items-start gap-2 text-sm text-text-body">
+                  <svg class="w-5 h-5 text-accent-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  {q}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- 求める人材 -->
+          <div class="bg-white rounded-2xl p-8 border border-border">
+            <h4 class="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+              </svg>
+              求める人材
+            </h4>
+            <ul class="space-y-2">
+              {idealPerson.map((p) => (
+                <li class="flex items-start gap-2 text-sm text-text-body">
+                  <svg class="w-5 h-5 text-accent-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-gradient-to-r from-accent-500 to-accent-400 rounded-2xl p-8 md:p-10 text-center">
+          <h3 class="text-2xl font-bold text-primary-950 mb-4">応募をご希望の方へ</h3>
+          <p class="text-primary-900 mb-6">
+            お問合せフォームより、お気軽にお申し込みください。<br />
+            ご質問だけでも大歓迎です！
+          </p>
+          <a
+            href="#contact"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-primary-950 text-white font-bold rounded-full hover:bg-primary-800 transition-colors text-base"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+            </svg>
+            応募・お問い合わせする
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form Section (Same as homepage) -->
+    <section id="contact" class="py-16 md:py-20 lg:py-24 bg-primary-800 relative overflow-hidden">
+      <!-- Background glow -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-10 md:mb-14">
+          <p class="text-accent-400 text-sm font-semibold tracking-[.2em] uppercase mb-3">Contact</p>
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+            応募・お問い合わせ
+          </h2>
+          <p class="text-white/50 text-sm md:text-base max-w-xl mx-auto">
+            少しでも興味を持っていただけたら、お気軽にご連絡ください。
+          </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+          <form
+            id="recruit-form"
+            class="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
+          >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                  お名前 <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="山田 太郎"
+                  class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <label for="phone" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                  電話番号
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="080-1234-5678"
+                  class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="email" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                メールアドレス <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="info@example.com"
+                class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+              />
+            </div>
+
+            <div class="mb-6">
+              <label for="message" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                メッセージ <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="5"
+                placeholder="応募動機や質問など、お気軽にお書きください"
+                class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition resize-none"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              送信する
+            </button>
+            <p class="text-xs text-text-muted text-center mt-3">
+              ※ 送信後、1営業日以内にご連絡いたします
+            </p>
+
+            <!-- Success message (hidden by default) -->
+            <div id="success-msg" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center gap-2 text-green-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                <p class="font-semibold text-sm">送信完了！</p>
+              </div>
+              <p class="text-sm text-green-600 mt-1">ありがとうございます。1営業日以内にご連絡いたします。</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('recruit-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const successMsg = document.getElementById('success-msg');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
+
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone') || '',
+        message: formData.get('message'),
+        type: '採用応募', // 採用応募として送信
+      };
+
+      try {
+        // 既存のwebhookを使用（採用応募としてマーク）
+        const response = await fetch('https://n8n-onprem.37d.jp/webhook/ai-diagnosis', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          // Show success message
+          form.reset();
+          successMsg?.classList.remove('hidden');
+
+          // Hide success message after 5 seconds
+          setTimeout(() => {
+            successMsg?.classList.add('hidden');
+          }, 5000);
+        } else {
+          alert('送信に失敗しました。もう一度お試しください。');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('送信に失敗しました。もう一度お試しください。');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = '送信する';
+      }
+    });
+  });
+</script>
