@@ -22,9 +22,10 @@ const services = [
     gradient: "from-amber-400 to-orange-400",
   },
 ];
+import WaveDivider from "./WaveDivider.astro";
 ---
 
-<section id="services" class="py-16 md:py-20 lg:py-24 bg-surface-alt wave-divider wave-divider-white">
+<section id="services" class="relative py-16 md:py-20 lg:py-24 bg-surface-alt">
   <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
     <div class="text-center mb-12 md:mb-16 animate-on-scroll">
       <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Services</p>
@@ -95,4 +96,5 @@ const services = [
       ))}
     </div>
   </div>
+  <WaveDivider color1="#ffffff" color2="#b8c9e1" />
 </section>

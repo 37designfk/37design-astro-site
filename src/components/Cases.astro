@@ -1,4 +1,6 @@
 ---
+import WaveDivider from "./WaveDivider.astro";
+
 const cases = [
   {
     industry: "製造業",
@@ -48,7 +50,7 @@ const cases = [
 ];
 ---
 
-<section id="cases" class="py-16 md:py-20 lg:py-24 bg-white wave-divider">
+<section id="cases" class="relative py-16 md:py-20 lg:py-24 bg-white">
   <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
     <div class="text-center mb-12 md:mb-16 animate-on-scroll">
       <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Case Studies</p>
@@ -186,4 +188,5 @@ const cases = [
       ))}
     </div>
   </div>
+  <WaveDivider color1="#f8f9fb" color2="#b8c9e1" />
 </section>

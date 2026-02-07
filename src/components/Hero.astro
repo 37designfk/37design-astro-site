@@ -1,4 +1,8 @@
-<section class="relative min-h-[90vh] flex items-center hero-gradient overflow-x-hidden wave-divider">
+---
+import WaveDivider from "./WaveDivider.astro";
+---
+
+<section class="relative min-h-[90vh] flex items-center hero-gradient overflow-x-hidden">
   <!-- Particles -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
     <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
@@ -90,4 +94,6 @@
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white/50 text-[10px] tracking-[.2em] uppercase text-center scroll-indicator">
     Scroll
   </div>
+
+  <WaveDivider color1="#f8f9fb" color2="#4a6a9a" />
 </section>
