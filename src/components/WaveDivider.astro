@@ -4,7 +4,8 @@ interface Props {
   color2?: string;
 }
 
-const { color1 = '#f8f9fb', color2 = '#dce4f0' } = Astro.props;
+const { color1 = '#f8f9fb' } = Astro.props;
+const color2 = color1;
 ---
 
 <div class="wave-container">
