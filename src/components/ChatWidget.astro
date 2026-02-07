@@ -1,26 +1,26 @@
----
-// Dify AI Chat Widget
-// DifyのURLは環境に応じて変更してください
-const DIFY_URL = "https://dify.37d.jp"; // あなたのDifyインスタンスURL
-const DIFY_TOKEN = "app-XXXXX"; // Difyで生成されるトークン
----
-
 <!-- Dify AI Chat Widget -->
-<script is:inline define:vars={{ DIFY_URL, DIFY_TOKEN }}>
+<script is:inline>
   window.difyChatbotConfig = {
-    token: DIFY_TOKEN,
-    baseUrl: DIFY_URL,
+    token: 'qv6qKnS6UG7MYbPg',
+    baseUrl: 'https://dify.37d.jp', // HTTPSに変更（推奨）
+    inputs: {},
+    systemVariables: {},
+    userVariables: {},
   }
 </script>
 <script
   is:inline
-  src="https://unpkg.com/@langgenius/dify-chatbot-bubble-button/dist/embed.min.js"
+  src="https://dify.37d.jp/embed.min.js"
+  id="qv6qKnS6UG7MYbPg"
   defer
 ></script>
 <style is:global>
-  /* Difyウィジェットのカスタマイズ */
+  /* 37Design カスタムカラー */
   #dify-chatbot-bubble-button {
-    --dify-chatbot-bubble-button-bg-color: #f5d020 !important; /* 37Designイエロー */
-    --dify-chatbot-bubble-button-color: #0a0f1e !important;
+    background-color: #f5d020 !important; /* 37Designイエロー */
+  }
+  #dify-chatbot-bubble-window {
+    width: 24rem !important;
+    height: 40rem !important;
   }
 </style>
