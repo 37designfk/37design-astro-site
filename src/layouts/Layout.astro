@@ -2,12 +2,16 @@
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
 }
 
 const {
   title = "株式会社37Design | あなたの会社を1週間でAI企業へ",
-  description = "業務自動化・AI導入支援・営業管理最適化。属人化した業務をAIとテクノロジーで解決する、福岡のDXパートナー 株式会社37Design。",
+  description = "業務自動化・AI導入支援・営業管理最適化。属人化した業務をAIとテクノロジーで解決する、神戸のDXパートナー 株式会社37Design。",
+  image = "https://37design.co.jp/images/ogp.png",
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -16,10 +20,18 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ja_JP" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content="株式会社37Design" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,6 +40,72 @@ const {
       rel="stylesheet"
     />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://37design.co.jp/#organization",
+          "name": "株式会社37Design",
+          "url": "https://37design.co.jp",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://37design.co.jp/images/logo-gold.svg"
+          },
+          "telephone": "080-2412-2556",
+          "email": "info@37design.co.jp",
+          "address": {
+            "@type": "PostalAddress",
+            "postalCode": "651-1223",
+            "addressRegion": "兵庫県",
+            "addressLocality": "神戸市北区",
+            "streetAddress": "桂木2-35-C604",
+            "addressCountry": "JP"
+          },
+          "foundingDate": "2012",
+          "description": "業務自動化・AI導入支援・営業管理最適化。属人化した業務をAIとテクノロジーで解決する、神戸のDXパートナー。"
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://37design.co.jp/#headquarters",
+          "name": "株式会社37Design 本社",
+          "parentOrganization": { "@id": "https://37design.co.jp/#organization" },
+          "url": "https://37design.co.jp",
+          "telephone": "080-2412-2556",
+          "email": "info@37design.co.jp",
+          "address": {
+            "@type": "PostalAddress",
+            "postalCode": "651-1223",
+            "addressRegion": "兵庫県",
+            "addressLocality": "神戸市北区",
+            "streetAddress": "桂木2-35-C604",
+            "addressCountry": "JP"
+          }
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://37design.co.jp/#tokyo-office",
+          "name": "株式会社37Design 東京営業所",
+          "parentOrganization": { "@id": "https://37design.co.jp/#organization" },
+          "url": "https://37design.co.jp",
+          "address": {
+            "@type": "PostalAddress",
+            "postalCode": "104-0061",
+            "addressRegion": "東京都",
+            "addressLocality": "中央区",
+            "streetAddress": "銀座4-10-14 ACN銀座4ビルディング11F",
+            "addressCountry": "JP"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://37design.co.jp/#website",
+          "name": "株式会社37Design",
+          "url": "https://37design.co.jp",
+          "publisher": { "@id": "https://37design.co.jp/#organization" }
+        }
+      ]
+    })} />
   </head>
   <body class="bg-surface text-text-body font-sans antialiased overflow-x-hidden">
     <slot />

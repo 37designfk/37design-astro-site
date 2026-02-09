@@ -113,11 +113,11 @@ const cases = [
 ];
 ---
 
-<section id="cases" class="relative py-16 md:py-20 lg:py-24 bg-white">
+<section id="cases" class="relative py-16 md:py-20 lg:py-24 bg-primary-950">
   <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
     <div class="text-center mb-12 md:mb-16 animate-on-scroll">
-      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Case Studies</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">
+      <p class="text-accent-400 text-sm font-semibold tracking-[.2em] uppercase mb-3">Case Studies</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-white">
         導入事例<span class="marker-highlight"> ── こう変わりました</span>
       </h2>
     </div>
@@ -125,7 +125,7 @@ const cases = [
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {cases.map((c, i) => (
         <div
-          class="animate-on-scroll rounded-xl border border-border overflow-hidden card-hover"
+          class="animate-on-scroll rounded-xl border border-white/10 overflow-hidden card-hover bg-white"
           data-anim="scale"
           style={`animation-delay: ${i * 0.08}s`}
         >

@@ -28,9 +28,25 @@
 <style is:global>
   #dify-chatbot-bubble-button {
     background-color: #f5d020 !important;
+    position: fixed !important;
+    bottom: 4.5rem !important;
+    right: 1rem !important;
+    z-index: 9999 !important;
   }
   #dify-chatbot-bubble-window {
     width: 24rem !important;
     height: 40rem !important;
+    position: fixed !important;
+    bottom: 7.5rem !important;
+    right: 1rem !important;
+    z-index: 9999 !important;
+  }
+  @media (min-width: 768px) {
+    #dify-chatbot-bubble-button {
+      bottom: 1rem !important;
+    }
+    #dify-chatbot-bubble-window {
+      bottom: 4.5rem !important;
+    }
   }
 </style>
