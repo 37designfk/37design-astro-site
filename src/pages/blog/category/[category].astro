@@ -5,6 +5,7 @@ import Header from "../../../components/Header.astro";
 import Footer from "../../../components/Footer.astro";
 import WaveDivider from "../../../components/WaveDivider.astro";
 import "../../../styles/global.css";
+import ParticleCanvas from "../../../components/ParticleCanvas.astro";
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
@@ -57,14 +58,9 @@ const categoryLineColors: Record<string, string> = {
   <main>
     <!-- Hero Section -->
     <section class="relative min-h-[35vh] flex items-center hero-gradient overflow-hidden">
-      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
-        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
-        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
-        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
-      </div>
+      <ParticleCanvas />
 
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute inset-0 pointer-events-none z-[2]" aria-hidden="true">
         <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
         <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
       </div>

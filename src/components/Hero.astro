@@ -1,35 +1,16 @@
 ---
 import WaveDivider from "./WaveDivider.astro";
+import ParticleCanvas from "./ParticleCanvas.astro";
 ---
 
 <section class="relative min-h-[90vh] flex items-center hero-gradient overflow-x-hidden">
-  <!-- Particles -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
-    <div class="particle" style="left:20%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
-    <div class="particle" style="left:35%; animation-duration:10s; animation-delay:4s;"></div>
-    <div class="particle" style="left:50%; animation-duration:14s; animation-delay:1s; width:3px; height:3px; background:rgba(59,130,246,0.3);"></div>
-    <div class="particle" style="left:65%; animation-duration:9s; animation-delay:3s;"></div>
-    <div class="particle" style="left:80%; animation-duration:11s; animation-delay:5s; width:5px; height:5px;"></div>
-    <div class="particle" style="left:90%; animation-duration:13s; animation-delay:0.5s; background:rgba(59,130,246,0.2);"></div>
-  </div>
+  <!-- Canvas Particle System -->
+  <ParticleCanvas />
 
   <!-- Glow orbs -->
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+  <div class="absolute inset-0 pointer-events-none z-[2]" aria-hidden="true">
     <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
     <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
-  </div>
-
-  <!-- Orbiting elements -->
-  <div class="absolute top-1/2 right-[25%] -translate-y-1/2 hidden lg:block pointer-events-none" aria-hidden="true">
-    <div class="relative w-[240px] h-[240px]">
-      <div style="animation: orbit 20s linear infinite;" class="absolute top-1/2 left-1/2">
-        <div class="w-2 h-2 rounded-full bg-accent-400/40"></div>
-      </div>
-      <div style="animation: orbit 25s linear infinite reverse;" class="absolute top-1/2 left-1/2">
-        <div class="w-1.5 h-1.5 rounded-full bg-glow/40"></div>
-      </div>
-    </div>
   </div>
 
   <div class="relative z-20 max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-28 w-full">
