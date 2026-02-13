@@ -6,6 +6,9 @@ const services = [
     subtitle: "Automation",
     description: "日報、請求書、在庫管理——毎日の繰り返し作業をAIと自動化ツールで効率化。人がやるべき仕事に集中できる環境を構築します。",
     gradient: "from-blue-500 to-cyan-400",
+    price: "30万円〜",
+    priceNote: "スターターパック",
+    href: "/service",
   },
   {
     icon: "M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z",
@@ -13,6 +16,9 @@ const services = [
     subtitle: "CRM Optimization",
     description: "散らばった顧客情報を一元管理。見込み客のフォローアップからリピート施策まで、売上につながる仕組みを構築します。",
     gradient: "from-violet-500 to-purple-400",
+    price: "30万円〜",
+    priceNote: "CRM導入パック",
+    href: "/service",
   },
   {
     icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
@@ -20,6 +26,20 @@ const services = [
     subtitle: "Full AI Package",
     description: "業務分析からAIツールの選定・導入・研修まで、ワンストップで対応。1週間であなたの会社をAI企業へ変革します。",
     gradient: "from-amber-400 to-orange-400",
+    price: "80万円〜",
+    priceNote: "スタンダードパック",
+    href: "/service",
+  },
+  {
+    icon: "M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5",
+    title: "AI顧問サービス",
+    subtitle: "AI Advisory",
+    description: "「何から始めれば？」に答える週1回の伴走型AI活用支援。ツール選定から社員研修まで、御社専属のAI顧問が伴走します。",
+    gradient: "from-amber-500 to-orange-500",
+    price: "月額10万円〜",
+    priceNote: "週1回の定例付き",
+    href: "/ai-consultant",
+    isNew: true,
   },
 ];
 import WaveDivider from "./WaveDivider.astro";
@@ -34,17 +54,23 @@ import WaveDivider from "./WaveDivider.astro";
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {services.map((service, i) => (
-        <div
-          class="animate-on-scroll group relative card-hover rounded-2xl bg-white border border-border overflow-hidden"
+        <a
+          href={service.href}
+          class="animate-on-scroll group relative card-hover rounded-2xl bg-white border border-border overflow-hidden block"
           style={`animation-delay: ${i * 0.12}s`}
         >
-          <!-- Gradient accent line -->
+          {/* NEW badge */}
+          {service.isNew && (
+            <div class="absolute top-3 right-3 z-20 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wider shadow-lg">NEW</div>
+          )}
+
+          {/* Gradient accent line */}
           <div class={`h-1 bg-gradient-to-r ${service.gradient}`}></div>
 
-          <!-- Service image -->
-          <div class="h-40 relative overflow-hidden bg-white">
+          {/* Service image */}
+          <div class="h-36 relative overflow-hidden bg-white">
             {i === 0 && (
               <img
                 src="/images/service-automation.png"
@@ -69,30 +95,43 @@ import WaveDivider from "./WaveDivider.astro";
                 loading="lazy"
               />
             )}
-            {i !== 0 && i !== 1 && i !== 2 && (
-              <div class={`h-40 bg-gradient-to-br ${service.gradient} opacity-10 flex items-center justify-center relative overflow-hidden`}>
+            {i === 3 && (
+              <div class={`h-36 bg-gradient-to-br ${service.gradient} flex items-center justify-center relative overflow-hidden`}>
                 <div class={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-20`}></div>
-                <div class="relative text-center text-text-muted/50">
-                  <svg class="w-12 h-12 mx-auto mb-1 opacity-40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                <div class="relative">
+                  <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d={service.icon} />
                   </svg>
-                  <p class="text-xs">サービスイメージ</p>
                 </div>
               </div>
             )}
           </div>
 
-          <div class="p-7 md:p-8">
-            <div class="w-12 h-12 rounded-xl bg-primary-950 flex items-center justify-center mb-5 group-hover:bg-accent-400 transition-all duration-300 group-hover:scale-110 -mt-12 relative z-10 shadow-lg">
-              <svg class="w-6 h-6 text-white group-hover:text-primary-950 transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <div class="p-6">
+            <div class="w-10 h-10 rounded-xl bg-primary-950 flex items-center justify-center mb-4 group-hover:bg-accent-400 transition-all duration-300 group-hover:scale-110 -mt-11 relative z-10 shadow-lg">
+              <svg class="w-5 h-5 text-white group-hover:text-primary-950 transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d={service.icon} />
               </svg>
             </div>
-            <p class="text-xs font-semibold text-primary-400 tracking-wider uppercase mb-1">{service.subtitle}</p>
-            <h3 class="text-xl font-bold text-text-primary mb-3">{service.title}</h3>
-            <p class="text-sm text-text-secondary leading-relaxed">{service.description}</p>
+            <p class="text-[10px] font-semibold text-primary-400 tracking-wider uppercase mb-1">{service.subtitle}</p>
+            <h3 class="text-lg font-bold text-text-primary mb-2">{service.title}</h3>
+            <p class="text-xs text-text-secondary leading-relaxed mb-4">{service.description}</p>
+
+            {/* Price */}
+            <div class="pt-4 border-t border-border">
+              <p class={`text-lg font-bold bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>{service.price}</p>
+              <p class="text-[10px] text-text-muted mt-0.5">{service.priceNote}</p>
+            </div>
+
+            {/* Arrow */}
+            <div class="mt-4 flex items-center text-xs font-semibold text-primary-500 group-hover:text-accent-500 transition-colors">
+              <span>詳しく見る</span>
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   </div>
