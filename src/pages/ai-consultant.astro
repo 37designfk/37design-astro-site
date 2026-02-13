@@ -1,0 +1,499 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+const plans = [
+  {
+    name: "ライトプラン",
+    description: "まずはAI活用を始めたい方に",
+    price: "10",
+    included: [
+      "月2回のオンライン相談（各60分）",
+      "チャットでの質問対応（営業日）",
+      "AI活用のアドバイス・情報共有",
+      "業務改善の方向性の提案",
+    ],
+    excluded: [
+      "ツール導入の実作業",
+      "社員向け研修",
+    ],
+    recommended: false,
+  },
+  {
+    name: "スタンダードプラン",
+    description: "本格的にAI活用を進めたい方に",
+    price: "15",
+    included: [
+      "週1回のオンライン相談（各60分）",
+      "チャットでの質問対応（営業日）",
+      "AI活用ロードマップの策定",
+      "ツール選定・導入サポート",
+      "プロンプト作成・業務テンプレート提供",
+    ],
+    excluded: [
+      "社員向け研修",
+    ],
+    recommended: true,
+  },
+  {
+    name: "プレミアムプラン",
+    description: "全社的にAI活用を推進したい方に",
+    price: "30",
+    included: [
+      "週1回のオンライン相談（各60分）",
+      "チャットでの質問対応（即日対応）",
+      "AI活用ロードマップの策定",
+      "ツール導入・設定の代行",
+      "社員向けAI研修（月1回）",
+      "月次レポート・効果測定",
+    ],
+    excluded: [],
+    recommended: false,
+  },
+];
+
+const problems = [
+  "AIを導入すべきか判断できない・何から始めればいいか分からない",
+  "ChatGPTなどのAIツールを試したが、業務にうまく活用できていない",
+  "社内にAIに詳しい人材がいない・相談できる相手がいない",
+  "AI活用の最新情報をキャッチアップする余裕がない",
+];
+
+const capabilities = [
+  {
+    title: "AI戦略の策定",
+    description: "御社の業務内容・経営課題をヒアリングし、AI活用のロードマップを策定。「どこに」「何を」導入すべきかを明確にします。",
+    icon: "M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6",
+  },
+  {
+    title: "ツール選定・導入サポート",
+    description: "ChatGPT、Claude、各種AIツールの中から御社に最適なものを選定。実際の業務での活用方法まで丁寧にサポートします。",
+    icon: "M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z",
+  },
+  {
+    title: "社員向けAI研修",
+    description: "AIツールの使い方だけでなく、プロンプトの書き方やAIとの協業スキルまで、社員のリテラシー向上を支援します。",
+    icon: "M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5",
+  },
+  {
+    title: "最新情報のキャッチアップ",
+    description: "AI業界は日々進化しています。御社に関連する最新ツール・事例を定期的に共有し、常に最適な選択肢を提案します。",
+    icon: "M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z",
+  },
+];
+
+const steps = [
+  {
+    title: "初回ヒアリング（無料）",
+    description: "現状の業務内容や課題、AIへの期待値をお伺いします。顧問サービスが合うかどうかも含めてご提案します。",
+  },
+  {
+    title: "AI活用診断・プラン提案",
+    description: "御社の業務フローを分析し、AI活用の優先度とロードマップを作成。最適なプランをご提案します。",
+  },
+  {
+    title: "週1回の定例ミーティング",
+    description: "オンラインで週1回（60分）の定例MTG。進捗確認、課題解決、新しい施策の提案を行います。",
+  },
+  {
+    title: "チャットでの随時サポート",
+    description: "定例MTG以外にも、Slack・LINE・チャットワークで気軽に質問OK。日々の業務での疑問にも迅速に対応します。",
+  },
+];
+---
+
+<Layout
+  title="AI顧問サービス | 株式会社37Design"
+  description="週1回の伴走型AI活用支援。AIツール選定から社員研修、運用定着まで、御社専属のAI顧問が伴走します。月額10万円〜。"
+>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center hero-gradient overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="particle" style="left:10%; animation-duration:8s; animation-delay:0s;"></div>
+        <div class="particle" style="left:30%; animation-duration:12s; animation-delay:2s; width:6px; height:6px;"></div>
+        <div class="particle" style="left:60%; animation-duration:10s; animation-delay:4s;"></div>
+        <div class="particle" style="left:85%; animation-duration:14s; animation-delay:1s; width:3px; height:3px;"></div>
+      </div>
+
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+      </div>
+
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-28 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 backdrop-blur-sm mb-6">
+          <span class="text-amber-300 text-xs font-bold tracking-wider">NEW SERVICE</span>
+        </div>
+
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black text-white leading-[1.15] mb-6">
+          AI顧問サービス
+        </h1>
+
+        <p class="text-white/70 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+          「AIを活用したいけど何から始めれば？」に答える、<br class="hidden md:block" />
+          週1回の伴走型AI活用支援。御社専属のAI顧問が伴走します。
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#pricing"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            料金プランを見る
+          </a>
+          <a
+            href="#contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-colors text-base border border-white/20"
+          >
+            無料相談を申し込む
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problems Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">Problems</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">こんな課題はありませんか？</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {problems.map((problem) => (
+            <div class="flex items-start gap-3 p-5 bg-amber-50 rounded-xl border border-amber-100">
+              <svg class="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-sm text-text-primary leading-relaxed">{problem}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Capabilities Section -->
+    <section class="py-16 md:py-20 bg-surface-alt">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">Solutions</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">37Designができること</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {capabilities.map((cap) => (
+            <div class="bg-white rounded-xl p-6 border border-border hover:border-amber-300/50 hover:shadow-lg transition-all duration-300">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={cap.icon} />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-text-primary mb-2">{cap.title}</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">{cap.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow Section -->
+    <section class="py-16 md:py-20 bg-surface">
+      <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">Flow</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">サービスの流れ</h2>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          {steps.map((step, idx) => (
+            <div class="flex gap-5 items-start">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                {idx + 1}
+              </div>
+              <div class="pt-1">
+                <h3 class="text-lg font-bold text-text-primary mb-1">{step.title}</h3>
+                <p class="text-sm text-text-secondary leading-relaxed">{step.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 md:py-20 bg-surface-alt">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">Pricing</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">料金プラン</h2>
+          <p class="text-text-secondary text-sm mt-3">すべて月額・税別表記です</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((plan) => (
+            <div class={`relative flex flex-col bg-white rounded-2xl p-6 md:p-8 border-2 transition-all duration-300 hover:shadow-xl ${plan.recommended ? 'border-amber-400 shadow-lg' : 'border-border hover:border-amber-200'}`}>
+              {plan.recommended && (
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-full whitespace-nowrap">
+                  おすすめ
+                </div>
+              )}
+
+              <div class="mb-6">
+                <h3 class="text-lg font-bold text-text-primary">{plan.name}</h3>
+                <p class="text-xs text-text-muted mt-1">{plan.description}</p>
+              </div>
+
+              <div class="mb-6">
+                <span class="text-4xl font-black text-amber-600">{plan.price}</span>
+                <span class="text-lg font-bold text-amber-600">万円〜</span>
+                <span class="text-xs text-text-muted ml-1">/月</span>
+              </div>
+
+              <ul class="flex flex-col gap-3 flex-1 mb-6">
+                {plan.included.map((item) => (
+                  <li class="flex items-start gap-2 text-sm">
+                    <svg class="w-4 h-4 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="text-text-primary">{item}</span>
+                  </li>
+                ))}
+                {plan.excluded.map((item) => (
+                  <li class="flex items-start gap-2 text-sm">
+                    <svg class="w-4 h-4 text-neutral-300 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span class="text-text-muted">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="#contact"
+                class={`inline-flex items-center justify-center py-3 rounded-full font-bold text-sm transition-colors ${plan.recommended ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700' : 'bg-primary-950 text-white hover:bg-primary-800'}`}
+              >
+                このプランで相談する
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-center text-xs text-text-muted mt-8">
+          ※ 最低契約期間3ヶ月〜。初月はお試し価格でご利用いただけます。
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+          まずは無料ヒアリングから
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
+          御社のAI活用の可能性を、30分の無料相談でお伝えします。<br />
+          顧問サービスが合うかどうかも含めてご提案しますので、お気軽にどうぞ。
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+            </svg>
+            無料相談を申し込む
+          </a>
+
+          <a
+            href="https://jmp9xv65.autosns.app/line"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#06C755] text-white font-semibold rounded-full hover:bg-[#05B34A] transition-colors text-base"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+            </svg>
+            LINEで相談
+          </a>
+        </div>
+
+        <p class="text-white/40 text-xs mt-6">
+          お電話でのご相談：<a href="tel:080-2412-2556" class="text-white/60 hover:text-white transition-colors">080-2412-2556</a>（平日 9:00-18:00）
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="py-16 md:py-20 lg:py-24 bg-surface-alt">
+      <div class="max-w-2xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Contact</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-4">お問い合わせ</h2>
+          <p class="text-text-secondary">AI顧問サービスに関するご質問・ご相談はお気軽にどうぞ</p>
+        </div>
+
+        <form
+          id="consultant-form"
+          class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-border"
+        >
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="company" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                会社名 <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                required
+                placeholder="株式会社〇〇"
+                class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+              />
+            </div>
+            <div>
+              <label for="name" class="block text-xs font-semibold text-text-secondary mb-1.5">
+                お名前 <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                placeholder="山田 太郎"
+                class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="email" class="block text-xs font-semibold text-text-secondary mb-1.5">
+              メールアドレス <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="info@example.com"
+              class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="plan" class="block text-xs font-semibold text-text-secondary mb-1.5">
+              気になるプラン
+            </label>
+            <select
+              id="plan"
+              name="plan"
+              class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition"
+            >
+              <option value="">選択してください（任意）</option>
+              <option value="ライトプラン（月額10万円〜）">ライトプラン（月額10万円〜）</option>
+              <option value="スタンダードプラン（月額15万円〜）">スタンダードプラン（月額15万円〜）</option>
+              <option value="プレミアムプラン（月額30万円〜）">プレミアムプラン（月額30万円〜）</option>
+              <option value="まだ決まっていない">まだ決まっていない</option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <label for="message" class="block text-xs font-semibold text-text-secondary mb-1.5">
+              メッセージ（任意）
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="現在の課題や、AI活用で実現したいことをお気軽にお書きください"
+              class="w-full px-4 py-3 rounded-lg border border-border bg-surface-alt text-sm text-text-body placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition resize-none"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            id="submit-btn"
+            class="w-full py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            送信する
+          </button>
+
+          <p class="text-xs text-text-muted text-center mt-3">
+            ※ 送信後、1営業日以内にご連絡いたします
+          </p>
+
+          <div id="success-msg" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div class="flex items-center gap-2 text-green-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              <p class="font-semibold text-sm">送信完了！</p>
+            </div>
+            <p class="text-sm text-green-600 mt-1">ありがとうございます。1営業日以内にご連絡いたします。</p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('consultant-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const successMsg = document.getElementById('success-msg');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
+
+      const formData = new FormData(form);
+      const data = {
+        company: formData.get('company'),
+        name: formData.get('name'),
+        email: formData.get('email'),
+        type: formData.get('plan') ? `AI顧問サービス：${formData.get('plan')}` : 'AI顧問サービス問い合わせ',
+        message: formData.get('message') || '',
+      };
+
+      try {
+        const response = await fetch('https://n8n-onprem.37d.jp/webhook/ai-diagnosis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          form.reset();
+          successMsg?.classList.remove('hidden');
+          setTimeout(() => {
+            successMsg?.classList.add('hidden');
+          }, 5000);
+        } else {
+          alert('送信に失敗しました。もう一度お試しください。');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('送信に失敗しました。もう一度お試しください。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '送信する';
+      }
+    });
+  });
+</script>
