@@ -174,20 +174,8 @@
     targetVP.y = height / 2;
   }, { passive: true });
 
-  // Touch support
-  parent.addEventListener('touchmove', function(e) {
-    const rect = parent.getBoundingClientRect();
-    var touch = e.touches[0];
-    targetVP.x = touch.clientX - rect.left;
-    targetVP.y = touch.clientY - rect.top;
-    mouseActive = true;
-  }, { passive: true });
-
-  parent.addEventListener('touchend', function() {
-    mouseActive = false;
-    targetVP.x = width / 2;
-    targetVP.y = height / 2;
-  }, { passive: true });
+  // Touch support — disabled to prevent double-scroll feel on mobile
+  // Mouse-only tracking avoids interference with native scroll
 
   // Resize handler
   var resizeTimer;
