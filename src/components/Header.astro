@@ -20,7 +20,7 @@ const socialLinks = [
   <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between h-16 md:h-18">
     <!-- Logo -->
     <a href="/" class="flex items-center">
-      <img src="/images/logo-gold.svg" alt="株式会社37Design" class="h-6 md:h-7 w-auto" />
+      <img src="/images/logo-gold.svg" alt="株式会社37Design" class="h-6 md:h-7 w-auto" width="128" height="17" />
     </a>
 
     <!-- Desktop Nav -->
@@ -46,16 +46,22 @@ const socialLinks = [
     </nav>
 
     <!-- Mobile Hamburger -->
-    <input type="checkbox" id="menu-toggle" class="hidden peer" />
-    <label for="menu-toggle" class="lg:hidden flex flex-col gap-1.5 cursor-pointer p-2">
+    <button
+      id="menu-button"
+      type="button"
+      class="lg:hidden flex flex-col gap-1.5 cursor-pointer p-2"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="メニューを開く"
+    >
       <span class="block w-6 h-0.5 bg-white transition-all"></span>
       <span class="block w-6 h-0.5 bg-white transition-all"></span>
       <span class="block w-6 h-0.5 bg-white transition-all"></span>
-    </label>
+    </button>
   </div>
 
   <!-- Mobile Menu -->
-  <nav class="hidden peer-checked:flex lg:hidden flex-col bg-primary-950 border-t border-white/10 px-4 pb-4">
+  <nav id="mobile-menu" class="hidden lg:hidden flex-col bg-primary-950 border-t border-white/10 px-4 pb-4">
     {navLinks.map((link) => (
       <a href={link.href} class="py-3 text-sm font-medium text-white/80 hover:text-white border-b border-white/10">
         {link.label}
@@ -79,3 +85,39 @@ const socialLinks = [
 
 <!-- Spacer for fixed header -->
 <div class="h-16 md:h-18"></div>
+
+<script>
+  const menuButton = document.getElementById("menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (menuButton && mobileMenu) {
+    const setMenuState = (open) => {
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
+      mobileMenu.classList.toggle("hidden", !open);
+      mobileMenu.classList.toggle("flex", open);
+    };
+
+    const toggleMenu = () => {
+      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+      setMenuState(!isOpen);
+    };
+
+    setMenuState(false);
+    menuButton.addEventListener("click", toggleMenu);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setMenuState(false);
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      const clickedOutside = !mobileMenu.contains(target) && !menuButton.contains(target);
+      if (clickedOutside) setMenuState(false);
+    });
+
+    mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setMenuState(false));
+    });
+  }
+</script>

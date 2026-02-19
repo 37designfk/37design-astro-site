@@ -212,3 +212,24 @@ html {
 .sticky-cta.is-visible {
   transform: translateY(0);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-gradient,
+  .hero-float,
+  .hero-float-delay,
+  .btn-pulse,
+  .btn-pulse::before,
+  .scroll-indicator::after {
+    animation: none !important;
+  }
+}
