@@ -1,16 +1,14 @@
 ---
 import WaveDivider from "./WaveDivider.astro";
-import ParticleCanvas from "./ParticleCanvas.astro";
 ---
 
-<section class="relative min-h-[90vh] flex items-center hero-gradient overflow-x-hidden">
-  <!-- Canvas Particle System -->
-  <ParticleCanvas />
+<section class="relative min-h-[90vh] flex items-center hero-gradient hero-gradient-home overflow-x-hidden">
 
-  <!-- Glow orbs -->
+  <!-- Background accents -->
   <div class="absolute inset-0 pointer-events-none z-[2]" aria-hidden="true">
-    <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px] hero-float"></div>
-    <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px] hero-float-delay"></div>
+    <div class="absolute inset-0 hero-vignette"></div>
+    <div class="absolute top-[20%] right-[15%] w-64 h-64 bg-glow/8 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-[10%] left-[10%] w-80 h-80 bg-accent-400/8 rounded-full blur-3xl"></div>
   </div>
 
   <div class="relative z-20 max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-28 w-full">
