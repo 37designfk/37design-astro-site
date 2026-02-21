@@ -1,0 +1,52 @@
+---
+interface Props {
+  text: string;
+  href: string;
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  pulse?: boolean;
+  dataTestId?: string;
+}
+
+const {
+  text,
+  href,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  pulse = false,
+  dataTestId,
+} = Astro.props;
+
+const baseClasses = 'inline-flex items-center justify-center font-bold rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+
+const variantClasses: Record<string, string> = {
+  primary: 'bg-primary-900 text-white hover:bg-primary-800 focus:ring-primary-500',
+  secondary: 'bg-surface text-text-primary border border-border hover:bg-surface-alt focus:ring-primary-300',
+  accent: 'bg-accent-500 text-primary-950 hover:bg-accent-400 focus:ring-accent-400',
+  outline: 'border-2 border-primary-900 text-primary-900 hover:bg-primary-900 hover:text-white focus:ring-primary-500',
+};
+
+const sizeClasses: Record<string, string> = {
+  sm: 'px-4 py-2 text-xs',
+  md: 'px-6 py-3 text-sm',
+  lg: 'px-8 py-4 text-base',
+};
+
+const classes = [
+  baseClasses,
+  variantClasses[variant],
+  sizeClasses[size],
+  fullWidth ? 'w-full' : '',
+  pulse ? 'btn-pulse' : '',
+].filter(Boolean).join(' ');
+---
+
+<a
+  href={href}
+  class={classes}
+  data-testid={dataTestId}
+>
+  {text}
+</a>

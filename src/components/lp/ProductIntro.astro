@@ -1,0 +1,58 @@
+---
+interface Feature {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  features: Feature[];
+  image?: string;
+}
+
+const { title, description, features, image } = Astro.props;
+---
+
+<section data-testid="lp-product" class="py-16 md:py-24 bg-surface-alt">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {image && (
+        <div class="animate-on-scroll order-2 lg:order-1" data-anim="left">
+          <div class="relative rounded-2xl overflow-hidden shadow-xl">
+            <img
+              src={image}
+              alt={title}
+              class="w-full h-auto"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl"></div>
+          </div>
+        </div>
+      )}
+      <div class={`animate-on-scroll order-1 ${image ? 'lg:order-2' : ''}`} data-anim="right">
+        <h2 class="text-3xl md:text-4xl font-bold text-text-primary mb-6">
+          {title}
+        </h2>
+        <p class="text-lg text-text-body leading-relaxed mb-8">
+          {description}
+        </p>
+        <div class="space-y-6">
+          {features.map((feature) => (
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-8 h-8 bg-accent-500 rounded-full flex items-center justify-center mt-0.5">
+                <svg class="w-4 h-4 text-primary-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-text-primary mb-1">{feature.title}</h3>
+                <p class="text-text-body">{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

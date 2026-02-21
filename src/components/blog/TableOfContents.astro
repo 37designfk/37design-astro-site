@@ -1,0 +1,138 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{filteredHeadings.length > 0 && (
+  <nav id="toc" class="toc" aria-label="目次">
+    <!-- Mobile: Collapsible -->
+    <div class="lg:hidden mb-8">
+      <button
+        id="toc-toggle"
+        type="button"
+        class="flex items-center justify-between w-full px-5 py-3 bg-surface-alt rounded-xl border border-border text-sm font-semibold text-text-primary"
+        aria-expanded="false"
+        aria-controls="toc-mobile-list"
+      >
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          目次
+        </span>
+        <svg id="toc-chevron" class="w-4 h-4 text-text-muted transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+      <ol id="toc-mobile-list" class="hidden mt-2 space-y-1 px-5 py-3 bg-surface-alt rounded-xl border border-border">
+        {filteredHeadings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class={`block py-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors ${heading.depth === 3 ? 'pl-4' : ''}`}
+              data-toc-link
+              data-heading-slug={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <!-- Desktop: Sticky Sidebar -->
+    <div class="hidden lg:block sticky top-24">
+      <p class="flex items-center gap-2 text-xs font-bold text-text-muted tracking-wider uppercase mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+        目次
+      </p>
+      <ol class="space-y-1 border-l-2 border-border">
+        {filteredHeadings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class={`block py-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors border-l-2 -ml-[2px] border-transparent hover:border-primary-500 ${heading.depth === 2 ? 'pl-4' : 'pl-8'}`}
+              data-toc-link
+              data-heading-slug={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </nav>
+)}
+
+<script>
+  function initTOC() {
+    // Mobile toggle
+    const toggle = document.getElementById('toc-toggle');
+    const list = document.getElementById('toc-mobile-list');
+    const chevron = document.getElementById('toc-chevron');
+
+    if (toggle && list && chevron) {
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        list.classList.toggle('hidden');
+        chevron.classList.toggle('rotate-180');
+      });
+    }
+
+    // Scroll spy
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (tocLinks.length === 0) return;
+
+    const headingSlugs = Array.from(tocLinks).map((link) => link.dataset.headingSlug!);
+    const headingElements = headingSlugs
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headingElements.length === 0) return;
+
+    const setActive = (slug: string) => {
+      tocLinks.forEach((link) => {
+        const isActive = link.dataset.headingSlug === slug;
+        link.classList.toggle('text-primary-700', isActive);
+        link.classList.toggle('font-semibold', isActive);
+        link.classList.toggle('border-primary-500', isActive);
+        link.classList.toggle('border-transparent', !isActive);
+        link.classList.toggle('text-text-secondary', !isActive);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            break;
+          }
+        }
+      },
+      {
+        rootMargin: '-80px 0px -60% 0px',
+        threshold: 0,
+      }
+    );
+
+    headingElements.forEach((el) => observer.observe(el));
+  }
+
+  initTOC();
+  document.addEventListener('astro:after-swap', initTOC);
+</script>

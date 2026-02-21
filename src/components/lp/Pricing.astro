@@ -1,0 +1,76 @@
+---
+interface Plan {
+  name: string;
+  price: string;
+  unit: string;
+  features: string[];
+  recommended?: boolean;
+  ctaText: string;
+  ctaLink: string;
+}
+
+interface Props {
+  title: string;
+  plans: Plan[];
+}
+
+const { title, plans } = Astro.props;
+---
+
+<section data-testid="lp-pricing" class="py-16 md:py-24 bg-surface">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-text-primary text-center mb-4 animate-on-scroll">
+      {title}
+    </h2>
+    <div class="w-16 h-1 bg-accent-500 mx-auto rounded mb-12"></div>
+
+    <div class={`grid grid-cols-1 md:grid-cols-${Math.min(plans.length, 3)} gap-8 items-stretch`}>
+      {plans.map((plan, i) => (
+        <div
+          class={`animate-on-scroll relative rounded-2xl border-2 p-8 flex flex-col ${
+            plan.recommended
+              ? 'border-orange-500 shadow-xl bg-white scale-105 z-10'
+              : 'border-border bg-white shadow-md'
+          }`}
+          style={`animation-delay: ${i * 120}ms`}
+        >
+          {plan.recommended && (
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-sm font-bold px-4 py-1.5 rounded-full">
+              一番人気
+            </div>
+          )}
+
+          <div class="text-center mb-8">
+            <h3 class="text-xl font-bold text-text-primary mb-4">{plan.name}</h3>
+            <div class="flex items-baseline justify-center gap-1">
+              <span class="text-4xl md:text-5xl font-bold text-text-primary">{plan.price}</span>
+              <span class="text-text-secondary text-sm">{plan.unit}</span>
+            </div>
+          </div>
+
+          <ul class="space-y-3 mb-8 flex-1">
+            {plan.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-text-body text-sm">{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href={plan.ctaLink}
+            class={`block text-center font-bold py-4 px-6 rounded-full transition-all duration-300 ${
+              plan.recommended
+                ? 'lp-cta-button shadow-lg hover:scale-105'
+                : 'bg-primary-950 text-white hover:bg-primary-800'
+            }`}
+          >
+            {plan.ctaText}
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

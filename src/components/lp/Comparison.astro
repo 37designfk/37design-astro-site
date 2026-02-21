@@ -1,0 +1,82 @@
+---
+interface Row {
+  feature: string;
+  values: string[];
+}
+
+interface Props {
+  title: string;
+  headers: string[];
+  rows: Row[];
+  highlightColumn?: number;
+}
+
+const { title, headers, rows, highlightColumn = 1 } = Astro.props;
+---
+
+<section data-testid="lp-comparison" class="py-16 md:py-24 bg-surface-alt">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-text-primary text-center mb-4 animate-on-scroll">
+      {title}
+    </h2>
+    <div class="w-16 h-1 bg-accent-500 mx-auto rounded mb-12"></div>
+
+    <div class="animate-on-scroll overflow-x-auto">
+      <table class="w-full border-collapse bg-white rounded-2xl overflow-hidden shadow-md">
+        <thead>
+          <tr>
+            <th class="p-4 md:p-6 text-left text-sm font-bold text-text-secondary bg-surface-alt border-b border-border">
+              &nbsp;
+            </th>
+            {headers.map((header, i) => (
+              <th
+                class={`p-4 md:p-6 text-center text-base font-bold border-b border-border ${
+                  i === highlightColumn
+                    ? 'bg-primary-950 text-white relative'
+                    : 'bg-surface-alt text-text-primary'
+                }`}
+              >
+                {i === highlightColumn && (
+                  <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-500 text-primary-950 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                    おすすめ
+                  </div>
+                )}
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr class={rowIndex % 2 === 0 ? 'bg-white' : 'bg-surface-alt/50'}>
+              <td class="p-4 md:p-6 text-sm font-medium text-text-primary border-b border-border">
+                {row.feature}
+              </td>
+              {row.values.map((value, colIndex) => (
+                <td
+                  class={`p-4 md:p-6 text-center text-sm border-b border-border ${
+                    colIndex === highlightColumn
+                      ? 'bg-primary-950/5 font-bold text-text-primary'
+                      : 'text-text-body'
+                  }`}
+                >
+                  {value === 'true' ? (
+                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : value === 'false' ? (
+                    <svg class="w-6 h-6 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  ) : (
+                    <span set:html={value} />
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

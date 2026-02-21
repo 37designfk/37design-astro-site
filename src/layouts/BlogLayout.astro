@@ -1,0 +1,189 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ArticleHeader from '../components/blog/ArticleHeader.astro';
+import TableOfContents from '../components/blog/TableOfContents.astro';
+import AuthorBox from '../components/blog/AuthorBox.astro';
+import StructuredData from '../components/common/StructuredData.astro';
+import '../styles/blog-base.css';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  author?: string;
+  category?: string;
+  tags?: string[];
+  image?: string;
+  targetKeyword?: string;
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const {
+  title,
+  description,
+  publishDate,
+  author = '古田 健',
+  category = 'お知らせ',
+  tags,
+  image,
+  targetKeyword,
+  headings = [],
+} = Astro.props;
+
+const articleData = {
+  headline: title,
+  description,
+  image: image ? new URL(image, 'https://37design.co.jp').href : undefined,
+  datePublished: publishDate.toISOString(),
+  dateModified: publishDate.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: author,
+    url: 'https://37design.co.jp/greeting',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: '株式会社37Design',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://37design.co.jp/images/logo-gold.svg',
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': new URL(Astro.url.pathname, 'https://37design.co.jp').href,
+  },
+  ...(targetKeyword ? { keywords: targetKeyword } : {}),
+};
+---
+
+<Layout
+  title={`${title} | 株式会社37Design ブログ`}
+  description={description}
+  image={image}
+>
+  <Header />
+
+  <StructuredData type="Article" data={articleData} />
+
+  <main>
+    <article class="py-12 md:py-16 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Mobile: TOC at top -->
+        <div class="max-w-4xl mx-auto lg:hidden">
+          <ArticleHeader
+            title={title}
+            description={description}
+            publishDate={publishDate}
+            author={author}
+            category={category}
+            tags={tags}
+            image={image}
+          />
+          <TableOfContents headings={headings} />
+        </div>
+
+        <!-- Desktop: Two-column layout -->
+        <div class="flex gap-10 lg:gap-12">
+          <!-- Main content (2/3) -->
+          <div class="w-full lg:w-2/3 max-w-4xl">
+            <!-- Desktop article header (hidden on mobile, shown above) -->
+            <div class="hidden lg:block">
+              <ArticleHeader
+                title={title}
+                description={description}
+                publishDate={publishDate}
+                author={author}
+                category={category}
+                tags={tags}
+                image={image}
+              />
+            </div>
+
+            <!-- Article content -->
+            <div class="blog-content bg-white rounded-2xl p-6 md:p-10 border border-border">
+              <div class="prose prose-lg max-w-none
+                prose-headings:font-bold prose-headings:text-text-primary prose-headings:scroll-mt-24
+                prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border
+                prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+                prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-2
+                prose-p:text-text-body prose-p:leading-relaxed prose-p:mb-6
+                prose-a:text-link prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-text-primary prose-strong:font-bold
+                prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-6
+                prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-6
+                prose-li:text-text-body prose-li:mb-2
+                prose-blockquote:border-l-4 prose-blockquote:border-accent-400 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-text-secondary prose-blockquote:bg-surface-alt prose-blockquote:py-3 prose-blockquote:pr-4 prose-blockquote:rounded-r-lg
+                prose-code:bg-surface-alt prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono
+                prose-pre:bg-primary-950 prose-pre:text-white prose-pre:p-5 prose-pre:rounded-xl prose-pre:overflow-x-auto prose-pre:border prose-pre:border-primary-800
+                prose-img:rounded-xl prose-img:border prose-img:border-border
+                prose-table:border-collapse prose-table:w-full
+                prose-th:bg-surface-alt prose-th:px-4 prose-th:py-2 prose-th:text-left prose-th:font-semibold prose-th:text-text-primary prose-th:border prose-th:border-border
+                prose-td:px-4 prose-td:py-2 prose-td:border prose-td:border-border prose-td:text-text-body
+              ">
+                <slot />
+              </div>
+            </div>
+
+            <!-- Author box -->
+            <AuthorBox />
+
+            <!-- Back to blog -->
+            <div class="mt-10 text-center">
+              <a
+                href="/blog"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-surface-alt text-text-primary font-semibold rounded-full hover:bg-surface-dark transition-colors text-sm"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                ブログ一覧に戻る
+              </a>
+            </div>
+          </div>
+
+          <!-- Sidebar (1/3) - Desktop only -->
+          <aside class="hidden lg:block w-1/3">
+            <TableOfContents headings={headings} />
+          </aside>
+        </div>
+      </div>
+    </article>
+
+    <!-- CTA Section -->
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          この記事について相談してみませんか？
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8">
+          無料相談で、御社に最適なソリューションをご提案します
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
+          >
+            無料相談を申し込む
+          </a>
+          <a
+            href="/service"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-full hover:bg-white/15 transition-colors text-base border border-white/20"
+          >
+            サービス一覧を見る
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

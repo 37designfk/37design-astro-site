@@ -1,0 +1,64 @@
+---
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  faqs: FAQItem[];
+}
+
+const { title, faqs } = Astro.props;
+---
+
+<section data-testid="lp-faq" class="py-16 md:py-24 bg-surface-alt">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-text-primary text-center mb-4 animate-on-scroll">
+      {title}
+    </h2>
+    <div class="w-16 h-1 bg-accent-500 mx-auto rounded mb-12"></div>
+
+    <div class="space-y-4" id="lp-faq-list">
+      {faqs.map((faq, i) => (
+        <div
+          class="animate-on-scroll bg-white rounded-xl border border-border overflow-hidden"
+          style={`animation-delay: ${i * 80}ms`}
+        >
+          <button
+            type="button"
+            class="lp-faq-toggle w-full flex items-center justify-between gap-4 p-6 text-left hover:bg-surface-alt/50 transition-colors"
+            aria-expanded="false"
+          >
+            <span class="font-bold text-text-primary text-lg">{faq.question}</span>
+            <svg
+              class="lp-faq-icon w-5 h-5 text-text-secondary flex-shrink-0 transition-transform duration-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div class="lp-faq-content hidden px-6 pb-6">
+            <p class="text-text-body leading-relaxed" set:html={faq.answer} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.lp-faq-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+      const content = button.nextElementSibling as HTMLElement;
+      const icon = button.querySelector('.lp-faq-icon') as HTMLElement;
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
+
+      button.setAttribute('aria-expanded', String(!isOpen));
+      content.classList.toggle('hidden');
+      icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+  });
+</script>

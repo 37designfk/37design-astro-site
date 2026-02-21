@@ -1,0 +1,34 @@
+---
+interface FooterLink {
+  text: string;
+  href: string;
+}
+
+interface Props {
+  companyName: string;
+  links: FooterLink[];
+}
+
+const { companyName, links } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer data-testid="lp-footer" class="bg-primary-950 text-primary-200 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm">
+        &copy; {year} {companyName}
+      </p>
+      <nav class="flex flex-wrap items-center justify-center gap-4 md:gap-6" aria-label="フッターリンク">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm text-primary-300 hover:text-white transition-colors duration-200"
+          >
+            {link.text}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</footer>

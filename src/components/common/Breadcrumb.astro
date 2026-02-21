@@ -1,0 +1,48 @@
+---
+import StructuredData from './StructuredData.astro';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const breadcrumbListData = {
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: new URL(item.href, 'https://37design.co.jp').href } : {}),
+  })),
+};
+---
+
+<StructuredData type="BreadcrumbList" data={breadcrumbListData} />
+
+<nav aria-label="パンくずリスト" class="mb-8">
+  <ol class="flex items-center gap-2 text-sm text-text-muted flex-wrap">
+    {items.map((item, index) => (
+      <>
+        {index > 0 && (
+          <li aria-hidden="true">
+            <svg class="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </li>
+        )}
+        <li>
+          {index < items.length - 1 && item.href ? (
+            <a href={item.href} class="hover:text-text-primary transition-colors">{item.label}</a>
+          ) : (
+            <span class="text-text-primary" aria-current="page">{item.label}</span>
+          )}
+        </li>
+      </>
+    ))}
+  </ol>
+</nav>

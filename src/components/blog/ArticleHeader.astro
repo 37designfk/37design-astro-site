@@ -1,0 +1,126 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  author: string;
+  category: string;
+  tags?: string[];
+  image?: string;
+  readingTime?: number;
+}
+
+const { title, description, publishDate, author, category, tags, image, readingTime } = Astro.props;
+
+const categoryColors: Record<string, string> = {
+  'AI': 'bg-amber-500/10 text-amber-600',
+  '業務自動化': 'bg-purple-500/10 text-purple-600',
+  'マーケティング': 'bg-blue-500/10 text-blue-600',
+  'CRM': 'bg-green-500/10 text-green-600',
+  'お知らせ': 'bg-gray-500/10 text-gray-600',
+  'SEO': 'bg-teal-500/10 text-teal-600',
+  'LP制作': 'bg-rose-500/10 text-rose-600',
+};
+
+const formattedDate = publishDate.toLocaleDateString('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<header class="mb-10">
+  <!-- Breadcrumb -->
+  <nav class="mb-8" aria-label="パンくずリスト">
+    <ol class="flex items-center gap-2 text-sm text-text-muted flex-wrap">
+      <li>
+        <a href="/" class="hover:text-text-primary transition-colors">ホーム</a>
+      </li>
+      <li aria-hidden="true">
+        <svg class="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li>
+        <a href="/blog" class="hover:text-text-primary transition-colors">ブログ</a>
+      </li>
+      <li aria-hidden="true">
+        <svg class="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li>
+        <a href={`/blog/category/${category}`} class="hover:text-text-primary transition-colors">{category}</a>
+      </li>
+      <li aria-hidden="true">
+        <svg class="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </li>
+      <li class="text-text-primary truncate max-w-[200px] sm:max-w-none" aria-current="page">{title}</li>
+    </ol>
+  </nav>
+
+  <!-- Meta -->
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <time datetime={publishDate.toISOString()} class="text-sm font-semibold text-text-muted">
+      {formattedDate}
+    </time>
+    <span class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[category] || 'bg-gray-500/10 text-gray-600'}`}>
+      {category}
+    </span>
+    {readingTime && (
+      <span class="inline-flex items-center gap-1 text-sm text-text-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        {readingTime}分で読めます
+      </span>
+    )}
+  </div>
+
+  <!-- Title -->
+  <h1 class="text-3xl md:text-4xl lg:text-[2.75rem] font-black text-text-primary leading-tight mb-4">
+    {title}
+  </h1>
+
+  <!-- Description -->
+  <p class="text-lg text-text-secondary leading-relaxed mb-6">
+    {description}
+  </p>
+
+  <!-- Tags -->
+  {tags && tags.length > 0 && (
+    <div class="flex flex-wrap gap-2 mb-6">
+      {tags.map((tag) => (
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-surface-alt text-xs font-medium text-text-secondary border border-border">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  )}
+
+  <!-- Author & Date line -->
+  <div class="flex items-center gap-3 pt-6 border-t border-border">
+    <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">
+      {author.charAt(0)}
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-text-primary">{author}</p>
+      <p class="text-xs text-text-muted">{formattedDate}</p>
+    </div>
+  </div>
+
+  <!-- Featured Image -->
+  {image && (
+    <div class="mt-8 rounded-2xl overflow-hidden border border-border">
+      <img
+        src={image}
+        alt={title}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-auto object-cover"
+      />
+    </div>
+  )}
+</header>

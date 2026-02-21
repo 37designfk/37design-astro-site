@@ -1,0 +1,53 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaLink: string;
+  variant?: 'primary' | 'accent';
+}
+
+const { title, description, ctaText, ctaLink, variant = 'primary' } = Astro.props;
+
+const variantStyles = {
+  primary: {
+    bg: 'bg-primary-900',
+    border: 'border-primary-700',
+    gradient: 'from-glow/20 to-transparent',
+    titleColor: 'text-white',
+    descColor: 'text-white/70',
+    btnBg: 'bg-white text-primary-900 hover:bg-primary-50',
+  },
+  accent: {
+    bg: 'bg-accent-400/10',
+    border: 'border-accent-400/30',
+    gradient: 'from-accent-400/10 to-transparent',
+    titleColor: 'text-text-primary',
+    descColor: 'text-text-secondary',
+    btnBg: 'bg-accent-500 text-primary-950 hover:bg-accent-400',
+  },
+};
+
+const s = variantStyles[variant];
+---
+
+<aside class="my-10 relative overflow-hidden rounded-2xl border {s.border} {s.bg} p-6 md:p-8">
+  <!-- Gradient accent -->
+  <div class={`absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l ${s.gradient} pointer-events-none`} aria-hidden="true"></div>
+
+  <div class="relative flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+    <div class="flex-1">
+      <p class={`text-lg md:text-xl font-bold ${s.titleColor} mb-1`}>{title}</p>
+      <p class={`text-sm ${s.descColor}`}>{description}</p>
+    </div>
+    <a
+      href={ctaLink}
+      class={`inline-flex items-center justify-center shrink-0 px-6 py-3 font-bold text-sm rounded-full transition-colors ${s.btnBg}`}
+    >
+      {ctaText}
+      <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+      </svg>
+    </a>
+  </div>
+</aside>

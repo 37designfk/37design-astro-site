@@ -1,0 +1,51 @@
+---
+interface Step {
+  step: number;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  title: string;
+  steps: Step[];
+}
+
+const { title, steps } = Astro.props;
+---
+
+<section data-testid="lp-how-it-works" class="py-16 md:py-24 bg-surface-alt">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-text-primary text-center mb-4 animate-on-scroll">
+      {title}
+    </h2>
+    <div class="w-16 h-1 bg-accent-500 mx-auto rounded mb-16"></div>
+    <div class="relative">
+      <!-- Connecting line (desktop) -->
+      <div class="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-border" aria-hidden="true"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-{steps.length > 4 ? '4' : steps.length.toString()} gap-8 md:gap-6">
+        {steps.map((step, i) => (
+          <div
+            class="animate-on-scroll relative flex flex-col items-center text-center"
+            style={`animation-delay: ${i * 150}ms`}
+          >
+            <!-- Step number -->
+            <div class="relative z-10 w-24 h-24 bg-primary-950 rounded-full flex items-center justify-center mb-6 shadow-lg">
+              <span class="text-3xl font-bold text-accent-400">
+                {String(step.step).padStart(2, '0')}
+              </span>
+            </div>
+
+            <!-- Arrow between steps (mobile) -->
+            {i < steps.length - 1 && (
+              <div class="md:hidden w-0.5 h-8 bg-border -mt-2 mb-4" aria-hidden="true"></div>
+            )}
+
+            <h3 class="text-xl font-bold text-text-primary mb-3">{step.title}</h3>
+            <p class="text-text-body leading-relaxed max-w-xs">{step.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
