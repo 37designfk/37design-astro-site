@@ -8,9 +8,16 @@ set -euo pipefail
 PROJECT_DIR="$HOME/37design-astro-site"
 BRANCH="${1:-main}"
 LOG_FILE="$PROJECT_DIR/deploy.log"
-DEPLOY_TARGET="lolipop"  # lolipop | cloudflare | local
+DEPLOY_TARGET="xserver"  # xserver | lolipop | local
 
-# Lolipop settings (37design.co.jp)
+# Xserver settings (37design.co.jp) - PRIMARY
+XSERVER_USER="server37"
+XSERVER_HOST="sv2023.xserver.jp"
+XSERVER_PORT="10022"
+XSERVER_KEY="$HOME/.ssh/server37.key"
+XSERVER_PATH="~/37design.co.jp/public_html/"
+
+# Lolipop settings (backup)
 LOLIPOP_USER="noor.jp-37design"
 LOLIPOP_HOST="ssh.lolipop.jp"
 LOLIPOP_PORT="2222"
@@ -51,15 +58,19 @@ fi
 
 # 4. Deploy
 case "$DEPLOY_TARGET" in
+  xserver)
+    log "Deploying to Xserver (37design.co.jp)..."
+    rsync -avz --delete \
+      -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=no" \
+      "$PROJECT_DIR/dist/" \
+      "$XSERVER_USER@$XSERVER_HOST:$XSERVER_PATH"
+    ;;
   lolipop)
     log "Deploying to Lolipop (37design.co.jp)..."
     sshpass -p "$LOLIPOP_PASS" rsync -avz --delete \
       -e "ssh -p $LOLIPOP_PORT -o PubkeyAuthentication=no -o StrictHostKeyChecking=no" \
       "$PROJECT_DIR/dist/" \
       "$LOLIPOP_USER@$LOLIPOP_HOST:$LOLIPOP_PATH"
-    ;;
-  cloudflare)
-    log "Cloudflare Pages deploy (via git push - already done)"
     ;;
   local)
     log "Local deploy: files available at $PROJECT_DIR/dist/"
