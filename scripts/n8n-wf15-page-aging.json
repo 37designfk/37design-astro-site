@@ -1,0 +1,395 @@
+{
+  "name": "WF15 Page Aging Score (37Design Marketing OS)",
+  "active": false,
+  "versionId": "1",
+  "nodes": [
+    {
+      "id": "age-01-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 400],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 5 * * 0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "age-02-get-pages",
+      "name": "Get All Pages",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [260, 400],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pf.id, pf.page_path, pf.last_refreshed_at, pf.baseline_ctr,\n       pf.baseline_position, pf.baseline_bounce_rate, pf.aging_score\nFROM page_freshness pf\nWHERE pf.needs_refresh = false\nORDER BY pf.last_refreshed_at ASC;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "age-03-has-pages",
+      "name": "Has Pages?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [520, 400],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-pages-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "age-04-split-pages",
+      "name": "For Each Page",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [780, 340],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "age-05-get-kpi",
+      "name": "Get KPI Data",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1040, 340],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT kb.page_path, kb.ctr, kb.position, kb.bounce_rate,\n       kb.period_start, kb.period_end\nFROM kpi_breakdown kb\nWHERE kb.page_path = '{{ $json.page_path }}'\nORDER BY kb.period_end DESC\nLIMIT 1;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "age-06-calc-score",
+      "name": "Calculate Aging Score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 340],
+      "parameters": {
+        "jsCode": "const page = $('For Each Page').item.json;\nconst kpi = $input.first().json;\n\n// Days since last refresh\nconst lastRefreshed = new Date(page.last_refreshed_at);\nconst daysSinceRefresh = (Date.now() - lastRefreshed.getTime()) / 86400000;\n\n// Age score: max 40 points (90 days = max)\nconst ageScore = Math.min(daysSinceRefresh / 90 * 40, 40);\n\n// CTR decline: max 20 points\nconst baselineCtr = parseFloat(page.baseline_ctr) || 0;\nconst currentCtr = parseFloat(kpi.ctr) || 0;\nconst ctrDecline = baselineCtr > 0 ? Math.max(0, (baselineCtr - currentCtr) / baselineCtr * 100) : 0;\nconst ctrScore = Math.min(ctrDecline * 2, 20);\n\n// Position decline: max 25 points\nconst baselinePosition = parseFloat(page.baseline_position) || 0;\nconst currentPosition = parseFloat(kpi.position) || 0;\nconst positionDecline = Math.max(0, currentPosition - baselinePosition);\nconst positionScore = Math.min(positionDecline * 5, 25);\n\n// Bounce rate increase: max 15 points\nconst baselineBounce = parseFloat(page.baseline_bounce_rate) || 0;\nconst currentBounce = parseFloat(kpi.bounce_rate) || 0;\nconst bounceIncrease = baselineBounce > 0 ? Math.max(0, (currentBounce - baselineBounce) / baselineBounce * 100) : 0;\nconst bounceScore = Math.min(bounceIncrease, 15);\n\n// Total aging score (0-100)\nconst total = Math.round((ageScore + ctrScore + positionScore + bounceScore) * 100) / 100;\n\nreturn [{\n  json: {\n    page_id: page.id,\n    page_path: page.page_path,\n    days_since_refresh: Math.round(daysSinceRefresh),\n    aging_score: total,\n    breakdown: {\n      age: Math.round(ageScore * 100) / 100,\n      ctr: Math.round(ctrScore * 100) / 100,\n      position: Math.round(positionScore * 100) / 100,\n      bounce: Math.round(bounceScore * 100) / 100\n    },\n    needs_refresh: total >= 60\n  }\n}];"
+      }
+    },
+    {
+      "id": "age-07-update-score",
+      "name": "Update Aging Score",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1560, 340],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE page_freshness\nSET aging_score = {{ $json.aging_score }},\n    updated_at = NOW()\nWHERE id = '{{ $json.page_id }}';",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "age-08-check-threshold",
+      "name": "Needs Refresh?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1820, 340],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "threshold-check",
+              "leftValue": "={{ $('Calculate Aging Score').item.json.aging_score }}",
+              "rightValue": 60,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "age-09-mark-refresh",
+      "name": "Mark Needs Refresh",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2080, 280],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE page_freshness\nSET needs_refresh = true,\n    updated_at = NOW()\nWHERE id = '{{ $('Calculate Aging Score').item.json.page_id }}';",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "age-10-insert-task",
+      "name": "Insert Refresh Task",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2340, 280],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO task_queue (client_id, task_type, content_type, priority, task_key, payload, status, created_at)\nVALUES (\n  'default',\n  'improve',\n  'page',\n  4,\n  'aging_refresh_{{ $('Calculate Aging Score').item.json.page_path.replace(/\\//g, '_') }}',\n  '{{ JSON.stringify({ source: 'wf15_page_aging', page_path: $('Calculate Aging Score').item.json.page_path, aging_score: $('Calculate Aging Score').item.json.aging_score, breakdown: $('Calculate Aging Score').item.json.breakdown, days_since_refresh: $('Calculate Aging Score').item.json.days_since_refresh, instruction: 'Page is aging. Refresh content to improve metrics. Focus on areas with highest score contribution.' }).replace(/'/g, \"''\") }}',\n  'pending',\n  NOW()\n)\nON CONFLICT (task_key) DO NOTHING;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "age-11-back-to-loop",
+      "name": "Back to Loop",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [2600, 340]
+    },
+    {
+      "id": "age-12-summary",
+      "name": "Build Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2860, 400],
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet totalPages = 0;\nlet refreshNeeded = 0;\nconst details = [];\n\nfor (const item of items) {\n  if (item.json.page_path) {\n    totalPages++;\n    if (item.json.needs_refresh) {\n      refreshNeeded++;\n      details.push(`- ${item.json.page_path}: score ${item.json.aging_score} (age:${item.json.breakdown.age}, ctr:${item.json.breakdown.ctr}, pos:${item.json.breakdown.position}, bounce:${item.json.breakdown.bounce})`);\n    }\n  }\n}\n\nconst summary = refreshNeeded > 0\n  ? `WF15 Page Aging: ${totalPages} page(s) scored, ${refreshNeeded} need refresh (score >= 60).\\n${details.join('\\n')}`\n  : `WF15 Page Aging: ${totalPages} page(s) scored. All pages are fresh.`;\n\nreturn [{ json: { summary, totalPages, refreshNeeded } }];"
+      }
+    },
+    {
+      "id": "age-13-slack",
+      "name": "Slack Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3120, 400],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.summary }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "age-14-no-pages",
+      "name": "No Pages Found",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 560],
+      "parameters": {
+        "jsCode": "return [{ json: { message: 'No pages found for aging analysis. All pages already flagged for refresh.' } }];"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get All Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Pages": {
+      "main": [
+        [
+          {
+            "node": "Has Pages?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Pages?": {
+      "main": [
+        [
+          {
+            "node": "For Each Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Pages Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "For Each Page": {
+      "main": [
+        [
+          {
+            "node": "Get KPI Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get KPI Data": {
+      "main": [
+        [
+          {
+            "node": "Calculate Aging Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Aging Score": {
+      "main": [
+        [
+          {
+            "node": "Update Aging Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Aging Score": {
+      "main": [
+        [
+          {
+            "node": "Needs Refresh?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Refresh?": {
+      "main": [
+        [
+          {
+            "node": "Mark Needs Refresh",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Back to Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Needs Refresh": {
+      "main": [
+        [
+          {
+            "node": "Insert Refresh Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Refresh Task": {
+      "main": [
+        [
+          {
+            "node": "Back to Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Back to Loop": {
+      "main": [
+        [
+          {
+            "node": "For Each Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Summary": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

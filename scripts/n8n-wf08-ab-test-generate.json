@@ -1,0 +1,824 @@
+{
+  "name": "WF08 AB Test Generate (37Design Marketing OS)",
+  "active": false,
+  "versionId": "1",
+  "nodes": [
+    {
+      "id": "abt-01-webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 400],
+      "webhookId": "37design-ab-test-generate",
+      "parameters": {
+        "path": "37design-ab-test-generate",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "abt-02-get-task",
+      "name": "Get Task",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [220, 400],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, client_id, task_type, content_type, priority, payload, task_key\nFROM task_queue\nWHERE id = {{ $json.body.task_id }}\n  AND status = 'running';",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-03-heartbeat",
+      "name": "Heartbeat",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [440, 400],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE task_queue\nSET heartbeat_at = NOW(), status = 'running'\nWHERE id = {{ $('Get Task').first().json.id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-04-parse-payload",
+      "name": "Parse Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 400],
+      "parameters": {
+        "jsCode": "const task = $('Get Task').first().json;\nconst payload = typeof task.payload === 'string' ? JSON.parse(task.payload) : task.payload;\nconst pagePath = payload.page_path || '';\nconst slug = pagePath.split('/').pop()?.replace('.astro', '') || 'unknown';\nreturn [{\n  json: {\n    task_id: task.id,\n    client_id: task.client_id,\n    page_path: pagePath,\n    slug: slug,\n    test_hypothesis: payload.test_hypothesis || '',\n    target_metrics: payload.target_metrics || {},\n    payload: payload\n  }\n}];"
+      }
+    },
+    {
+      "id": "abt-05-check-running",
+      "name": "Check Running Tests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [880, 400],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, hypothesis, feature_flag_key, started_at\nFROM ab_tests\nWHERE page_path = '{{ $('Parse Payload').first().json.page_path }}'\n  AND status = 'running'\nLIMIT 1;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-06-already-running",
+      "name": "Already Running?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1100, 400],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "running-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abt-07-skip-task",
+      "name": "Skip: Already Running",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1320, 540],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE task_queue\nSET status = 'done',\n    completed_at = NOW(),\n    error_log = 'skipped: ab_test already running on this page (test_id=' || {{ $('Check Running Tests').first().json.id }} || ')',\n    execution_seconds = EXTRACT(EPOCH FROM (NOW() - started_at))::int\nWHERE id = {{ $('Parse Payload').first().json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-08-get-kpi",
+      "name": "Get KPI Data",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1320, 300],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT page_path, period, impressions, clicks, ctr, avg_position,\n       bounce_rate, avg_session_duration, conversions, conversion_rate,\n       collected_at\nFROM kpi_breakdown\nWHERE page_path = '{{ $('Parse Payload').first().json.page_path }}'\nORDER BY collected_at DESC\nLIMIT 10;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-09-get-content",
+      "name": "Get Current Content",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1540, 300],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cat ~/37design-astro-site/{{ $('Parse Payload').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abt-10-hypothesis-design",
+      "name": "Hypothesis Design (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{$env.ANTHROPIC_API_KEY}}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 4096,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"あなたはABテスト設計の専門家です。以下のKPIデータと現在のコンテンツを分析し、ABテストの仮説と変更案を設計してください。\\n\\n## ユーザーからの仮説ヒント\\n{{ $('Parse Payload').first().json.test_hypothesis || 'なし（自動分析で仮説を生成）' }}\\n\\n## KPIデータ\\n{{ JSON.stringify($('Get KPI Data').all().map(r => r.json)) }}\\n\\n## 現在のコンテンツ（先頭4000文字）\\n{{ $('Get Current Content').first().json.stdout?.substring(0, 4000) || 'コンテンツ取得失敗' }}\\n\\n## ルール\\n- 禁止表現: 絶対に, 確実に, 100%, 必ず治る, 副作用なし, 業界No.1, 世界一（根拠なし）\\n- Tailwind CSSを使用\\n- モバイルファースト\\n- 変更は1つのページ内で完結させる\\n- 測定可能な仮説にする\\n\\n以下の形式でJSON出力してください:\\n{\\n  \\\"hypothesis\\\": \\\"テスト仮説（日本語）\\\",\\n  \\\"change_description\\\": \\\"変更内容の具体的な説明\\\",\\n  \\\"primary_metric\\\": \\\"ctr|bounce_rate|conversion_rate|avg_session_duration\\\",\\n  \\\"expected_improvement\\\": \\\"期待する改善幅（例: CTR +1.5%）\\\",\\n  \\\"variant_b_instructions\\\": \\\"Variant Bのコード変更指示（aiderに渡す具体的な指示文）\\\",\\n  \\\"feature_flag_key\\\": \\\"ab-test-{slug}-{短い説明}（kebab-case）\\\"\\n}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "abt-11-parse-hypothesis",
+      "name": "Parse Hypothesis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1980, 300],
+      "parameters": {
+        "jsCode": "const response = $('Hypothesis Design (Claude)').first().json;\nconst text = response.content[0].text;\n\n// Extract JSON from response\nlet hypothesis;\ntry {\n  const jsonMatch = text.match(/\\{[\\s\\S]*\\}/);\n  hypothesis = JSON.parse(jsonMatch[0]);\n} catch (e) {\n  hypothesis = {\n    hypothesis: 'Auto-generated hypothesis',\n    change_description: text.substring(0, 500),\n    primary_metric: 'ctr',\n    expected_improvement: 'unknown',\n    variant_b_instructions: text.substring(0, 2000),\n    feature_flag_key: 'ab-test-' + $('Parse Payload').first().json.slug + '-auto'\n  };\n}\n\nreturn [{ json: hypothesis }];"
+      }
+    },
+    {
+      "id": "abt-12-generate-variant-b",
+      "name": "Generate Variant B (Qwen3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"qwen3:30b-a3b\",\n  \"prompt\": \"以下の指示に基づいて、AstroページのVariant Bコードを生成してください。\\n\\n## 変更指示\\n{{ $('Parse Hypothesis').first().json.variant_b_instructions }}\\n\\n## 元のコード（先頭4000文字）\\n{{ $('Get Current Content').first().json.stdout?.substring(0, 4000) || '' }}\\n\\n## ルール\\n- Tailwind CSSを使用\\n- 禁止表現を使用しない\\n- ビルドが通るコードを生成\\n- 変更部分のみを出力（aiderに渡すコード変更指示として）\\n\\naiderに渡す具体的な変更指示を日本語で出力してください。\",\n  \"stream\": false,\n  \"options\": {\n    \"temperature\": 0.7,\n    \"num_predict\": 4096\n  }\n}",
+        "options": {
+          "timeout": 300000
+        }
+      }
+    },
+    {
+      "id": "abt-13-growthbook-create",
+      "name": "GrowthBook: Create Experiment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://growthbook.37d.jp/api/v1/experiments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.GROWTHBOOK_API_KEY}}" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"AB Test: {{ $('Parse Payload').first().json.slug }} - {{ $('Parse Hypothesis').first().json.hypothesis.substring(0, 80) }}\",\n  \"trackingKey\": \"{{ $('Parse Hypothesis').first().json.feature_flag_key }}\",\n  \"hypothesis\": \"{{ $('Parse Hypothesis').first().json.hypothesis }}\",\n  \"variations\": [\n    { \"name\": \"Control (A)\", \"key\": \"0\" },\n    { \"name\": \"Variant B\", \"key\": \"1\" }\n  ],\n  \"phases\": [\n    {\n      \"coverage\": 1,\n      \"variationWeights\": [0.5, 0.5],\n      \"reason\": \"Auto-generated by WF08\"\n    }\n  ],\n  \"metrics\": [\"{{ $('Parse Hypothesis').first().json.primary_metric }}\"],\n  \"status\": \"running\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "abt-14-git-branch",
+      "name": "Git Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2640, 300],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git config user.name '37Design Marketing OS' && git config user.email 'os@37d.jp' && git checkout main && git pull origin main && git checkout -b task-{{ $('Parse Payload').first().json.task_id }}-ab-{{ $('Parse Payload').first().json.slug }}\""
+      }
+    },
+    {
+      "id": "abt-15-aider-variant-b",
+      "name": "Apply Variant B (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2860, 300],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message '以下のページにGrowthBookのフィーチャーフラグによるABテスト条件分岐を実装してください。\\n\\nフィーチャーフラグキー: {{ $('Parse Hypothesis').first().json.feature_flag_key }}\\n\\n変更内容:\\n- GrowthBookのフィーチャーフラグ値に応じて、Control(A)とVariant(B)を出し分ける\\n- Variant Bの変更: {{ $('Parse Hypothesis').first().json.change_description.replace(/'/g, \"'\\\\''\" ).substring(0, 2000) }}\\n\\n実装方法:\\n- ページのfrontmatterでGrowthBookクライアントを初期化\\n- フラグ値が0ならControl(A)、1ならVariant(B)を表示\\n- data-variant属性でどちらが表示されているか識別可能にする' --file {{ $('Parse Payload').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abt-16-build-check",
+      "name": "Build Check",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3080, 300],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && npm run build 2>&1\""
+      }
+    },
+    {
+      "id": "abt-17-build-ok",
+      "name": "Build OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3300, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "build-check",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abt-18-fix-counter",
+      "name": "Fix Iteration Counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3520, 440],
+      "parameters": {
+        "jsCode": "const buildOutput = $('Build Check').first().json.stdout || $('Build Check').first().json.stderr || '';\nconst currentCount = $input.first()?.json?.fix_iteration_count || 0;\nconst newCount = currentCount + 1;\nreturn [{ json: { fix_iteration_count: newCount, max_reached: newCount >= 3, build_error: buildOutput } }];"
+      }
+    },
+    {
+      "id": "abt-19-max-check",
+      "name": "Max Iterations?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3740, 440],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "max-iter-check",
+              "leftValue": "={{ $json.max_reached }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abt-20-abort-delete-branch",
+      "name": "Abort: Delete Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3960, 380],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git checkout main && git branch -D task-{{ $('Parse Payload').first().json.task_id }}-ab-{{ $('Parse Payload').first().json.slug }} 2>/dev/null || true\""
+      }
+    },
+    {
+      "id": "abt-21-abort-slack",
+      "name": "Slack: Max Iterations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4070, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":warning: *WF08 AB Test Generate: Max fix iterations exceeded*\\nTask: {{ $('Parse Payload').first().json.task_id }}\\nPage: {{ $('Parse Payload').first().json.page_path }}\\nHypothesis: {{ $('Parse Hypothesis').first().json.hypothesis.substring(0, 200) }}\\nBranch deleted, task set to failed.\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "abt-22-abort-fail-task",
+      "name": "Abort: Fail Task",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4180, 380],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE task_queue\nSET status = 'failed',\n    completed_at = NOW(),\n    error_log = 'max_fix_iterations_exceeded_ab_test',\n    execution_seconds = EXTRACT(EPOCH FROM (NOW() - started_at))::int\nWHERE id = {{ $('Parse Payload').first().json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-23-fix-build",
+      "name": "Fix Build (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3960, 580],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message 'Fix the following build error:\\n{{ $json.build_error.substring(0, 2000) }}' --file {{ $('Parse Payload').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abt-24-merge",
+      "name": "Merge to Main",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3520, 160],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git add -A && git commit -m 'feat: ab-test {{ $('Parse Payload').first().json.slug }} - {{ $('Parse Hypothesis').first().json.feature_flag_key }} [task-{{ $('Parse Payload').first().json.task_id }}]' && git checkout main && git merge task-{{ $('Parse Payload').first().json.task_id }}-ab-{{ $('Parse Payload').first().json.slug }} --no-ff -m 'Merge task-{{ $('Parse Payload').first().json.task_id }}-ab-{{ $('Parse Payload').first().json.slug }}'\""
+      }
+    },
+    {
+      "id": "abt-25-deploy",
+      "name": "Deploy",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3740, 160],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && bash deploy.sh 2>&1\""
+      }
+    },
+    {
+      "id": "abt-26-insert-ab-test",
+      "name": "Insert AB Test Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3960, 160],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO ab_tests (page_path, hypothesis, variant_a_snapshot, variant_b_snapshot, feature_flag_key, primary_metric, expected_improvement, status, started_at, task_id, client_id)\nVALUES (\n  '{{ $('Parse Payload').first().json.page_path }}',\n  '{{ $('Parse Hypothesis').first().json.hypothesis.replace(/'/g, \"''\").substring(0, 500) }}',\n  '{{ $('Get Current Content').first().json.stdout?.substring(0, 5000).replace(/'/g, \"''\") || 'snapshot_unavailable' }}',\n  '{{ $('Parse Hypothesis').first().json.change_description.replace(/'/g, \"''\").substring(0, 5000) }}',\n  '{{ $('Parse Hypothesis').first().json.feature_flag_key }}',\n  '{{ $('Parse Hypothesis').first().json.primary_metric }}',\n  '{{ $('Parse Hypothesis').first().json.expected_improvement.replace(/'/g, \"''\") }}',\n  'running',\n  NOW(),\n  {{ $('Parse Payload').first().json.task_id }},\n  '{{ $('Parse Payload').first().json.client_id }}'\n)\nRETURNING id;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-27-lock-page",
+      "name": "Lock Page (21 days)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4180, 160],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO page_locks (page_path, locked_until, reason, task_id)\nVALUES (\n  '{{ $('Parse Payload').first().json.page_path }}',\n  NOW() + INTERVAL '21 days',\n  'ab_test',\n  {{ $('Parse Payload').first().json.task_id }}\n)\nON CONFLICT (page_path)\nDO UPDATE SET\n  locked_until = NOW() + INTERVAL '21 days',\n  reason = 'ab_test',\n  task_id = {{ $('Parse Payload').first().json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-28-complete-task",
+      "name": "Complete Task",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4400, 160],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE task_queue\nSET status = 'done',\n    completed_at = NOW(),\n    execution_seconds = EXTRACT(EPOCH FROM (NOW() - started_at))::int\nWHERE id = {{ $('Parse Payload').first().json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-29-error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3300, 580],
+      "parameters": {
+        "jsCode": "const taskId = $('Parse Payload').first()?.json?.task_id || 'unknown';\nconst slug = $('Parse Payload').first()?.json?.slug || 'unknown';\nconst errorMsg = $json?.message || $json?.error || 'unexpected_error';\nreturn [{ json: { task_id: taskId, slug: slug, error: errorMsg } }];"
+      }
+    },
+    {
+      "id": "abt-30-error-fail-task",
+      "name": "Error: Fail Task",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3520, 580],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE task_queue\nSET status = 'failed',\n    completed_at = NOW(),\n    error_log = '{{ $json.error.substring(0, 500).replace(/'/g, \"''\") }}',\n    execution_seconds = EXTRACT(EPOCH FROM (NOW() - started_at))::int\nWHERE id = {{ $json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abt-31-error-delete-branch",
+      "name": "Error: Delete Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3740, 580],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git checkout main && git branch -D task-{{ $json.task_id }}-ab-{{ $json.slug }} 2>/dev/null || true\""
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Task": {
+      "main": [
+        [
+          {
+            "node": "Heartbeat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Heartbeat": {
+      "main": [
+        [
+          {
+            "node": "Parse Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Payload": {
+      "main": [
+        [
+          {
+            "node": "Check Running Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Running Tests": {
+      "main": [
+        [
+          {
+            "node": "Already Running?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already Running?": {
+      "main": [
+        [
+          {
+            "node": "Skip: Already Running",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get KPI Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get KPI Data": {
+      "main": [
+        [
+          {
+            "node": "Get Current Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Content": {
+      "main": [
+        [
+          {
+            "node": "Hypothesis Design (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hypothesis Design (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Hypothesis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Hypothesis": {
+      "main": [
+        [
+          {
+            "node": "Generate Variant B (Qwen3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Variant B (Qwen3)": {
+      "main": [
+        [
+          {
+            "node": "GrowthBook: Create Experiment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GrowthBook: Create Experiment": {
+      "main": [
+        [
+          {
+            "node": "Git Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Branch": {
+      "main": [
+        [
+          {
+            "node": "Apply Variant B (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Variant B (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Check": {
+      "main": [
+        [
+          {
+            "node": "Build OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build OK?": {
+      "main": [
+        [
+          {
+            "node": "Merge to Main",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fix Iteration Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix Iteration Counter": {
+      "main": [
+        [
+          {
+            "node": "Max Iterations?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Max Iterations?": {
+      "main": [
+        [
+          {
+            "node": "Abort: Delete Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fix Build (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Abort: Delete Branch": {
+      "main": [
+        [
+          {
+            "node": "Slack: Max Iterations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack: Max Iterations": {
+      "main": [
+        [
+          {
+            "node": "Abort: Fail Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix Build (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge to Main": {
+      "main": [
+        [
+          {
+            "node": "Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deploy": {
+      "main": [
+        [
+          {
+            "node": "Insert AB Test Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert AB Test Record": {
+      "main": [
+        [
+          {
+            "node": "Lock Page (21 days)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lock Page (21 days)": {
+      "main": [
+        [
+          {
+            "node": "Complete Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Error: Fail Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Fail Task": {
+      "main": [
+        [
+          {
+            "node": "Error: Delete Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,1241 @@
+{
+  "name": "WF09 AB Test Judge (37Design Marketing OS)",
+  "active": false,
+  "versionId": "1",
+  "nodes": [
+    {
+      "id": "abj-01-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 400],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 4,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "abj-02-get-running-tests",
+      "name": "Get Running Tests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [220, 400],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, page_path, hypothesis, variant_a_snapshot, variant_b_snapshot,\n       feature_flag_key, primary_metric, expected_improvement,\n       status, started_at, task_id, client_id\nFROM ab_tests\nWHERE status = 'running'\nORDER BY started_at ASC;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-03-has-tests",
+      "name": "Has Running Tests?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [440, 400],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-tests-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-04-no-tests",
+      "name": "No Running Tests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 560],
+      "parameters": {
+        "jsCode": "return [{ json: { message: 'No running AB tests found. Nothing to judge.' } }];"
+      }
+    },
+    {
+      "id": "abj-05-loop",
+      "name": "Loop Over Tests",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [660, 340],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-06-calc-duration",
+      "name": "Calculate Duration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 340],
+      "parameters": {
+        "jsCode": "const test = $input.first().json;\nconst startedAt = new Date(test.started_at);\nconst now = new Date();\nconst daysRunning = Math.floor((now - startedAt) / 86400000);\nconst slug = test.page_path.split('/').pop()?.replace('.astro', '') || 'unknown';\n\nreturn [{\n  json: {\n    ...test,\n    days_running: daysRunning,\n    slug: slug\n  }\n}];"
+      }
+    },
+    {
+      "id": "abj-07-get-metrics",
+      "name": "Get Test Metrics",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1100, 340],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT\n  variant,\n  COUNT(*) as sample_size,\n  AVG(CASE WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'ctr' THEN ctr\n           WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'bounce_rate' THEN bounce_rate\n           WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'conversion_rate' THEN conversion_rate\n           WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'avg_session_duration' THEN avg_session_duration\n           ELSE ctr END) as avg_metric,\n  STDDEV(CASE WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'ctr' THEN ctr\n              WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'bounce_rate' THEN bounce_rate\n              WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'conversion_rate' THEN conversion_rate\n              WHEN '{{ $('Calculate Duration').first().json.primary_metric }}' = 'avg_session_duration' THEN avg_session_duration\n              ELSE ctr END) as stddev_metric\nFROM ab_test_metrics\nWHERE ab_test_id = {{ $('Calculate Duration').first().json.id }}\nGROUP BY variant\nORDER BY variant;",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-08-judge",
+      "name": "4-Stage Judgment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 340],
+      "parameters": {
+        "jsCode": "const test = $('Calculate Duration').first().json;\nconst metricsRows = $('Get Test Metrics').all().map(r => r.json);\nconst daysRunning = test.days_running;\nconst primaryMetric = test.primary_metric || 'ctr';\n\n// Stage 1: TOO_EARLY\nif (daysRunning < 7) {\n  return [{ json: { ...test, judgment: 'TOO_EARLY', reason: 'テスト開始から' + daysRunning + '日。最低7日間待機。', metrics: metricsRows } }];\n}\n\n// Parse metrics for control (A) and treatment (B)\nconst controlRow = metricsRows.find(r => r.variant === 'A' || r.variant === '0' || r.variant === 'control');\nconst treatmentRow = metricsRows.find(r => r.variant === 'B' || r.variant === '1' || r.variant === 'treatment');\n\nconst controlN = parseInt(controlRow?.sample_size) || 0;\nconst treatmentN = parseInt(treatmentRow?.sample_size) || 0;\n\n// Stage 2: INSUFFICIENT\nif (controlN < 100 || treatmentN < 100) {\n  return [{ json: { ...test, judgment: 'INSUFFICIENT', reason: 'サンプル不足。Control: ' + controlN + ', Treatment: ' + treatmentN + ' (各100以上必要)', metrics: metricsRows } }];\n}\n\nconst controlMean = parseFloat(controlRow?.avg_metric) || 0;\nconst treatmentMean = parseFloat(treatmentRow?.avg_metric) || 0;\nconst controlStd = parseFloat(controlRow?.stddev_metric) || 0.001;\nconst treatmentStd = parseFloat(treatmentRow?.stddev_metric) || 0.001;\n\n// Calculate z-score for two-sample z-test\nconst pooledSE = Math.sqrt((controlStd * controlStd / controlN) + (treatmentStd * treatmentStd / treatmentN));\nconst zScore = pooledSE > 0 ? (treatmentMean - controlMean) / pooledSE : 0;\nconst absZ = Math.abs(zScore);\n\n// For bounce_rate, lower is better (reverse direction)\nconst isLowerBetter = primaryMetric === 'bounce_rate';\nconst improvement = isLowerBetter\n  ? ((controlMean - treatmentMean) / controlMean * 100)\n  : ((treatmentMean - controlMean) / controlMean * 100);\n\n// Significance: |z| >= 1.96 means p < 0.05 (95% confidence)\nconst isSignificant = absZ >= 1.96;\nconst improvementThreshold = 5; // 5% minimum improvement\n\n// Stage 3: WINNER_FOUND\nif (isSignificant && Math.abs(improvement) > improvementThreshold) {\n  const winner = improvement > 0 ? 'B' : 'A';\n  return [{\n    json: {\n      ...test,\n      judgment: 'WINNER_FOUND',\n      winner: winner,\n      reason: 'Winner: Variant ' + winner + '。改善: ' + improvement.toFixed(2) + '%, z-score: ' + zScore.toFixed(3) + ', 統計的有意(p<0.05)',\n      improvement_pct: improvement,\n      z_score: zScore,\n      control_mean: controlMean,\n      treatment_mean: treatmentMean,\n      control_n: controlN,\n      treatment_n: treatmentN,\n      metrics: metricsRows\n    }\n  }];\n}\n\n// Stage 4: TIMEOUT\nif (daysRunning > 28) {\n  return [{\n    json: {\n      ...test,\n      judgment: 'TIMEOUT',\n      reason: '28日超過。有意差なし(z=' + zScore.toFixed(3) + ', 改善' + improvement.toFixed(2) + '%)。Controlを維持。',\n      z_score: zScore,\n      improvement_pct: improvement,\n      metrics: metricsRows\n    }\n  }];\n}\n\n// Still running, no decision yet\nreturn [{\n  json: {\n    ...test,\n    judgment: 'INSUFFICIENT',\n    reason: daysRunning + '日経過。有意差未達(z=' + zScore.toFixed(3) + ')。継続。',\n    metrics: metricsRows\n  }\n}];"
+      }
+    },
+    {
+      "id": "abj-09-route",
+      "name": "Route by Judgment",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [1540, 340],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.judgment }}",
+                    "rightValue": "TOO_EARLY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "TOO_EARLY"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.judgment }}",
+                    "rightValue": "INSUFFICIENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "INSUFFICIENT"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.judgment }}",
+                    "rightValue": "WINNER_FOUND",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "WINNER_FOUND"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.judgment }}",
+                    "rightValue": "TIMEOUT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "TIMEOUT"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      }
+    },
+    {
+      "id": "abj-10-log-early",
+      "name": "Log: Too Early",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 100],
+      "parameters": {
+        "jsCode": "const test = $input.first().json;\nconsole.log('AB Test ' + test.id + ' (' + test.page_path + '): TOO_EARLY - ' + test.reason);\nreturn [{ json: { test_id: test.id, judgment: 'TOO_EARLY', reason: test.reason } }];"
+      }
+    },
+    {
+      "id": "abj-11-log-insufficient",
+      "name": "Log: Insufficient",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 240],
+      "parameters": {
+        "jsCode": "const test = $input.first().json;\nconsole.log('AB Test ' + test.id + ' (' + test.page_path + '): INSUFFICIENT - ' + test.reason);\nreturn [{ json: { test_id: test.id, judgment: 'INSUFFICIENT', reason: test.reason } }];"
+      }
+    },
+    {
+      "id": "abj-12-winner-branch",
+      "name": "Winner: Git Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1760, 380],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git config user.name '37Design Marketing OS' && git config user.email 'os@37d.jp' && git checkout main && git pull origin main && git checkout -b ab-winner-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }}\""
+      }
+    },
+    {
+      "id": "abj-13-winner-aider",
+      "name": "Winner: Apply (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1980, 380],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message 'ABテスト完了。Winner: Variant {{ $('4-Stage Judgment').first().json.winner }}。\\n\\nフィーチャーフラグキー: {{ $('4-Stage Judgment').first().json.feature_flag_key }}\\n\\nこのページからGrowthBookのABテスト条件分岐コードを削除し、Winnerバリアントのコードのみを残してください。\\n{{ $('4-Stage Judgment').first().json.winner === \"B\" ? \"Variant Bのコードを残し、Variant A(Control)のコードとGrowthBookの条件分岐ロジックを削除してください。\" : \"Variant A(Control)のコードを残し、Variant BのコードとGrowthBookの条件分岐ロジックを削除してください。\" }}\\ndata-variant属性も削除してください。' --file {{ $('4-Stage Judgment').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abj-14-winner-build",
+      "name": "Winner: Build Check",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2200, 380],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && npm run build 2>&1\""
+      }
+    },
+    {
+      "id": "abj-15-winner-build-ok",
+      "name": "Winner: Build OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2420, 380],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "winner-build-check",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-16-winner-fix-counter",
+      "name": "Winner: Fix Counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 520],
+      "parameters": {
+        "jsCode": "const buildOutput = $('Winner: Build Check').first().json.stdout || $('Winner: Build Check').first().json.stderr || '';\nconst currentCount = $input.first()?.json?.fix_iteration_count || 0;\nconst newCount = currentCount + 1;\nreturn [{ json: { fix_iteration_count: newCount, max_reached: newCount >= 3, build_error: buildOutput } }];"
+      }
+    },
+    {
+      "id": "abj-17-winner-max-check",
+      "name": "Winner: Max Iterations?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2860, 520],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "winner-max-check",
+              "leftValue": "={{ $json.max_reached }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-18-winner-fix-aider",
+      "name": "Winner: Fix Build (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3080, 600],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message 'Fix the following build error:\\n{{ $json.build_error.substring(0, 2000) }}' --file {{ $('4-Stage Judgment').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abj-19-winner-abort-branch",
+      "name": "Winner: Abort Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3080, 460],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git checkout main && git branch -D ab-winner-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }} 2>/dev/null || true\""
+      }
+    },
+    {
+      "id": "abj-20-winner-abort-slack",
+      "name": "Winner: Abort Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3300, 460],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":warning: *WF09 AB Test Judge: Winner apply failed (max iterations)*\\nTest ID: {{ $('4-Stage Judgment').first().json.id }}\\nPage: {{ $('4-Stage Judgment').first().json.page_path }}\\nWinner: Variant {{ $('4-Stage Judgment').first().json.winner }}\\nManual intervention required.\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "abj-21-winner-abort-db",
+      "name": "Winner: Abort DB Update",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3520, 460],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE ab_tests\nSET status = 'error',\n    error_log = 'winner_apply_build_failed_max_iterations'\nWHERE id = {{ $('4-Stage Judgment').first().json.id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-22-winner-merge",
+      "name": "Winner: Merge",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2640, 280],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git add -A && git commit -m 'feat: ab-test winner {{ $('4-Stage Judgment').first().json.winner }} applied for {{ $('4-Stage Judgment').first().json.slug }} [test-{{ $('4-Stage Judgment').first().json.id }}]' && git checkout main && git merge ab-winner-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }} --no-ff -m 'Merge ab-winner-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }}'\""
+      }
+    },
+    {
+      "id": "abj-23-winner-deploy",
+      "name": "Winner: Deploy",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2860, 280],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && bash deploy.sh 2>&1\""
+      }
+    },
+    {
+      "id": "abj-24-winner-growthbook",
+      "name": "Winner: GrowthBook Stop",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3080, 280],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://growthbook.37d.jp/api/v1/experiments/{{ $('4-Stage Judgment').first().json.feature_flag_key }}/stop",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.GROWTHBOOK_API_KEY}}" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"reason\": \"Winner found: Variant {{ $('4-Stage Judgment').first().json.winner }}\",\n  \"winner\": {{ $('4-Stage Judgment').first().json.winner === 'B' ? 1 : 0 }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "abj-25-winner-db-update",
+      "name": "Winner: DB Update",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3300, 280],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE ab_tests\nSET status = 'completed',\n    winner = '{{ $('4-Stage Judgment').first().json.winner }}',\n    completed_at = NOW(),\n    improvement_pct = {{ $('4-Stage Judgment').first().json.improvement_pct || 0 }},\n    z_score = {{ $('4-Stage Judgment').first().json.z_score || 0 }},\n    control_mean = {{ $('4-Stage Judgment').first().json.control_mean || 0 }},\n    treatment_mean = {{ $('4-Stage Judgment').first().json.treatment_mean || 0 }},\n    control_n = {{ $('4-Stage Judgment').first().json.control_n || 0 }},\n    treatment_n = {{ $('4-Stage Judgment').first().json.treatment_n || 0 }}\nWHERE id = {{ $('4-Stage Judgment').first().json.id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-26-winner-lock",
+      "name": "Winner: Observation Lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3520, 280],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO page_locks (page_path, locked_until, reason, task_id)\nVALUES (\n  '{{ $('4-Stage Judgment').first().json.page_path }}',\n  NOW() + INTERVAL '14 days',\n  'ab_test_observation',\n  {{ $('4-Stage Judgment').first().json.task_id }}\n)\nON CONFLICT (page_path)\nDO UPDATE SET\n  locked_until = NOW() + INTERVAL '14 days',\n  reason = 'ab_test_observation',\n  task_id = {{ $('4-Stage Judgment').first().json.task_id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-27-winner-slack",
+      "name": "Winner: Slack Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3740, 280],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":trophy: *AB Test Winner Found!*\\nTest ID: {{ $('4-Stage Judgment').first().json.id }}\\nPage: {{ $('4-Stage Judgment').first().json.page_path }}\\nWinner: Variant {{ $('4-Stage Judgment').first().json.winner }}\\nImprovement: {{ $('4-Stage Judgment').first().json.improvement_pct?.toFixed(2) || '?' }}%\\nz-score: {{ $('4-Stage Judgment').first().json.z_score?.toFixed(3) || '?' }}\\nHypothesis: {{ $('4-Stage Judgment').first().json.hypothesis?.substring(0, 200) || '' }}\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "abj-28-timeout-branch",
+      "name": "Timeout: Git Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1760, 640],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git config user.name '37Design Marketing OS' && git config user.email 'os@37d.jp' && git checkout main && git pull origin main && git checkout -b ab-timeout-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }}\""
+      }
+    },
+    {
+      "id": "abj-29-timeout-aider",
+      "name": "Timeout: Remove B (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1980, 640],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message 'ABテストがタイムアウトしました。Control(Variant A)を維持します。\\n\\nフィーチャーフラグキー: {{ $('4-Stage Judgment').first().json.feature_flag_key }}\\n\\nこのページからGrowthBookのABテスト条件分岐コードを削除し、Variant A(Control)のコードのみを残してください。\\nVariant BのコードとGrowthBookの条件分岐ロジック、data-variant属性を全て削除してください。' --file {{ $('4-Stage Judgment').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abj-30-timeout-build",
+      "name": "Timeout: Build Check",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2200, 640],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && npm run build 2>&1\""
+      }
+    },
+    {
+      "id": "abj-31-timeout-build-ok",
+      "name": "Timeout: Build OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2420, 640],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "timeout-build-check",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-32-timeout-fix-counter",
+      "name": "Timeout: Fix Counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 780],
+      "parameters": {
+        "jsCode": "const buildOutput = $('Timeout: Build Check').first().json.stdout || $('Timeout: Build Check').first().json.stderr || '';\nconst currentCount = $input.first()?.json?.fix_iteration_count || 0;\nconst newCount = currentCount + 1;\nreturn [{ json: { fix_iteration_count: newCount, max_reached: newCount >= 3, build_error: buildOutput } }];"
+      }
+    },
+    {
+      "id": "abj-33-timeout-max-check",
+      "name": "Timeout: Max Iterations?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2860, 780],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "timeout-max-check",
+              "leftValue": "={{ $json.max_reached }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "abj-34-timeout-fix-aider",
+      "name": "Timeout: Fix Build (Aider)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3080, 860],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && /home/ken/.local/bin/aider --yes --no-auto-commits --message 'Fix the following build error:\\n{{ $json.build_error.substring(0, 2000) }}' --file {{ $('4-Stage Judgment').first().json.page_path }}\""
+      }
+    },
+    {
+      "id": "abj-35-timeout-abort-branch",
+      "name": "Timeout: Abort Branch",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [3080, 720],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git checkout main && git branch -D ab-timeout-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }} 2>/dev/null || true\""
+      }
+    },
+    {
+      "id": "abj-36-timeout-abort-slack",
+      "name": "Timeout: Abort Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3300, 720],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":warning: *WF09 AB Test Judge: Timeout cleanup failed (max iterations)*\\nTest ID: {{ $('4-Stage Judgment').first().json.id }}\\nPage: {{ $('4-Stage Judgment').first().json.page_path }}\\nManual cleanup required.\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "abj-37-timeout-merge",
+      "name": "Timeout: Merge",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2640, 640],
+      "parameters": {
+        "command": "=ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && git add -A && git commit -m 'fix: remove ab-test timeout for {{ $('4-Stage Judgment').first().json.slug }} - keep control [test-{{ $('4-Stage Judgment').first().json.id }}]' && git checkout main && git merge ab-timeout-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }} --no-ff -m 'Merge ab-timeout-{{ $('4-Stage Judgment').first().json.id }}-{{ $('4-Stage Judgment').first().json.slug }}'\""
+      }
+    },
+    {
+      "id": "abj-38-timeout-deploy",
+      "name": "Timeout: Deploy",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [2860, 640],
+      "parameters": {
+        "command": "ssh -i /home/node/.n8n/n8n_host_key -o StrictHostKeyChecking=no ken@host.docker.internal \"cd ~/37design-astro-site && bash deploy.sh 2>&1\""
+      }
+    },
+    {
+      "id": "abj-39-timeout-growthbook",
+      "name": "Timeout: GrowthBook Stop",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3080, 640],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://growthbook.37d.jp/api/v1/experiments/{{ $('4-Stage Judgment').first().json.feature_flag_key }}/stop",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{$env.GROWTHBOOK_API_KEY}}" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"reason\": \"Timeout after 28 days. No significant winner.\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "abj-40-timeout-db-update",
+      "name": "Timeout: DB Update",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3300, 640],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE ab_tests\nSET status = 'timeout',\n    completed_at = NOW(),\n    z_score = {{ $('4-Stage Judgment').first().json.z_score || 0 }},\n    improvement_pct = {{ $('4-Stage Judgment').first().json.improvement_pct || 0 }}\nWHERE id = {{ $('4-Stage Judgment').first().json.id }};",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-41-timeout-slack",
+      "name": "Timeout: Slack Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3520, 640],
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \":hourglass: *AB Test Timed Out*\\nTest ID: {{ $('4-Stage Judgment').first().json.id }}\\nPage: {{ $('4-Stage Judgment').first().json.page_path }}\\nDays Running: {{ $('4-Stage Judgment').first().json.days_running }}\\nz-score: {{ $('4-Stage Judgment').first().json.z_score?.toFixed(3) || '?' }}\\nKeeping Control (Variant A). Hypothesis: {{ $('4-Stage Judgment').first().json.hypothesis?.substring(0, 200) || '' }}\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "abj-42-timeout-delete-lock",
+      "name": "Timeout: Delete Old Lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [3740, 640],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=DELETE FROM page_locks\nWHERE page_path = '{{ $('4-Stage Judgment').first().json.page_path }}'\n  AND reason = 'ab_test';",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "CONFIGURE_ME",
+          "name": "Marketing OS DB"
+        }
+      }
+    },
+    {
+      "id": "abj-43-summary",
+      "name": "Summary Log",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3960, 400],
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst summary = items.map(item => {\n  const j = item.json;\n  return (j.test_id || j.id || 'unknown') + ': ' + (j.judgment || j.status || 'processed');\n}).join(', ');\nconsole.log('WF09 AB Test Judge daily run complete. Results: ' + summary);\nreturn [{ json: { message: 'WF09 daily judgment complete', processed: items.length, summary: summary } }];"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Running Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Running Tests": {
+      "main": [
+        [
+          {
+            "node": "Has Running Tests?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Running Tests?": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Running Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Tests": {
+      "main": [
+        [
+          {
+            "node": "Summary Log",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Calculate Duration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Duration": {
+      "main": [
+        [
+          {
+            "node": "Get Test Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Test Metrics": {
+      "main": [
+        [
+          {
+            "node": "4-Stage Judgment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4-Stage Judgment": {
+      "main": [
+        [
+          {
+            "node": "Route by Judgment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Judgment": {
+      "main": [
+        [
+          {
+            "node": "Log: Too Early",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: Insufficient",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Winner: Git Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Timeout: Git Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Too Early": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: Insufficient": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Git Branch": {
+      "main": [
+        [
+          {
+            "node": "Winner: Apply (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Apply (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Winner: Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Build Check": {
+      "main": [
+        [
+          {
+            "node": "Winner: Build OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Build OK?": {
+      "main": [
+        [
+          {
+            "node": "Winner: Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Winner: Fix Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Fix Counter": {
+      "main": [
+        [
+          {
+            "node": "Winner: Max Iterations?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Max Iterations?": {
+      "main": [
+        [
+          {
+            "node": "Winner: Abort Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Winner: Fix Build (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Fix Build (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Winner: Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Abort Branch": {
+      "main": [
+        [
+          {
+            "node": "Winner: Abort Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Abort Slack": {
+      "main": [
+        [
+          {
+            "node": "Winner: Abort DB Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Abort DB Update": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Merge": {
+      "main": [
+        [
+          {
+            "node": "Winner: Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Deploy": {
+      "main": [
+        [
+          {
+            "node": "Winner: GrowthBook Stop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: GrowthBook Stop": {
+      "main": [
+        [
+          {
+            "node": "Winner: DB Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: DB Update": {
+      "main": [
+        [
+          {
+            "node": "Winner: Observation Lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Observation Lock": {
+      "main": [
+        [
+          {
+            "node": "Winner: Slack Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Winner: Slack Notify": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Git Branch": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Remove B (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Remove B (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Build Check": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Build OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Build OK?": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Timeout: Fix Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Fix Counter": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Max Iterations?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Max Iterations?": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Abort Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Timeout: Fix Build (Aider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Fix Build (Aider)": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Build Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Abort Branch": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Abort Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Abort Slack": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Merge": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Deploy": {
+      "main": [
+        [
+          {
+            "node": "Timeout: GrowthBook Stop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: GrowthBook Stop": {
+      "main": [
+        [
+          {
+            "node": "Timeout: DB Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: DB Update": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Slack Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Slack Notify": {
+      "main": [
+        [
+          {
+            "node": "Timeout: Delete Old Lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Timeout: Delete Old Lock": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
