@@ -1,0 +1,8 @@
+AuthType Basic
+AuthName "Marketing OS Dashboard"
+AuthUserFile /home/users/2/noor.jp-37design/web/37design.co.jp/dashboard/.htpasswd
+Require valid-user
+
+<Files ".htpasswd">
+    Require all denied
+</Files>
