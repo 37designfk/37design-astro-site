@@ -273,53 +273,78 @@
       }
     },
     {
-      "id": "dec-10-log-blog",
-      "name": "Log: Blog Generate",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "dec-10-trigger-blog",
+      "name": "Trigger: Blog Generate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [2120, -20],
       "parameters": {
-        "jsCode": "const task = $('Acquire Task').first().json;\nconsole.log('Routing to WF④ Blog Generate:', JSON.stringify(task));\nreturn [{ json: { routed_to: 'wf04_blog_generate', task_id: task.id, task } }];"
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/37design-blog-generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"task_id\": \"{{ $('Acquire Task').first().json.id }}\"}",
+        "options": {}
       }
     },
     {
-      "id": "dec-11-log-page",
-      "name": "Log: Page Generate",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "dec-11-trigger-page",
+      "name": "Trigger: Page Generate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [2120, 100],
       "parameters": {
-        "jsCode": "const task = $('Acquire Task').first().json;\nreturn [{ json: { routed_to: 'wf05_page_generate', task_id: task.id, task } }];"
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/37design-page-generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"task_id\": \"{{ $('Acquire Task').first().json.id }}\"}",
+        "options": {}
       }
     },
     {
-      "id": "dec-12-log-lp",
-      "name": "Log: LP Generate",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "dec-12-trigger-lp",
+      "name": "Trigger: LP Generate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [2120, 220],
       "parameters": {
-        "jsCode": "const task = $('Acquire Task').first().json;\nreturn [{ json: { routed_to: 'wf06_lp_generate', task_id: task.id, task } }];"
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/37design-lp-generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"task_id\": \"{{ $('Acquire Task').first().json.id }}\"}",
+        "options": {}
       }
     },
     {
-      "id": "dec-13-log-improve",
-      "name": "Log: Improve",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "dec-13-trigger-improve",
+      "name": "Trigger: Improve",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [2120, 340],
       "parameters": {
-        "jsCode": "const task = $('Acquire Task').first().json;\nreturn [{ json: { routed_to: 'wf07_improve', task_id: task.id, task } }];"
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/37design-improve",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"task_id\": \"{{ $('Acquire Task').first().json.id }}\"}",
+        "options": {}
       }
     },
     {
-      "id": "dec-14-log-ab-test",
-      "name": "Log: AB Test",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "dec-14-trigger-ab-test",
+      "name": "Trigger: AB Test",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [2120, 460],
       "parameters": {
-        "jsCode": "const task = $('Acquire Task').first().json;\nreturn [{ json: { routed_to: 'wf08_ab_test', task_id: task.id, task } }];"
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/37design-ab-test-generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"task_id\": \"{{ $('Acquire Task').first().json.id }}\"}",
+        "options": {}
       }
     },
     {
@@ -553,35 +578,35 @@
       "main": [
         [
           {
-            "node": "Log: Blog Generate",
+            "node": "Trigger: Blog Generate",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Log: Page Generate",
+            "node": "Trigger: Page Generate",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Log: LP Generate",
+            "node": "Trigger: LP Generate",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Log: Improve",
+            "node": "Trigger: Improve",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Log: AB Test",
+            "node": "Trigger: AB Test",
             "type": "main",
             "index": 0
           }
@@ -595,7 +620,7 @@
         ]
       ]
     },
-    "Log: Blog Generate": {
+    "Trigger: Blog Generate": {
       "main": [
         [
           {
@@ -606,7 +631,7 @@
         ]
       ]
     },
-    "Log: Page Generate": {
+    "Trigger: Page Generate": {
       "main": [
         [
           {
@@ -617,7 +642,7 @@
         ]
       ]
     },
-    "Log: LP Generate": {
+    "Trigger: LP Generate": {
       "main": [
         [
           {
@@ -628,7 +653,7 @@
         ]
       ]
     },
-    "Log: Improve": {
+    "Trigger: Improve": {
       "main": [
         [
           {
@@ -639,7 +664,7 @@
         ]
       ]
     },
-    "Log: AB Test": {
+    "Trigger: AB Test": {
       "main": [
         [
           {
