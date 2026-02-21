@@ -1,0 +1,627 @@
+---
+// Marketing OS Dashboard - Internal monitoring tool
+// Standalone page (no Layout.astro wrapper)
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0a0f1e" />
+    <title>Marketing OS Dashboard | 37Design</title>
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script is:inline>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans JP"', 'sans-serif'],
+            },
+            colors: {
+              surface: '#0a0f1e',
+              'surface-card': 'rgba(255,255,255,0.05)',
+              accent: '#f5d020',
+            },
+          },
+        },
+      };
+    </script>
+    <style is:inline>
+      body {
+        background: #0a0f1e;
+        font-family: 'Noto Sans JP', sans-serif;
+      }
+      @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      .animate-pulse-dot {
+        animation: pulse-dot 1.5s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .skeleton {
+        background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s ease-in-out infinite;
+        border-radius: 0.5rem;
+      }
+      .card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        border-color: rgba(245,208,32,0.2);
+        box-shadow: 0 0 20px rgba(245,208,32,0.05);
+      }
+      .progress-bar {
+        transition: width 0.6s ease;
+      }
+      .fade-in {
+        animation: fadeIn 0.4s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+    </style>
+  </head>
+  <body class="text-gray-200 min-h-screen antialiased">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-white/10" style="background: rgba(10,15,30,0.9); backdrop-filter: blur(16px);">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+              <span class="text-accent">&#9670;</span>
+              Marketing OS ダッシュボード
+            </h1>
+            <p class="text-sm text-gray-400 mt-0.5">37Design 自動運用システム</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <div id="connection-status" class="flex items-center gap-2 text-sm text-gray-400">
+              <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
+              <span id="status-text">接続中...</span>
+            </div>
+            <div id="last-updated" class="text-xs text-gray-500 hidden sm:block"></div>
+            <button
+              id="refresh-btn"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-300 hover:bg-white/10 hover:border-accent/30 hover:text-accent transition-all"
+              onclick="fetchData()"
+            >
+              <svg id="refresh-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              更新
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <!-- Loading State -->
+      <div id="loading-state" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="skeleton h-28"></div>
+          <div class="skeleton h-28"></div>
+          <div class="skeleton h-28"></div>
+          <div class="skeleton h-28"></div>
+        </div>
+        <div class="skeleton h-40"></div>
+        <div class="skeleton h-64"></div>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="hidden">
+        <div class="card p-8 text-center">
+          <div class="text-4xl mb-4">&#9888;&#65039;</div>
+          <h2 class="text-lg font-semibold text-white mb-2">データの取得に失敗しました</h2>
+          <p id="error-message" class="text-sm text-gray-400 mb-4"></p>
+          <button
+            onclick="fetchData()"
+            class="px-4 py-2 rounded-lg bg-accent text-surface font-semibold text-sm hover:bg-yellow-400 transition-colors"
+          >
+            再試行
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Content (hidden until data loads) -->
+      <div id="dashboard-content" class="hidden space-y-6 fade-in">
+
+        <!-- Section 1: Pipeline Overview -->
+        <section id="pipeline-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pipeline Overview</h2>
+          <div id="pipeline-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <!-- Section 2: Daily Limits -->
+        <section id="limits-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Daily Limits</h2>
+          <div id="limits-container" class="card p-5 space-y-4"></div>
+        </section>
+
+        <!-- Section 3: Recent Tasks -->
+        <section id="tasks-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Tasks</h2>
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-white/10 text-left">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Title / Slug</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Priority</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Created</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Duration</th>
+                  </tr>
+                </thead>
+                <tbody id="tasks-tbody" class="divide-y divide-white/5"></tbody>
+              </table>
+            </div>
+            <div id="tasks-empty" class="hidden p-8 text-center text-gray-500 text-sm">タスクはありません</div>
+          </div>
+        </section>
+
+        <!-- Section 4: Active Page Locks -->
+        <section id="locks-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Active Page Locks</h2>
+          <div id="locks-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+          <div id="locks-empty" class="hidden card p-6 text-center text-gray-500 text-sm">アクティブなロックはありません</div>
+        </section>
+
+        <!-- Section 5: AB Tests -->
+        <section id="abtests-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">A/B Tests</h2>
+          <div id="abtests-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          <div id="abtests-empty" class="hidden card p-6 text-center text-gray-500 text-sm">実行中のA/Bテストはありません</div>
+        </section>
+
+        <!-- Section 6: KPI Targets -->
+        <section id="kpi-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">KPI Targets</h2>
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-white/10 text-left">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Metric</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Current</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Target</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Gap</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-center">Trend</th>
+                  </tr>
+                </thead>
+                <tbody id="kpi-tbody" class="divide-y divide-white/5"></tbody>
+              </table>
+            </div>
+            <div id="kpi-empty" class="hidden p-8 text-center text-gray-500 text-sm">KPIデータはありません</div>
+          </div>
+        </section>
+
+        <!-- Section 7: Page Freshness -->
+        <section id="freshness-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Page Freshness</h2>
+          <div id="freshness-container" class="card p-5 space-y-3"></div>
+          <div id="freshness-empty" class="hidden card p-6 text-center text-gray-500 text-sm">ページデータはありません</div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 mt-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-xs text-gray-600">
+        37Design Marketing OS &mdash; Internal Dashboard
+      </div>
+    </footer>
+
+    <script is:inline>
+      const API_URL = 'https://n8n-onprem.37d.jp/webhook/37design-dashboard-api';
+      let refreshInterval;
+      let isLoading = false;
+
+      // --- Utility Functions ---
+
+      function timeAgo(dateString) {
+        if (!dateString) return '-';
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffMs = now - date;
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffSec < 60) return 'たった今';
+        if (diffMin < 60) return `${diffMin}分前`;
+        if (diffHour < 24) return `${diffHour}時間前`;
+        if (diffDay < 30) return `${diffDay}日前`;
+        return date.toLocaleDateString('ja-JP');
+      }
+
+      function formatDuration(seconds) {
+        if (!seconds && seconds !== 0) return '-';
+        if (seconds < 60) return `${seconds}秒`;
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        if (min < 60) return `${min}分${sec > 0 ? sec + '秒' : ''}`;
+        const hr = Math.floor(min / 60);
+        const remainMin = min % 60;
+        return `${hr}時間${remainMin > 0 ? remainMin + '分' : ''}`;
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // --- Status Badge ---
+
+      function statusBadge(status) {
+        const map = {
+          pending: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'Pending' },
+          running: { color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Running', pulse: true },
+          done: { color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', label: 'Done' },
+          completed: { color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', label: 'Done' },
+          failed: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'Failed' },
+          timeout: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'Timeout' },
+        };
+        const s = map[status] || { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: status || '-' };
+        return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${s.color}">
+          ${s.pulse ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse-dot"></span>' : ''}
+          ${escapeHtml(s.label)}
+        </span>`;
+      }
+
+      // --- Task Type Icons ---
+
+      function taskTypeIcon(type) {
+        const icons = {
+          blog_generate: '\u{1F4DD}',
+          lp_generate: '\u{1F3AF}',
+          page_improve: '\u{2728}',
+          ab_test: '\u{1F9EA}',
+          seo_audit: '\u{1F50D}',
+          content_refresh: '\u{1F504}',
+          analytics_report: '\u{1F4CA}',
+        };
+        return icons[type] || '\u{2699}\u{FE0F}';
+      }
+
+      // --- Progress Bar Color ---
+
+      function progressColor(ratio) {
+        if (ratio < 0.5) return 'bg-emerald-500';
+        if (ratio < 0.8) return 'bg-yellow-500';
+        return 'bg-red-500';
+      }
+
+      function agingColor(score) {
+        if (score <= 30) return 'bg-emerald-500';
+        if (score <= 60) return 'bg-yellow-500';
+        if (score <= 80) return 'bg-orange-500';
+        return 'bg-red-500';
+      }
+
+      // --- Render Functions ---
+
+      function renderPipeline(pipeline) {
+        const container = document.getElementById('pipeline-cards');
+        if (!pipeline) {
+          container.innerHTML = '<p class="text-gray-500 text-sm col-span-full">パイプラインデータなし</p>';
+          return;
+        }
+        const cards = [
+          { label: 'Pending', value: pipeline.pending ?? 0, color: 'yellow', icon: '\u{23F3}' },
+          { label: 'Running', value: pipeline.running ?? 0, color: 'blue', icon: '\u{26A1}', pulse: true },
+          { label: 'Completed Today', value: pipeline.done ?? 0, color: 'emerald', icon: '\u{2705}' },
+          { label: 'Failed', value: pipeline.failed ?? 0, color: 'red', icon: '\u{274C}' },
+        ];
+        container.innerHTML = cards.map(c => `
+          <div class="card p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${c.label}</span>
+              <span class="text-lg">${c.icon}</span>
+            </div>
+            <div class="flex items-end gap-2">
+              <span class="text-3xl font-bold text-${c.color}-400 ${c.pulse ? 'animate-pulse-dot' : ''}">${c.value}</span>
+              <span class="text-xs text-gray-500 mb-1">tasks</span>
+            </div>
+            <div class="mt-3 h-1 rounded-full bg-white/5">
+              <div class="h-full rounded-full bg-${c.color}-500/50" style="width: ${Math.min(c.value * 10, 100)}%"></div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderLimits(limits) {
+        const container = document.getElementById('limits-container');
+        if (!limits || Object.keys(limits).length === 0) {
+          container.innerHTML = '<p class="text-gray-500 text-sm text-center">制限データなし</p>';
+          return;
+        }
+        container.innerHTML = Object.entries(limits).map(([key, val]) => {
+          const used = val.used ?? 0;
+          const limit = val.limit ?? 1;
+          const ratio = limit > 0 ? used / limit : 0;
+          const pct = Math.min(ratio * 100, 100);
+          const color = progressColor(ratio);
+          return `
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-medium text-gray-300">${escapeHtml(key)}</span>
+                <span class="text-xs text-gray-400">${used} / ${limit}</span>
+              </div>
+              <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+                <div class="h-full rounded-full progress-bar ${color}" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderTasks(tasks) {
+        const tbody = document.getElementById('tasks-tbody');
+        const empty = document.getElementById('tasks-empty');
+        if (!tasks || tasks.length === 0) {
+          tbody.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+        tbody.innerHTML = tasks.map(t => `
+          <tr class="hover:bg-white/[0.02] transition-colors">
+            <td class="px-4 py-3">${statusBadge(t.status)}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="mr-1">${taskTypeIcon(t.type)}</span>
+              <span class="text-gray-400 text-xs">${escapeHtml(t.type)}</span>
+            </td>
+            <td class="px-4 py-3 text-white font-medium max-w-xs truncate">${escapeHtml(t.title || t.slug || '-')}</td>
+            <td class="px-4 py-3">
+              ${t.priority ? `<span class="text-xs font-medium ${t.priority === 'high' ? 'text-red-400' : t.priority === 'medium' ? 'text-yellow-400' : 'text-gray-400'}">${escapeHtml(t.priority)}</span>` : '<span class="text-gray-600">-</span>'}
+            </td>
+            <td class="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">${timeAgo(t.created_at || t.created)}</td>
+            <td class="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">${t.duration ? formatDuration(t.duration) : '-'}</td>
+          </tr>
+        `).join('');
+      }
+
+      function renderLocks(locks) {
+        const container = document.getElementById('locks-container');
+        const empty = document.getElementById('locks-empty');
+        if (!locks || locks.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          empty.classList.remove('hidden');
+          return;
+        }
+        container.classList.remove('hidden');
+        empty.classList.add('hidden');
+        container.innerHTML = locks.map(lock => {
+          const remaining = lock.remaining_minutes ?? lock.remaining ?? 0;
+          const total = lock.total_minutes ?? lock.total ?? 60;
+          const pct = total > 0 ? Math.max((remaining / total) * 100, 0) : 0;
+          return `
+            <div class="card p-4">
+              <div class="flex items-start justify-between mb-2">
+                <code class="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">${escapeHtml(lock.path || lock.page)}</code>
+                <span class="text-xs text-gray-500">${remaining}分</span>
+              </div>
+              <p class="text-xs text-gray-400 mb-3">
+                <span class="inline-block px-1.5 py-0.5 rounded bg-white/5 text-gray-300 mr-1">${escapeHtml(lock.reason)}</span>
+              </p>
+              <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                <div class="h-full rounded-full progress-bar bg-accent/60" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderABTests(tests) {
+        const container = document.getElementById('abtests-container');
+        const empty = document.getElementById('abtests-empty');
+        if (!tests || tests.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          empty.classList.remove('hidden');
+          return;
+        }
+        container.classList.remove('hidden');
+        empty.classList.add('hidden');
+        container.innerHTML = tests.map(test => `
+          <div class="card p-5">
+            <div class="flex items-start justify-between mb-3">
+              <code class="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">${escapeHtml(test.path || test.page)}</code>
+              ${statusBadge(test.status)}
+            </div>
+            <p class="text-sm text-gray-300 mb-3 line-clamp-2">${escapeHtml(test.hypothesis)}</p>
+            <div class="flex items-center gap-4 text-xs text-gray-400">
+              <span>${test.days_running ?? '-'}日間実行中</span>
+              ${test.winner ? `<span class="text-emerald-400 font-medium">Winner: ${escapeHtml(test.winner)}</span>` : ''}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderKPI(kpi) {
+        const tbody = document.getElementById('kpi-tbody');
+        const empty = document.getElementById('kpi-empty');
+        if (!kpi || kpi.length === 0) {
+          tbody.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+        tbody.innerHTML = kpi.map(k => {
+          const gap = (k.current ?? 0) - (k.target ?? 0);
+          const gapColor = gap >= 0 ? 'text-emerald-400' : 'text-red-400';
+          const gapPrefix = gap >= 0 ? '+' : '';
+          const trend = k.trend;
+          let trendEl = '<span class="text-gray-500">\u2192</span>';
+          if (trend === 'up') trendEl = '<span class="text-emerald-400">\u2191</span>';
+          else if (trend === 'down') trendEl = '<span class="text-red-400">\u2193</span>';
+          return `
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="px-4 py-3 text-white font-medium">${escapeHtml(k.name || k.metric)}</td>
+              <td class="px-4 py-3 text-right tabular-nums">${k.current ?? '-'}</td>
+              <td class="px-4 py-3 text-right text-gray-400 tabular-nums">${k.target ?? '-'}</td>
+              <td class="px-4 py-3 text-right font-medium tabular-nums ${gapColor}">${gapPrefix}${gap}</td>
+              <td class="px-4 py-3 text-center text-lg">${trendEl}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderFreshness(pages) {
+        const container = document.getElementById('freshness-container');
+        const empty = document.getElementById('freshness-empty');
+        if (!pages || pages.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          empty.classList.remove('hidden');
+          return;
+        }
+        container.classList.remove('hidden');
+        empty.classList.add('hidden');
+
+        const sorted = [...pages].sort((a, b) => (b.aging_score ?? 0) - (a.aging_score ?? 0));
+        container.innerHTML = sorted.map(p => {
+          const score = p.aging_score ?? 0;
+          const color = agingColor(score);
+          const needsRefresh = score >= 70;
+          return `
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2 ${needsRefresh ? 'border-l-2 border-red-500/50 pl-3' : ''}">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <code class="text-xs text-gray-300 truncate">${escapeHtml(p.path || p.page)}</code>
+                  ${needsRefresh ? '<span class="shrink-0 text-[10px] font-semibold text-red-400 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded-full">要更新</span>' : ''}
+                </div>
+                <div class="text-[11px] text-gray-500">${p.last_refreshed ? `最終更新: ${timeAgo(p.last_refreshed)}` : ''}</div>
+              </div>
+              <div class="flex items-center gap-3 sm:w-64 shrink-0">
+                <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                  <div class="h-full rounded-full progress-bar ${color}" style="width: ${score}%"></div>
+                </div>
+                <span class="text-xs font-mono text-gray-400 w-8 text-right">${score}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // --- Main Fetch ---
+
+      async function fetchData() {
+        if (isLoading) return;
+        isLoading = true;
+
+        const refreshIcon = document.getElementById('refresh-icon');
+        refreshIcon.style.transform = 'rotate(360deg)';
+
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const dashboardContent = document.getElementById('dashboard-content');
+
+        // Show loading only on first load
+        if (dashboardContent.classList.contains('hidden')) {
+          loadingState.classList.remove('hidden');
+        }
+        errorState.classList.add('hidden');
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          // Hide loading, show content
+          loadingState.classList.add('hidden');
+          dashboardContent.classList.remove('hidden');
+
+          // Render all sections
+          renderPipeline(data.pipeline);
+          renderLimits(data.limits || data.daily_limits);
+          renderTasks(data.tasks || data.recent_tasks);
+          renderLocks(data.locks || data.page_locks || data.active_locks);
+          renderABTests(data.ab_tests || data.abtests);
+          renderKPI(data.kpi || data.kpi_targets);
+          renderFreshness(data.freshness || data.page_freshness);
+
+          // Update connection status
+          setConnectionStatus(true);
+          updateTimestamp();
+
+        } catch (err) {
+          console.error('Dashboard fetch error:', err);
+
+          // Only show error state if no data has been displayed yet
+          if (dashboardContent.classList.contains('hidden')) {
+            loadingState.classList.add('hidden');
+            errorState.classList.remove('hidden');
+            document.getElementById('error-message').textContent = err.message;
+          }
+
+          setConnectionStatus(false, err.message);
+        } finally {
+          isLoading = false;
+          setTimeout(() => { refreshIcon.style.transform = ''; }, 400);
+        }
+      }
+
+      function setConnectionStatus(connected, msg) {
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('status-text');
+        if (connected) {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50';
+          text.textContent = '接続済み';
+          text.className = 'text-emerald-400 text-sm';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50';
+          text.textContent = msg ? `エラー` : '切断';
+          text.className = 'text-red-400 text-sm';
+        }
+      }
+
+      function updateTimestamp() {
+        const el = document.getElementById('last-updated');
+        const now = new Date();
+        el.textContent = `最終更新: ${now.toLocaleTimeString('ja-JP')}`;
+      }
+
+      // --- Init ---
+      refreshInterval = setInterval(fetchData, 30000);
+      fetchData();
+    </script>
+  </body>
+</html>
