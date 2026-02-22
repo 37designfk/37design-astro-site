@@ -155,7 +155,59 @@
           <div id="pipeline-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </section>
 
-        <!-- Section 2: Daily Limits -->
+        <!-- Section 2: Analytics -->
+        <section id="analytics-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Analytics <span id="analytics-period" class="normal-case font-normal text-gray-600 ml-2 text-xs"></span></h2>
+          <div id="analytics-container" class="space-y-4">
+            <!-- GA4 Summary -->
+            <div id="ga4-summary" class="grid grid-cols-2 sm:grid-cols-5 gap-3"></div>
+            <!-- GSC + GA4 Pages -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="card overflow-hidden">
+                <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2">
+                  <span class="text-sm font-semibold text-white">検索キーワード</span>
+                  <span class="text-xs text-gray-500">Search Console</span>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs">
+                    <thead>
+                      <tr class="border-b border-white/10 text-left">
+                        <th class="px-4 py-2 text-gray-500 font-medium">キーワード</th>
+                        <th class="px-4 py-2 text-gray-500 font-medium text-right">クリック</th>
+                        <th class="px-4 py-2 text-gray-500 font-medium text-right">表示</th>
+                        <th class="px-4 py-2 text-gray-500 font-medium text-right">CTR</th>
+                        <th class="px-4 py-2 text-gray-500 font-medium text-right">順位</th>
+                      </tr>
+                    </thead>
+                    <tbody id="gsc-queries-tbody" class="divide-y divide-white/5"></tbody>
+                  </table>
+                </div>
+                <div id="gsc-empty" class="hidden p-4 text-center text-gray-600 text-xs">データなし（Search Consoleのデータが蓄積されるまでお待ちください）</div>
+              </div>
+              <div class="card overflow-hidden">
+                <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2">
+                  <span class="text-sm font-semibold text-white">人気ページ</span>
+                  <span class="text-xs text-gray-500">GA4 Top Pages</span>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs">
+                    <thead>
+                      <tr class="border-b border-white/10 text-left">
+                        <th class="px-4 py-2 text-gray-500 font-medium">ページ</th>
+                        <th class="px-4 py-2 text-gray-500 font-medium text-right">PV</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ga4-pages-tbody" class="divide-y divide-white/5"></tbody>
+                  </table>
+                </div>
+                <div id="ga4-pages-empty" class="hidden p-4 text-center text-gray-600 text-xs">データなし</div>
+              </div>
+            </div>
+          </div>
+          <div id="analytics-empty" class="hidden card p-6 text-center text-gray-500 text-sm">アナリティクスデータなし</div>
+        </section>
+
+        <!-- Section 3: Daily Limits -->
         <section id="limits-section">
           <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Daily Limits</h2>
           <div id="limits-container" class="card p-5 space-y-4"></div>
@@ -539,6 +591,101 @@
         }).join('');
       }
 
+      // --- Analytics Render ---
+
+      function renderAnalytics(analytics) {
+        if (!analytics || (!analytics.ga4 && !analytics.gsc)) {
+          document.getElementById('analytics-container').classList.add('hidden');
+          document.getElementById('analytics-empty').classList.remove('hidden');
+          return;
+        }
+        document.getElementById('analytics-container').classList.remove('hidden');
+        document.getElementById('analytics-empty').classList.add('hidden');
+
+        const ga4 = analytics.ga4 || {};
+        const gsc = analytics.gsc || {};
+        const period = analytics.period;
+
+        if (period) {
+          document.getElementById('analytics-period').textContent =
+            `${period.start} 〜 ${period.end}（28日間）`;
+        }
+
+        // GA4 Summary Cards
+        const sessions = ga4.sessions || 0;
+        const prevSessions = ga4.prev_sessions || 0;
+        const users = ga4.users || 0;
+        const prevUsers = ga4.prev_users || 0;
+        const sessionDiff = prevSessions > 0 ? Math.round((sessions - prevSessions) / prevSessions * 100) : null;
+        const userDiff = prevUsers > 0 ? Math.round((users - prevUsers) / prevUsers * 100) : null;
+
+        function diffBadge(diff) {
+          if (diff === null) return '';
+          const color = diff >= 0 ? 'text-emerald-400' : 'text-red-400';
+          const arrow = diff >= 0 ? '▲' : '▼';
+          return `<span class="text-[10px] ${color} ml-1">${arrow}${Math.abs(diff)}%</span>`;
+        }
+
+        const summaryItems = [
+          { label: 'セッション', value: sessions.toLocaleString(), diff: sessionDiff, icon: '📊' },
+          { label: 'ユーザー', value: users.toLocaleString(), diff: userDiff, icon: '👤' },
+          { label: 'PV', value: (ga4.pageviews || 0).toLocaleString(), diff: null, icon: '📄' },
+          { label: '直帰率', value: (ga4.bounce_rate || 0) + '%', diff: null, icon: '↩️' },
+          { label: '平均滞在', value: formatDuration(ga4.avg_session_sec), diff: null, icon: '⏱' },
+        ];
+
+        document.getElementById('ga4-summary').innerHTML = summaryItems.map(s => `
+          <div class="card p-4">
+            <div class="text-gray-500 text-xs mb-1">${s.icon} ${s.label}</div>
+            <div class="text-white font-bold text-xl tabular-nums">
+              ${escapeHtml(String(s.value))}${s.diff !== null ? diffBadge(s.diff) : ''}
+            </div>
+            ${s.diff !== null && prevSessions > 0 ? `<div class="text-gray-600 text-[10px] mt-0.5">前期比</div>` : ''}
+          </div>
+        `).join('');
+
+        // GSC Queries
+        const queries = gsc.top_queries || [];
+        const gscTbody = document.getElementById('gsc-queries-tbody');
+        if (queries.length === 0) {
+          gscTbody.innerHTML = '';
+          document.getElementById('gsc-empty').classList.remove('hidden');
+        } else {
+          document.getElementById('gsc-empty').classList.add('hidden');
+          gscTbody.innerHTML = queries.map(q => `
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-4 py-2 text-gray-300 max-w-[180px] truncate">${escapeHtml(q.query)}</td>
+              <td class="px-4 py-2 text-right tabular-nums text-white font-medium">${q.clicks}</td>
+              <td class="px-4 py-2 text-right tabular-nums text-gray-400">${q.impressions?.toLocaleString()}</td>
+              <td class="px-4 py-2 text-right tabular-nums text-gray-400">${q.ctr}%</td>
+              <td class="px-4 py-2 text-right tabular-nums ${q.position <= 10 ? 'text-emerald-400' : q.position <= 20 ? 'text-yellow-400' : 'text-gray-400'}">${q.position}</td>
+            </tr>
+          `).join('');
+        }
+
+        // GA4 Top Pages
+        const pages = ga4.top_pages || [];
+        const pagesTbody = document.getElementById('ga4-pages-tbody');
+        if (pages.length === 0) {
+          pagesTbody.innerHTML = '';
+          document.getElementById('ga4-pages-empty').classList.remove('hidden');
+        } else {
+          document.getElementById('ga4-pages-empty').classList.add('hidden');
+          const maxPv = Math.max(...pages.map(p => p.pv), 1);
+          pagesTbody.innerHTML = pages.map(p => `
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-4 py-2">
+                <div class="text-gray-300 text-xs truncate max-w-[220px]">${escapeHtml(p.path)}</div>
+                <div class="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
+                  <div class="h-full rounded-full bg-accent/40" style="width:${Math.round(p.pv/maxPv*100)}%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-2 text-right tabular-nums text-white font-medium">${p.pv}</td>
+            </tr>
+          `).join('');
+        }
+      }
+
       // --- Main Fetch ---
 
       async function fetchData() {
@@ -576,6 +723,7 @@
 
           // Render all sections
           renderPipeline(data.pipeline);
+          renderAnalytics(data.analytics);
           renderLimits(data.limits || data.daily_limits);
           renderTasks(data.tasks || data.recent_tasks);
           renderLocks(data.locks || data.page_locks || data.active_locks);

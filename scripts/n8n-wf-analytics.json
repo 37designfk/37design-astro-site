@@ -1,0 +1,53 @@
+{
+  "name": "Analytics Fetch (37Design)",
+  "active": true,
+  "versionId": "1",
+  "nodes": [
+    {
+      "id": "analytics-01-schedule",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "analytics-02-fetch",
+      "name": "Fetch Analytics",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [220, 300],
+      "parameters": {
+        "command": "python3 /home/ken/37design-astro-site/scripts/fetch-analytics.py 2>&1"
+      }
+    },
+    {
+      "id": "analytics-03-log",
+      "name": "Log Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300],
+      "parameters": {
+        "jsCode": "const out = $input.first().json.stdout || '';\nconst success = out.includes('updated_at');\nconsole.log('=== Analytics Fetch ===');\nconsole.log(out.substring(0, 500));\nreturn [{ json: { success, preview: out.substring(0, 200) } }];"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [[{ "node": "Fetch Analytics", "type": "main", "index": 0 }]]
+    },
+    "Fetch Analytics": {
+      "main": [[{ "node": "Log Result", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
