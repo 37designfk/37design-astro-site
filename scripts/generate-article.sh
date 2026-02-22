@@ -7,7 +7,7 @@ BLOG_DIR="$(dirname "$0")/../src/content/blog"
 
 echo "記事生成中: ${THEME}..."
 
-env -u CLAUDECODE claude -p "
+env -u CLAUDECODE PATH="$HOME/.local/bin:$PATH" claude -p "
 あなたは37Design（株式会社37Design）のブログ記事ライターです。
 代表は古田 健（ふるた けん）です。
 

@@ -10,7 +10,7 @@ TMP_FILE="/tmp/research-$$.json"
 echo "=== 「${THEME}」キーワード調査中... ==="
 
 # Step1: キーワード調査
-env -u CLAUDECODE claude -p "
+env -u CLAUDECODE PATH="$HOME/.local/bin:$PATH" claude -p "
 あなたはSEOコンサルタントです。
 37Design（中小企業向けAI・マーケティング支援会社）のブログ記事を計画しています。
 
@@ -116,7 +116,7 @@ for (const [i, idea] of ideas.entries()) {
   try {
     const today = new Date().toISOString().split('T')[0];
     execSync(
-      `echo ${JSON.stringify(prompt)} | env -u CLAUDECODE claude -p | node "${path.join(scriptDir, 'save-article.js')}" "${today}"`,
+      `echo ${JSON.stringify(prompt)} | env -u CLAUDECODE PATH="$HOME/.local/bin:$PATH" claude -p | node "${path.join(scriptDir, 'save-article.js')}" "${today}"`,
       { stdio: 'inherit', shell: true }
     );
   } catch(e) {
