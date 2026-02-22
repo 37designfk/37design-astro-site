@@ -400,7 +400,12 @@
               <span class="mr-1">${taskTypeIcon(t.type)}</span>
               <span class="text-gray-400 text-xs">${escapeHtml(t.type)}</span>
             </td>
-            <td class="px-4 py-3 text-white font-medium max-w-xs truncate">${escapeHtml(t.title || t.slug || '-')}</td>
+            <td class="px-4 py-3 text-white font-medium max-w-xs truncate">
+              ${t.slug
+                ? `<a href="/blog/${escapeHtml(t.slug)}/" target="_blank" class="hover:text-accent transition-colors">${escapeHtml(t.title || t.slug)}</a>`
+                : escapeHtml(t.title || '-')
+              }
+            </td>
             <td class="px-4 py-3">
               ${t.priority ? `<span class="text-xs font-medium ${t.priority === 'high' ? 'text-red-400' : t.priority === 'medium' ? 'text-yellow-400' : 'text-gray-400'}">${escapeHtml(t.priority)}</span>` : '<span class="text-gray-600">-</span>'}
             </td>
