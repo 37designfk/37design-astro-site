@@ -402,7 +402,7 @@
             </td>
             <td class="px-4 py-3 text-white font-medium max-w-xs truncate">
               ${t.slug
-                ? `<a href="/blog/${escapeHtml(t.slug)}/" target="_blank" class="hover:text-accent transition-colors">${escapeHtml(t.title || t.slug)}</a>`
+                ? `<a href="/blog/${escapeHtml(t.slug)}/" target="_blank" class="text-accent hover:underline transition-colors">${escapeHtml(t.title || t.slug)}</a>`
                 : escapeHtml(t.title || '-')
               }
             </td>
