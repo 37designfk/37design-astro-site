@@ -1,0 +1,64 @@
+{
+  "name": "Dashboard API Simple (37Design)",
+  "active": true,
+  "versionId": "5",
+  "nodes": [
+    {
+      "id": "dash-01-webhook-get",
+      "name": "GET Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 200],
+      "webhookId": "37design-dashboard-api-simple",
+      "parameters": {
+        "path": "37design-dashboard-api",
+        "httpMethod": "GET",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "dash-02-webhook-post",
+      "name": "POST Log Task",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 450],
+      "webhookId": "37design-log-task",
+      "parameters": {
+        "path": "37design-log-task",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "id": "dash-03-get",
+      "name": "Read Tasks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 200],
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst tasks = staticData.tasks || [];\nconst today = new Date().toISOString().split('T')[0];\nconst todayTasks = tasks.filter(t => t.created_at && t.created_at.startsWith(today));\nreturn [{\n  json: {\n    generated_at: new Date().toISOString(),\n    pipeline: {\n      pending: tasks.filter(t => t.status === 'pending').length,\n      running: tasks.filter(t => t.status === 'running').length,\n      done: tasks.filter(t => t.status === 'done').length,\n      failed: tasks.filter(t => t.status === 'failed').length\n    },\n    recent_tasks: tasks.slice(0, 20).map(t => ({\n      id: t.id, type: t.type || 'blog_generate',\n      title: t.title || t.slug || '-', slug: t.slug,\n      status: t.status || 'done', priority: 'medium',\n      created_at: t.created_at\n    })),\n    daily_limits: { '記事生成 (今日)': { used: todayTasks.length, limit: 10 } },\n    page_locks: [], ab_tests: [], kpi_targets: [], page_freshness: []\n  }\n}];"
+      }
+    },
+    {
+      "id": "dash-04-post",
+      "name": "Save Task",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 450],
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.tasks) staticData.tasks = [];\nconst body = $input.first().json.body || $input.first().json;\nstaticData.tasks.unshift({\n  id: Date.now().toString(),\n  type: body.type || 'blog_generate',\n  title: body.title || '',\n  slug: body.slug || '',\n  status: body.status || 'done',\n  created_at: new Date().toISOString()\n});\nif (staticData.tasks.length > 100) staticData.tasks = staticData.tasks.slice(0, 100);\nreturn [{ json: { ok: true, count: staticData.tasks.length } }];"
+      }
+    }
+  ],
+  "connections": {
+    "GET Dashboard": {
+      "main": [[{ "node": "Read Tasks", "type": "main", "index": 0 }]]
+    },
+    "POST Log Task": {
+      "main": [[{ "node": "Save Task", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "saveStaticData": true }
+}

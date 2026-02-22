@@ -47,4 +47,12 @@ structuredDataType: "Article"
   const filepath = path.join(blogDir, `${slug}.md`);
   fs.writeFileSync(filepath, frontmatter + body);
   console.log(`✅ 保存完了: src/content/blog/${slug}.md`);
+
+  // n8n にタスクログを送信
+  const N8N_URL = 'https://n8n-onprem.37d.jp/webhook/37design-log-task';
+  fetch(N8N_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'blog_generate', title, slug, category, status: 'done', priority: 'medium' }),
+  }).catch(() => {}); // 失敗しても無視
 });

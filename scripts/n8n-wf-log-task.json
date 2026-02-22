@@ -1,0 +1,37 @@
+{
+  "name": "Log Task (Article Generator)",
+  "active": true,
+  "versionId": "6",
+  "nodes": [
+    {
+      "id": "log-01-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "37design-log-task",
+      "parameters": {
+        "path": "37design-log-task",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "id": "log-02-code",
+      "name": "Write to File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = '/home/node/.n8n/37design-tasks.jsonl';\nconst body = $input.first().json.body || $input.first().json;\nconst task = JSON.stringify({\n  id: Date.now().toString(),\n  type: body.type || 'blog_generate',\n  title: body.title || '',\n  slug: body.slug || '',\n  status: body.status || 'done',\n  created_at: new Date().toISOString()\n});\nfs.appendFileSync(path, task + '\\n');\nreturn [{ json: { ok: true } }];"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Write to File", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
