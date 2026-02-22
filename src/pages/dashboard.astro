@@ -149,6 +149,27 @@
       <!-- Dashboard Content (hidden until data loads) -->
       <div id="dashboard-content" class="hidden space-y-6 fade-in">
 
+        <!-- Section 0: Claude Usage -->
+        <section id="usage-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Claude Usage <span id="usage-period" class="normal-case font-normal text-gray-600 ml-2 text-xs"></span></h2>
+          <div id="usage-container" class="space-y-3">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="usage-cards"></div>
+            <div class="card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-400">今月のOpus使用量</span>
+                <span id="usage-pct-text" class="text-xs text-gray-400"></span>
+              </div>
+              <div class="h-3 rounded-full bg-white/5 overflow-hidden">
+                <div id="usage-bar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
+              </div>
+              <div id="usage-daily" class="mt-4 flex items-end gap-0.5 h-12"></div>
+            </div>
+          </div>
+          <div id="usage-empty" class="hidden card p-4 text-center text-gray-600 text-xs">
+            使用データなし — セッション終了時に自動同期されます
+          </div>
+        </section>
+
         <!-- Section 1: Pipeline Overview -->
         <section id="pipeline-section">
           <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pipeline Overview</h2>
@@ -591,6 +612,67 @@
         }).join('');
       }
 
+      // --- Claude Usage Render ---
+
+      function renderUsage(usage) {
+        if (!usage || !usage.billing_period) {
+          document.getElementById('usage-container').classList.add('hidden');
+          document.getElementById('usage-empty').classList.remove('hidden');
+          return;
+        }
+        document.getElementById('usage-container').classList.remove('hidden');
+        document.getElementById('usage-empty').classList.add('hidden');
+
+        const period = usage.billing_period;
+        const updatedAt = usage.updated_at ? new Date(usage.updated_at) : null;
+        document.getElementById('usage-period').textContent =
+          period + (updatedAt ? ` · ${timeAgo(usage.updated_at)}に同期` : '');
+
+        const byModel = usage.month_by_model || {};
+        const total = usage.month_total_tokens || 0;
+        const opus = byModel.opus || 0;
+        const sonnet = byModel.sonnet || 0;
+        const haiku = byModel.haiku || 0;
+        const pct = usage.opus_usage_pct || 0;
+
+        // カード
+        const cards = [
+          { label: '今月合計', value: (total / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'accent' },
+          { label: 'Opus', value: (opus / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'purple' },
+          { label: 'Sonnet', value: (sonnet / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'blue' },
+          { label: 'セッション数', value: (usage.total_sessions || 0).toLocaleString(), sub: '累計', color: 'emerald' },
+        ];
+        document.getElementById('usage-cards').innerHTML = cards.map(c => `
+          <div class="card p-4">
+            <div class="text-gray-500 text-xs mb-1">${c.label}</div>
+            <div class="text-white font-bold text-xl tabular-nums">${c.value}</div>
+            <div class="text-gray-600 text-[10px]">${c.sub}</div>
+          </div>
+        `).join('');
+
+        // 使用率バー
+        const barColor = pct < 50 ? 'bg-emerald-500' : pct < 80 ? 'bg-yellow-500' : 'bg-red-500';
+        document.getElementById('usage-bar').className = `h-full rounded-full transition-all duration-700 ${barColor}`;
+        document.getElementById('usage-bar').style.width = Math.min(pct, 100) + '%';
+        document.getElementById('usage-pct-text').textContent = `${pct}% 使用`;
+
+        // 日別ミニグラフ
+        const daily = usage.monthly_daily || [];
+        if (daily.length > 0) {
+          const maxTok = Math.max(...daily.map(d => d.tokens), 1);
+          document.getElementById('usage-daily').innerHTML = daily.map(d => {
+            const h = Math.max(Math.round(d.tokens / maxTok * 100), 2);
+            const date = d.date.slice(5); // MM-DD
+            return `<div class="flex-1 flex flex-col items-center gap-1 group relative">
+              <div class="w-full rounded-sm bg-accent/50 group-hover:bg-accent transition-colors" style="height:${h}%"></div>
+              <div class="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
+                ${date}: ${(d.tokens/1000).toFixed(1)}K
+              </div>
+            </div>`;
+          }).join('');
+        }
+      }
+
       // --- Analytics Render ---
 
       function renderAnalytics(analytics) {
@@ -722,6 +804,7 @@
           dashboardContent.classList.remove('hidden');
 
           // Render all sections
+          renderUsage(data.claude_usage);
           renderPipeline(data.pipeline);
           renderAnalytics(data.analytics);
           renderLimits(data.limits || data.daily_limits);
