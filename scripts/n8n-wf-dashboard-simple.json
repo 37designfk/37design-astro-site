@@ -38,7 +38,7 @@
       "typeVersion": 1,
       "position": [240, 200],
       "parameters": {
-        "command": "cat /home/ken/37design-astro-site/.analytics-cache.json 2>/dev/null || echo '{\"ga4\":{},\"gsc\":{}}'"
+        "command": "cat /home/node/.n8n/analytics-cache.json 2>/dev/null || echo '{\"ga4\":{},\"gsc\":{}}'"
       }
     },
     {
