@@ -62,7 +62,7 @@
       "typeVersion": 2,
       "position": [480, 200],
       "parameters": {
-        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst tasks = staticData.tasks || [];\nconst today = new Date().toISOString().split('T')[0];\nconst todayTasks = tasks.filter(t => t.created_at && t.created_at.startsWith(today));\n\nlet analytics = { ga4: {}, gsc: {} };\ntry {\n  const raw = $('Read Analytics Cache').first().json.stdout || '{}';\n  analytics = JSON.parse(raw);\n} catch(e) {}\n\nconst usage = staticData.claude_usage || null;\n\nreturn [{\n  json: {\n    generated_at: new Date().toISOString(),\n    pipeline: {\n      pending: tasks.filter(t => t.status === 'pending').length,\n      running: tasks.filter(t => t.status === 'running').length,\n      done: tasks.filter(t => t.status === 'done').length,\n      failed: tasks.filter(t => t.status === 'failed').length\n    },\n    recent_tasks: tasks.slice(0, 20).map(t => ({\n      id: t.id, type: t.type || 'blog_generate',\n      title: t.title || t.slug || '-', slug: t.slug,\n      status: t.status || 'done', priority: 'medium',\n      created_at: t.created_at\n    })),\n    daily_limits: { '記事生成 (今日)': { used: todayTasks.length, limit: 10 } },\n    analytics: analytics,\n    claude_usage: usage,\n    page_locks: [], ab_tests: [], kpi_targets: [], page_freshness: []\n  }\n}];"
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst tasks = staticData.tasks || [];\nconst today = new Date().toISOString().split('T')[0];\nconst todayTasks = tasks.filter(t => t.created_at && t.created_at.startsWith(today));\n\nlet analytics = { ga4: {}, gsc: {} };\ntry {\n  const raw = $('Read Analytics Cache').first().json.stdout || '{}';\n  analytics = JSON.parse(raw);\n} catch(e) {}\n\nconst usage = staticData.claude_usage || null;\nconst dailyLoopLogs = staticData.daily_loop_logs || [];\n\nreturn [{\n  json: {\n    generated_at: new Date().toISOString(),\n    pipeline: {\n      pending: tasks.filter(t => t.status === 'pending').length,\n      running: tasks.filter(t => t.status === 'running').length,\n      done: tasks.filter(t => t.status === 'done').length,\n      failed: tasks.filter(t => t.status === 'failed').length\n    },\n    recent_tasks: tasks.slice(0, 20).map(t => ({\n      id: t.id, type: t.type || 'blog_generate',\n      title: t.title || t.slug || '-', slug: t.slug,\n      status: t.status || 'done', priority: 'medium',\n      created_at: t.created_at\n    })),\n    daily_limits: { '記事生成 (今日)': { used: todayTasks.length, limit: 10 } },\n    analytics: analytics,\n    claude_usage: usage,\n    daily_loop_logs: dailyLoopLogs,\n    page_locks: [], ab_tests: [], kpi_targets: [], page_freshness: []\n  }\n}];"
       }
     },
     {
@@ -84,6 +84,30 @@
       "parameters": {
         "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst body = $input.first().json.body || $input.first().json;\nstaticData.claude_usage = body;\nreturn [{ json: { ok: true } }];"
       }
+    },
+    {
+      "id": "dash-08-webhook-daily-loop",
+      "name": "POST Daily Loop Log",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 1000],
+      "webhookId": "37design-daily-loop-log",
+      "parameters": {
+        "path": "37design-daily-loop-log",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "id": "dash-09-save-daily-loop",
+      "name": "Save Daily Loop Log",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 1000],
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.daily_loop_logs) staticData.daily_loop_logs = [];\nconst body = $input.first().json.body || $input.first().json;\nstaticData.daily_loop_logs.unshift({\n  date: body.date || new Date().toISOString().split('T')[0],\n  status: body.status || 'unknown',\n  started_at: body.started_at || null,\n  finished_at: body.finished_at || new Date().toISOString(),\n  steps: body.steps || [],\n  error: body.error || null\n});\nif (staticData.daily_loop_logs.length > 30) {\n  staticData.daily_loop_logs = staticData.daily_loop_logs.slice(0, 30);\n}\nreturn [{ json: { ok: true, count: staticData.daily_loop_logs.length } }];"
+      }
     }
   ],
   "connections": {
@@ -98,6 +122,9 @@
     },
     "POST Claude Usage": {
       "main": [[{ "node": "Save Usage", "type": "main", "index": 0 }]]
+    },
+    "POST Daily Loop Log": {
+      "main": [[{ "node": "Save Daily Loop Log", "type": "main", "index": 0 }]]
     }
   },
   "settings": { "executionOrder": "v1", "saveStaticData": true }

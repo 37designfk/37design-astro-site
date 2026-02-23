@@ -77,8 +77,26 @@
       "typeVersion": 2,
       "position": [1320, 300],
       "parameters": {
-        "jsCode": "const plan = $('Analyze & Plan').first().json.stdout || '';\nconst exec = $('Execute Tasks').first().json.stdout || '';\nconst deploy = $('Deploy').first().json.stdout || '';\nconst success = deploy.includes('Deploy completed');\nconsole.log('=== Daily Loop Summary ===');\nconsole.log(plan.substring(0, 300));\nconsole.log(exec.substring(0, 500));\nconsole.log(deploy);\nreturn [{ json: { success, plan: plan.substring(0,300), exec: exec.substring(0,500), deploy } }];"
+        "jsCode": "const fetchOut = $('Fetch Analytics').first().json.stdout || '';\nconst planOut = $('Analyze & Plan').first().json.stdout || '';\nconst execOut = $('Execute Tasks').first().json.stdout || '';\nconst deployOut = $('Deploy').first().json.stdout || '';\n\nconst fetchOk = !fetchOut.toLowerCase().includes('error');\nconst planOk = !planOut.toLowerCase().includes('error');\nconst execOk = !execOut.toLowerCase().includes('error');\nconst deployOk = deployOut.includes('Deploy completed');\nconst allOk = fetchOk && planOk && execOk && deployOk;\n\nconst now = new Date();\nreturn [{ json: {\n  date: now.toISOString().split('T')[0],\n  status: allOk ? 'success' : 'failed',\n  started_at: $('Schedule').first().json.timestamp || now.toISOString(),\n  finished_at: now.toISOString(),\n  steps: [\n    { name: 'Fetch Analytics', success: fetchOk, output: fetchOut.substring(0, 200) },\n    { name: 'Analyze & Plan', success: planOk, output: planOut.substring(0, 200) },\n    { name: 'Execute Tasks', success: execOk, output: execOut.substring(0, 300) },\n    { name: 'Deploy', success: deployOk, output: deployOut.substring(0, 200) }\n  ],\n  error: allOk ? null : 'One or more steps failed'\n} }];"
       }
+    },
+    {
+      "id": "loop-08-post-log",
+      "name": "POST Daily Loop Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-onprem.37d.jp/webhook/37design-daily-loop-log",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "continueOnFail": true
     }
   ],
   "connections": {
@@ -99,6 +117,9 @@
     },
     "Log & Analytics Cache": {
       "main": [[{ "node": "Summary", "type": "main", "index": 0 }]]
+    },
+    "Summary": {
+      "main": [[{ "node": "POST Daily Loop Log", "type": "main", "index": 0 }]]
     }
   },
   "settings": { "executionOrder": "v1" }

@@ -170,6 +170,33 @@
           </div>
         </section>
 
+        <!-- Section: Daily Loop -->
+        <section id="daily-loop-section">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Daily Loop</h2>
+          <!-- Latest run status card -->
+          <div id="daily-loop-latest" class="mb-4"></div>
+          <!-- History table -->
+          <div id="daily-loop-history" class="card overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/10">
+              <span class="text-sm font-semibold text-white">実行履歴（直近7日間）</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-white/10 text-left">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">日付</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">ステップ</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">所要時間</th>
+                  </tr>
+                </thead>
+                <tbody id="daily-loop-tbody" class="divide-y divide-white/5"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="daily-loop-empty" class="hidden card p-6 text-center text-gray-500 text-sm">Daily Loopの実行ログはまだありません</div>
+        </section>
+
         <!-- Section 1: Pipeline Overview -->
         <section id="pipeline-section">
           <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pipeline Overview</h2>
@@ -768,6 +795,89 @@
         }
       }
 
+      // --- Daily Loop Render ---
+
+      function renderDailyLoop(logs) {
+        const latest = document.getElementById('daily-loop-latest');
+        const history = document.getElementById('daily-loop-history');
+        const tbody = document.getElementById('daily-loop-tbody');
+        const empty = document.getElementById('daily-loop-empty');
+
+        if (!logs || logs.length === 0) {
+          latest.innerHTML = '';
+          history.classList.add('hidden');
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        empty.classList.add('hidden');
+        history.classList.remove('hidden');
+
+        // Latest run card
+        const last = logs[0];
+        const isSuccess = last.status === 'success';
+        const statusColor = isSuccess ? 'emerald' : 'red';
+        const statusIcon = isSuccess ? '\u2705' : '\u274C';
+        const statusLabel = isSuccess ? '成功' : '失敗';
+
+        let duration = '-';
+        if (last.started_at && last.finished_at) {
+          const diffSec = Math.round((new Date(last.finished_at) - new Date(last.started_at)) / 1000);
+          duration = formatDuration(diffSec);
+        }
+
+        latest.innerHTML = `
+          <div class="card p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">${statusIcon}</span>
+                <div>
+                  <div class="text-white font-semibold">最新実行: ${escapeHtml(last.date)}</div>
+                  <div class="text-xs text-gray-400 mt-0.5">所要時間: ${duration}${last.error ? ' \u00b7 ' + escapeHtml(last.error) : ''}</div>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold border bg-${statusColor}-500/20 text-${statusColor}-400 border-${statusColor}-500/30">
+                ${statusLabel}
+              </span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              ${(last.steps || []).map(step => {
+                const ok = step.success;
+                const c = ok ? 'emerald' : 'red';
+                const icon = ok ? '\u2713' : '\u2717';
+                return `<div class="rounded-lg p-3 bg-white/[0.03] border border-white/5">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="w-5 h-5 rounded-full bg-${c}-500/20 text-${c}-400 flex items-center justify-center text-xs font-bold">${icon}</span>
+                    <span class="text-xs font-medium text-gray-300">${escapeHtml(step.name)}</span>
+                  </div>
+                  <div class="text-[10px] text-gray-500 line-clamp-2 mt-1">${escapeHtml(step.output || '')}</div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+        // History table (last 7 entries)
+        const recent = logs.slice(0, 7);
+        tbody.innerHTML = recent.map(log => {
+          const ok = log.status === 'success';
+          let dur = '-';
+          if (log.started_at && log.finished_at) {
+            dur = formatDuration(Math.round((new Date(log.finished_at) - new Date(log.started_at)) / 1000));
+          }
+          const stepsOk = (log.steps || []).filter(s => s.success).length;
+          const stepsTotal = (log.steps || []).length;
+          return `
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="px-4 py-3 text-white font-medium text-xs whitespace-nowrap">${escapeHtml(log.date)}</td>
+              <td class="px-4 py-3">${statusBadge(log.status === 'success' ? 'done' : 'failed')}</td>
+              <td class="px-4 py-3 text-xs text-gray-400">${stepsOk}/${stepsTotal} ステップ成功</td>
+              <td class="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">${dur}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
       // --- Main Fetch ---
 
       async function fetchData() {
@@ -805,6 +915,7 @@
 
           // Render all sections
           renderUsage(data.claude_usage);
+          renderDailyLoop(data.daily_loop_logs);
           renderPipeline(data.pipeline);
           renderAnalytics(data.analytics);
           renderLimits(data.limits || data.daily_limits);
