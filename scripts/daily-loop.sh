@@ -62,6 +62,44 @@ except: pass
 fi
 log "既存記事: ${SLUG_COUNT}本 / ロック中: ${LOCKED_SLUGS:-なし}"
 
+# ============================================
+# ブレーキ: 記事数上限チェック
+# ============================================
+MAX_ARTICLES=50
+REWRITE_ONLY="false"
+if [ "$SLUG_COUNT" -ge "$MAX_ARTICLES" ]; then
+  REWRITE_ONLY="true"
+  log "ブレーキ: 記事数 ${SLUG_COUNT}本 (上限${MAX_ARTICLES}) → リライトのみモード"
+  notify "ブレーキ発動: 記事${SLUG_COUNT}本で上限到達。リライトのみモード。" 16776960
+fi
+
+# ============================================
+# カニバリ検知: GSCで同一キーワードに複数記事
+# ============================================
+CANNIBALIZATION=$(python3 -c "
+import json
+try:
+    d = json.load(open('$ANALYTICS_FILE'))
+    pages = d.get('gsc', {}).get('top_pages', [])
+    queries = d.get('gsc', {}).get('top_queries', [])
+    # 同一キーワードで複数ページがランクインしていないかチェック
+    # （現状のGSCデータはquery×pageの組み合わせがないので、
+    #   同じpositionレンジに複数ブログ記事がある場合を検出）
+    blog_pages = [p for p in pages if '/blog/' in p.get('page', '')]
+    if len(blog_pages) >= 2:
+        # 同じキーワードで2記事以上がposition 1-20に入ってたら警告
+        close_pages = [p for p in blog_pages if p.get('position', 100) <= 20]
+        if len(close_pages) >= 2:
+            slugs = [p['page'].rstrip('/').split('/')[-1] for p in close_pages]
+            print(','.join(slugs))
+except: pass
+" 2>/dev/null)
+
+if [ -n "$CANNIBALIZATION" ]; then
+  log "カニバリ警告: ${CANNIBALIZATION}"
+  notify "⚠️ カニバリ検知: ${CANNIBALIZATION}\n同一キーワード圏内に複数記事。統合またはnoindex検討。" 16776960
+fi
+
 # サイトマップ取得（公開中の全URL）
 log "サイトマップ取得中..."
 SITEMAP=$(curl -s https://37design.co.jp/sitemap-0.xml 2>/dev/null \
@@ -96,13 +134,20 @@ ${SLUG_LIST}
 ## ロック中（更新不可。選ばないこと）
 ${LOCKED_SLUGS:-なし}
 
+## 現在の記事数
+${SLUG_COUNT}本 / 上限${MAX_ARTICLES}本
+$([ "$REWRITE_ONLY" = "true" ] && echo "⚠️ 上限到達: リライトのみ選択可。new_articleは禁止。")
+
+## カニバリ警告
+$([ -n "$CANNIBALIZATION" ] && echo "以下の記事がGSC上位20位内で競合中: ${CANNIBALIZATION}" || echo "なし")
+
 ## 判断基準
 1. **rewrite（リライト）**: GA4でPVがあるのにGSCで順位が低い既存記事。CTR改善余地がある記事。
-2. **new_article（新規記事）**: 既存記事でカバーしていない「AI×中小企業」関連テーマ。検索需要が見込めるもの。
+$([ "$REWRITE_ONLY" != "true" ] && echo "2. **new_article（新規記事）**: 既存記事でカバーしていない「AI×中小企業」関連テーマ。検索需要が見込めるもの。")
 
 ## 返却（JSONのみ、説明不要）
 {
-  "action": "rewrite" or "new_article",
+  "action": "$([ "$REWRITE_ONLY" = "true" ] && echo '"rewrite"のみ' || echo '"rewrite" or "new_article"')",
   "slug": "対象スラッグ（新規の場合は新しいスラッグ）",
   "target_keyword": "狙うキーワード",
   "reason": "選定理由（数値根拠含む、80字以内）"
@@ -144,6 +189,18 @@ REASON=$(echo "$PLAN" | python3 -c "import json,sys; print(json.load(sys.stdin)[
 
 log "判断: ${ACTION} → ${SLUG} (${KEYWORD})"
 log "理由: ${REASON}"
+
+# ブレーキ: リライトのみモードで新規が返ってきたら強制リライトに変更
+if [ "$REWRITE_ONLY" = "true" ] && [ "$ACTION" = "new_article" ]; then
+  log "ブレーキ: new_article → rewrite に強制変更（上限${MAX_ARTICLES}本到達）"
+  notify "ブレーキ: Claudeがnew_article提案→rewriteに強制変更" 16776960
+  ACTION="rewrite"
+  # スラッグがロック外の既存記事であることを確認、なければ最古の記事を選択
+  if [ ! -f "$SITE_DIR/src/content/blog/${SLUG}.md" ]; then
+    SLUG=$(ls -t "$SITE_DIR/src/content/blog/"*.md 2>/dev/null | tail -1 | xargs basename | sed 's/\.md$//')
+    log "対象記事を最古のものに変更: ${SLUG}"
+  fi
+fi
 
 # ============================================
 # Step 3: Claude 2回目 — 記事生成
