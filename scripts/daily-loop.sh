@@ -62,6 +62,19 @@ except: pass
 fi
 log "既存記事: ${SLUG_COUNT}本 / ロック中: ${LOCKED_SLUGS:-なし}"
 
+# サイトマップ取得（公開中の全URL）
+log "サイトマップ取得中..."
+SITEMAP=$(curl -s https://37design.co.jp/sitemap-0.xml 2>/dev/null \
+  | python3 -c "
+import sys, re
+raw = sys.stdin.read()
+urls = re.findall(r'<loc>([^<]+)</loc>', raw)
+for u in urls:
+    print(u)
+" 2>/dev/null || echo "取得失敗")
+SITEMAP_COUNT=$(echo "$SITEMAP" | wc -l | tr -d ' ')
+log "サイトマップ: ${SITEMAP_COUNT} URL"
+
 # ============================================
 # Step 2: Claude 1回目 — サイト分析 → タスク判断
 # ============================================
@@ -71,10 +84,13 @@ cat > /tmp/daily-loop-analyze.$$ << ANALYZE_EOF
 あなたは37Design（中小企業向けAI・マーケティング支援）のSEOストラテジストです。
 サイトの成長に最も効果的な施策を1つ選んでください。
 
+## サイトマップ（公開中の全URL）
+${SITEMAP}
+
 ## GA4 + Search Console データ
 $(cat "$ANALYTICS_FILE")
 
-## 既存記事スラッグ一覧
+## 既存記事スラッグ一覧（.mdファイル）
 ${SLUG_LIST}
 
 ## ロック中（更新不可。選ばないこと）
