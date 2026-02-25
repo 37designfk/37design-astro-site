@@ -8,21 +8,12 @@ set -euo pipefail
 PROJECT_DIR="$HOME/37design-astro-site"
 BRANCH="${1:-main}"
 LOG_FILE="$PROJECT_DIR/deploy.log"
-DEPLOY_TARGET="xserver"  # xserver | lolipop | local
-
-# Xserver settings (37design.co.jp) - PRIMARY
+# Xserver settings (37design.co.jp)
 XSERVER_USER="server37"
 XSERVER_HOST="sv2023.xserver.jp"
 XSERVER_PORT="10022"
 XSERVER_KEY="$HOME/.ssh/server37.key"
 XSERVER_PATH="~/37design.co.jp/public_html/"
-
-# Lolipop settings (backup)
-LOLIPOP_USER="noor.jp-37design"
-LOLIPOP_HOST="ssh.lolipop.jp"
-LOLIPOP_PORT="2222"
-LOLIPOP_PASS="${LOLIPOP_PASS:?LOLIPOP_PASS環境変数を設定してください}"
-LOLIPOP_PATH="~/web/37design.co.jp/"
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
@@ -64,26 +55,12 @@ if [ "$FILE_COUNT" -lt 10 ]; then
 fi
 log "dist/ ファイル数: ${FILE_COUNT}"
 
-# 5. Deploy
-case "$DEPLOY_TARGET" in
-  xserver)
-    log "Deploying to Xserver (37design.co.jp)..."
-    rsync -avz --delete \
-      -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=accept-new" \
-      "$PROJECT_DIR/dist/" \
-      "$XSERVER_USER@$XSERVER_HOST:$XSERVER_PATH"
-    ;;
-  lolipop)
-    log "Deploying to Lolipop (37design.co.jp)..."
-    sshpass -p "$LOLIPOP_PASS" rsync -avz --delete \
-      -e "ssh -p $LOLIPOP_PORT -o PubkeyAuthentication=no -o StrictHostKeyChecking=accept-new" \
-      "$PROJECT_DIR/dist/" \
-      "$LOLIPOP_USER@$LOLIPOP_HOST:$LOLIPOP_PATH"
-    ;;
-  local)
-    log "Local deploy: files available at $PROJECT_DIR/dist/"
-    ;;
-esac
+# 5. Deploy to Xserver
+log "Deploying to Xserver (37design.co.jp)..."
+rsync -avz --delete \
+  -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=accept-new" \
+  "$PROJECT_DIR/dist/" \
+  "$XSERVER_USER@$XSERVER_HOST:$XSERVER_PATH"
 
 log "=== Deploy completed: $COMMIT ==="
 echo "$COMMIT"
