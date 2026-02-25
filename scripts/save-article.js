@@ -12,33 +12,49 @@ const blogDir = path.join(__dirname, '../src/content/blog');
 let raw = '';
 process.stdin.on('data', chunk => raw += chunk);
 process.stdin.on('end', () => {
-  // JSON部分だけ抽出（claude が前後に説明文を入れても対応）
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) {
+  // JSON部分だけ抽出 - 最も大きい {} ブロックを採用
+  const matches = [];
+  let depth = 0, start = -1;
+  for (let i = 0; i < raw.length; i++) {
+    if (raw[i] === '{') { if (depth === 0) start = i; depth++; }
+    if (raw[i] === '}') { depth--; if (depth === 0 && start >= 0) { matches.push(raw.slice(start, i + 1)); start = -1; } }
+  }
+  if (matches.length === 0) {
     console.error('JSONが見つかりませんでした。出力:');
-    console.error(raw);
+    console.error(raw.substring(0, 500));
     process.exit(1);
   }
+  // 最も長いブロックを使う
+  const jsonStr = matches.sort((a, b) => b.length - a.length)[0];
 
   let article;
   try {
-    article = JSON.parse(match[0]);
+    article = JSON.parse(jsonStr);
   } catch (e) {
     console.error('JSONパースエラー:', e.message);
-    console.error(raw);
+    console.error(jsonStr.substring(0, 500));
     process.exit(1);
   }
 
-  const { title, description, slug, category, tags, targetKeyword, body } = article;
+  const { title, description, category, targetKeyword, body } = article;
+  const slug = article.slug || 'untitled-' + Date.now();
+  const tags = Array.isArray(article.tags) ? article.tags : [];
+
+  if (!title || !body) {
+    console.error('エラー: title または body が空です');
+    process.exit(1);
+  }
+
+  const safeDesc = (description || '').replace(/"/g, '\\"');
 
   const frontmatter = `---
 title: "${title}"
-description: "${description}"
+description: "${safeDesc}"
 publishDate: ${today}
 author: "古田 健"
-category: "${category}"
+category: "${category || 'AI'}"
 tags: [${tags.map(t => `"${t}"`).join(', ')}]
-targetKeyword: "${targetKeyword}"
+targetKeyword: "${targetKeyword || ''}"
 structuredDataType: "Article"
 ---
 
@@ -54,5 +70,5 @@ structuredDataType: "Article"
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ type: 'blog_generate', title, slug, category, status: 'done', priority: 'medium' }),
-  }).catch(() => {}); // 失敗しても無視
+  }).catch(() => {});
 });
