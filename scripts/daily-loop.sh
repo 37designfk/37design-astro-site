@@ -1,6 +1,6 @@
 #!/bin/bash
-# 37Design Daily Loop - シンプル版
-# GA4/GSC取得 → Claude分析 → Claude記事生成 → ビルド → デプロイ
+# 37Design Daily Loop - 1日2タスク版
+# GA4/GSC取得 → Claude分析(2タスク) → Claude記事生成×2 → ビルド → デプロイ
 # n8n: SSH 1コマンドで呼ぶだけ
 
 set -euo pipefail
@@ -81,13 +81,8 @@ import json
 try:
     d = json.load(open('$ANALYTICS_FILE'))
     pages = d.get('gsc', {}).get('top_pages', [])
-    queries = d.get('gsc', {}).get('top_queries', [])
-    # 同一キーワードで複数ページがランクインしていないかチェック
-    # （現状のGSCデータはquery×pageの組み合わせがないので、
-    #   同じpositionレンジに複数ブログ記事がある場合を検出）
     blog_pages = [p for p in pages if '/blog/' in p.get('page', '')]
     if len(blog_pages) >= 2:
-        # 同じキーワードで2記事以上がposition 1-20に入ってたら警告
         close_pages = [p for p in blog_pages if p.get('position', 100) <= 20]
         if len(close_pages) >= 2:
             slugs = [p['page'].rstrip('/').split('/')[-1] for p in close_pages]
@@ -114,13 +109,24 @@ SITEMAP_COUNT=$(echo "$SITEMAP" | wc -l | tr -d ' ')
 log "サイトマップ: ${SITEMAP_COUNT} URL"
 
 # ============================================
-# Step 2: Claude 1回目 — サイト分析 → タスク判断
+# Step 2: Claude 1回目 — サイト分析 → 2タスク選定
 # ============================================
-log "Claude分析中..."
+log "Claude分析中（2タスク選定）..."
+
+if [ "$REWRITE_ONLY" = "true" ]; then
+  TASK_INSTRUCTION="rewrite（リライト）を2つ選んでください。新規記事は禁止です。
+ロック中のスラッグは選ばないこと。ロック外でリライト対象がなければ1つだけでも構いません。"
+  TASK_FORMAT='"rewrite"'
+else
+  TASK_INSTRUCTION="以下の2タスクを選んでください:
+1つ目: **rewrite（リライト）** — GA4でPVがあるのにGSCで順位が低い既存記事。CTR改善余地がある記事。ロック中は選べません。ロック外に良い候補がなければnew_articleで代替可。
+2つ目: **new_article（新規記事）** — 既存記事でカバーしていない「AI×中小企業」関連テーマ。検索需要が見込めるもの。"
+  TASK_FORMAT='"rewrite" or "new_article"'
+fi
 
 cat > /tmp/daily-loop-analyze.$$ << ANALYZE_EOF
 あなたは37Design（中小企業向けAI・マーケティング支援）のSEOストラテジストです。
-サイトの成長に最も効果的な施策を1つ選んでください。
+${TASK_INSTRUCTION}
 
 ## サイトマップ（公開中の全URL）
 ${SITEMAP}
@@ -136,88 +142,109 @@ ${LOCKED_SLUGS:-なし}
 
 ## 現在の記事数
 ${SLUG_COUNT}本 / 上限${MAX_ARTICLES}本
-$([ "$REWRITE_ONLY" = "true" ] && echo "⚠️ 上限到達: リライトのみ選択可。new_articleは禁止。")
 
 ## カニバリ警告
 $([ -n "$CANNIBALIZATION" ] && echo "以下の記事がGSC上位20位内で競合中: ${CANNIBALIZATION}" || echo "なし")
 
-## 判断基準
-1. **rewrite（リライト）**: GA4でPVがあるのにGSCで順位が低い既存記事。CTR改善余地がある記事。
-$([ "$REWRITE_ONLY" != "true" ] && echo "2. **new_article（新規記事）**: 既存記事でカバーしていない「AI×中小企業」関連テーマ。検索需要が見込めるもの。")
-
-## 返却（JSONのみ、説明不要）
-{
-  "action": "$([ "$REWRITE_ONLY" = "true" ] && echo '"rewrite"のみ' || echo '"rewrite" or "new_article"')",
-  "slug": "対象スラッグ（新規の場合は新しいスラッグ）",
-  "target_keyword": "狙うキーワード",
-  "reason": "選定理由（数値根拠含む、80字以内）"
-}
+## 返却（JSON配列のみ、説明不要）
+[
+  {
+    "action": ${TASK_FORMAT},
+    "slug": "対象スラッグ（新規の場合は新しいスラッグ）",
+    "target_keyword": "狙うキーワード",
+    "reason": "選定理由（数値根拠含む、80字以内）"
+  },
+  { ... 2つ目 ... }
+]
 ANALYZE_EOF
 
 $CLAUDE < /tmp/daily-loop-analyze.$$ > /tmp/daily-loop-plan.$$ 2>/dev/null
 
-# JSONをパース
-PLAN=$(python3 -c "
-import json, re, sys
+# JSON配列をパース
+TASKS=$(python3 -c "
+import json, sys
 raw = open('/tmp/daily-loop-plan.$$').read()
+# []で囲まれた最大のブロックを探す
 matches = []
 depth = 0; start = -1
 for i, c in enumerate(raw):
-    if c == '{':
+    if c == '[':
         if depth == 0: start = i
         depth += 1
-    elif c == '}':
+    elif c == ']':
         depth -= 1
         if depth == 0 and start >= 0:
             matches.append(raw[start:i+1]); start = -1
 if not matches:
-    print('ERROR: JSONなし', file=sys.stderr); sys.exit(1)
-d = json.loads(sorted(matches, key=len, reverse=True)[0])
-print(json.dumps(d, ensure_ascii=False))
+    # 配列がなければ{}オブジェクトを1つ探してラップ
+    depth = 0; start = -1; objs = []
+    for i, c in enumerate(raw):
+        if c == '{':
+            if depth == 0: start = i
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 0 and start >= 0:
+                objs.append(raw[start:i+1]); start = -1
+    if objs:
+        matches = ['[' + ','.join(objs[:2]) + ']']
+if not matches:
+    print('[]'); sys.exit(0)
+arr = json.loads(sorted(matches, key=len, reverse=True)[0])
+if not isinstance(arr, list): arr = [arr]
+print(json.dumps(arr[:2], ensure_ascii=False))
 " 2>/dev/null)
 
-if [ -z "$PLAN" ]; then
+if [ -z "$TASKS" ] || [ "$TASKS" = "[]" ]; then
   log "ERROR: 分析結果のパース失敗"
   notify "❌ 分析結果パース失敗" 16711680
   exit 1
 fi
 
-ACTION=$(echo "$PLAN" | python3 -c "import json,sys; print(json.load(sys.stdin)['action'])")
-SLUG=$(echo "$PLAN" | python3 -c "import json,sys; print(json.load(sys.stdin)['slug'])")
-KEYWORD=$(echo "$PLAN" | python3 -c "import json,sys; print(json.load(sys.stdin)['target_keyword'])")
-REASON=$(echo "$PLAN" | python3 -c "import json,sys; print(json.load(sys.stdin)['reason'])")
-
-log "判断: ${ACTION} → ${SLUG} (${KEYWORD})"
-log "理由: ${REASON}"
-
-# ブレーキ: リライトのみモードで新規が返ってきたら強制リライトに変更
-if [ "$REWRITE_ONLY" = "true" ] && [ "$ACTION" = "new_article" ]; then
-  log "ブレーキ: new_article → rewrite に強制変更（上限${MAX_ARTICLES}本到達）"
-  notify "ブレーキ: Claudeがnew_article提案→rewriteに強制変更" 16776960
-  ACTION="rewrite"
-  # スラッグがロック外の既存記事であることを確認、なければ最古の記事を選択
-  if [ ! -f "$SITE_DIR/src/content/blog/${SLUG}.md" ]; then
-    SLUG=$(ls -t "$SITE_DIR/src/content/blog/"*.md 2>/dev/null | tail -1 | xargs basename | sed 's/\.md$//')
-    log "対象記事を最古のものに変更: ${SLUG}"
-  fi
-fi
+TASK_COUNT=$(echo "$TASKS" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))")
+log "分析完了: ${TASK_COUNT}タスク"
 
 # ============================================
-# Step 3: Claude 2回目 — 記事生成
+# Step 3: タスクループ — 各タスクを生成・保存
 # ============================================
-log "記事生成中..."
+SUCCESS_COUNT=0
+SUMMARY=""
 
-if [ "$ACTION" = "rewrite" ]; then
-  # --- リライト: 既存記事全文を渡す ---
-  ARTICLE_FILE="$SITE_DIR/src/content/blog/${SLUG}.md"
-  if [ ! -f "$ARTICLE_FILE" ]; then
-    log "ERROR: 記事が見つかりません: ${SLUG}.md"
-    notify "❌ 記事なし: ${SLUG}" 16711680
-    exit 1
+git config user.name "37Design Marketing OS"
+git config user.email "os@37d.jp"
+
+for i in $(seq 0 $((TASK_COUNT - 1))); do
+  ACTION=$(echo "$TASKS" | python3 -c "import json,sys; print(json.load(sys.stdin)[$i]['action'])")
+  SLUG=$(echo "$TASKS" | python3 -c "import json,sys; print(json.load(sys.stdin)[$i]['slug'])")
+  KEYWORD=$(echo "$TASKS" | python3 -c "import json,sys; print(json.load(sys.stdin)[$i]['target_keyword'])")
+  REASON=$(echo "$TASKS" | python3 -c "import json,sys; print(json.load(sys.stdin)[$i]['reason'])")
+
+  log "--- タスク$((i+1))/${TASK_COUNT}: ${ACTION} → ${SLUG} (${KEYWORD}) ---"
+  log "理由: ${REASON}"
+
+  # ロックチェック（リライト対象）
+  if [ "$ACTION" = "rewrite" ]; then
+    IS_LOCKED=$(python3 -c "
+locked = '${LOCKED_SLUGS}'.split(',')
+print('yes' if '$SLUG' in locked else 'no')
+" 2>/dev/null)
+    if [ "$IS_LOCKED" = "yes" ]; then
+      log "スキップ: ${SLUG} はロック中"
+      continue
+    fi
+    if [ ! -f "$SITE_DIR/src/content/blog/${SLUG}.md" ]; then
+      log "スキップ: ${SLUG}.md が存在しない"
+      continue
+    fi
   fi
 
-  # GSCデータ抽出
-  GSC_DATA=$(python3 -c "
+  # --- 記事生成 ---
+  log "Claude記事生成中 (${ACTION}: ${SLUG})..."
+
+  if [ "$ACTION" = "rewrite" ]; then
+    ARTICLE_FILE="$SITE_DIR/src/content/blog/${SLUG}.md"
+
+    GSC_DATA=$(python3 -c "
 import json
 d = json.load(open('$ANALYTICS_FILE'))
 queries = d.get('gsc',{}).get('top_queries',[])[:5]
@@ -226,7 +253,7 @@ print('キーワード:', json.dumps(queries, ensure_ascii=False))
 print('ページ:', json.dumps(pages, ensure_ascii=False))
 " 2>/dev/null || echo "データなし")
 
-  cat > /tmp/daily-loop-generate.$$ << REWRITE_EOF
+    cat > /tmp/daily-loop-generate-${i}.$$ << REWRITE_EOF
 あなたは37Design（株式会社37Design）のブログ記事ライターです。
 代表は古田 健（ふるた けん）です。
 
@@ -269,9 +296,8 @@ ${SLUG_LIST}
 }
 REWRITE_EOF
 
-else
-  # --- 新規記事 ---
-  cat > /tmp/daily-loop-generate.$$ << NEW_EOF
+  else
+    cat > /tmp/daily-loop-generate-${i}.$$ << NEW_EOF
 あなたは37Design（株式会社37Design）のブログ記事ライターです。
 代表は古田 健（ふるた けん）です。
 
@@ -306,32 +332,27 @@ ${SLUG_LIST}
   "body": "Markdown本文（frontmatterなし）"
 }
 NEW_EOF
-fi
+  fi
 
-$CLAUDE < /tmp/daily-loop-generate.$$ > /tmp/daily-loop-article.$$ 2>/dev/null
+  $CLAUDE < /tmp/daily-loop-generate-${i}.$$ > /tmp/daily-loop-article-${i}.$$ 2>/dev/null
 
-if [ ! -s /tmp/daily-loop-article.$$ ]; then
-  log "ERROR: Claude記事生成 応答なし"
-  notify "❌ Claude記事生成 応答なし" 16711680
-  exit 1
-fi
+  if [ ! -s /tmp/daily-loop-article-${i}.$$ ]; then
+    log "WARN: Claude応答なし (${SLUG}) → スキップ"
+    continue
+  fi
 
-# ============================================
-# Step 4: 保存 → ロック → コミット
-# ============================================
-log "記事保存中..."
-SAVE_OUTPUT=$(cat /tmp/daily-loop-article.$$ | node "$SITE_DIR/scripts/save-article.js" "$TODAY" 2>&1) || true
+  # --- 保存 ---
+  SAVE_OUTPUT=$(cat /tmp/daily-loop-article-${i}.$$ | node "$SITE_DIR/scripts/save-article.js" "$TODAY" 2>&1) || true
 
-if echo "$SAVE_OUTPUT" | grep -q "保存完了"; then
-  log "$SAVE_OUTPUT"
-else
-  log "ERROR: 記事保存失敗: $SAVE_OUTPUT"
-  notify "❌ 記事保存失敗" 16711680
-  exit 1
-fi
+  if echo "$SAVE_OUTPUT" | grep -q "保存完了"; then
+    log "$SAVE_OUTPUT"
+  else
+    log "WARN: 記事保存失敗 (${SLUG}): $SAVE_OUTPUT → スキップ"
+    continue
+  fi
 
-# ロック設定
-python3 -c "
+  # --- ロック設定 ---
+  python3 -c "
 import json
 from datetime import datetime
 f = '$LOCK_FILE'
@@ -340,21 +361,34 @@ except: locks = {}
 locks['$SLUG'] = datetime.now().isoformat()
 json.dump(locks, open(f, 'w'), indent=2)
 " 2>/dev/null
-log "ロック設定: ${SLUG} (${LOCK_DAYS}日間)"
+  log "ロック設定: ${SLUG} (${LOCK_DAYS}日間)"
 
-# コミット
+  SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+  SUMMARY="${SUMMARY}${ACTION}: ${SLUG} (${KEYWORD})\n"
+
+  # タスクログ送信
+  curl -s -X POST "https://n8n-onprem.37d.jp/webhook/37design-log-task" \
+    -H "Content-Type: application/json" \
+    -d "{\"type\":\"blog_generate\",\"title\":\"${ACTION}: ${SLUG}\",\"slug\":\"$SLUG\",\"status\":\"done\",\"priority\":\"medium\"}" \
+    > /dev/null 2>&1 || true
+done
+
+# ============================================
+# Step 4: コミット → ビルド → デプロイ
+# ============================================
+if [ "$SUCCESS_COUNT" -eq 0 ]; then
+  log "タスク成功なし。ビルドスキップ。"
+  notify "⚠️ Daily Loop: 全タスクスキップ（ロック中 or 生成失敗）" 16776960
+  exit 0
+fi
+
 git add -A src/content/blog/ .article-lock.json
-git config user.name "37Design Marketing OS"
-git config user.email "os@37d.jp"
-git commit -m "daily: ${ACTION} ${SLUG} (${TODAY})" -q 2>/dev/null || true
+git commit -m "daily: ${SUCCESS_COUNT}タスク完了 (${TODAY})" -q 2>/dev/null || true
 
-# ============================================
-# Step 5: ビルド → デプロイ
-# ============================================
 log "ビルド中..."
 if ! npm run build > /dev/null 2>&1; then
   log "ERROR: ビルド失敗"
-  notify "❌ ビルド失敗 (${SLUG})" 16711680
+  notify "❌ ビルド失敗" 16711680
   exit 1
 fi
 log "ビルド成功"
@@ -364,13 +398,8 @@ bash "$SITE_DIR/scripts/deploy.sh" main > /dev/null 2>&1
 log "デプロイ完了"
 
 # ============================================
-# Step 6: 通知
+# Step 5: 通知
 # ============================================
-curl -s -X POST "https://n8n-onprem.37d.jp/webhook/37design-log-task" \
-  -H "Content-Type: application/json" \
-  -d "{\"type\":\"blog_generate\",\"title\":\"${ACTION}: ${SLUG}\",\"slug\":\"$SLUG\",\"status\":\"done\",\"priority\":\"medium\"}" \
-  > /dev/null 2>&1 || true
+notify "✅ Daily Loop完了 (${SUCCESS_COUNT}タスク)\n${SUMMARY}" 3066993
 
-notify "✅ ${ACTION}: ${SLUG}\nキーワード: ${KEYWORD}\n理由: ${REASON}" 3066993
-
-log "=== Daily Loop 完了 ==="
+log "=== Daily Loop 完了 (${SUCCESS_COUNT}タスク) ==="
