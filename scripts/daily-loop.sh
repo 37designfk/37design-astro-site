@@ -8,7 +8,7 @@ set -euo pipefail
 SITE_DIR="/home/ken/37design-astro-site"
 LOCK_FILE="$SITE_DIR/.article-lock.json"
 ANALYTICS_FILE="$SITE_DIR/.analytics-cache.json"
-DISCORD_WEBHOOK="https://discord.com/api/webhooks/1475966863417802805/hrIPYPVKwZ2nP1ob8cq7c0W2O9tc-BZPFT6HELCnxt8mRX4N65kOPg__G0_YvDUFdZBG"
+DISCORD_WEBHOOK="${DISCORD_WEBHOOK:?DISCORD_WEBHOOK環境変数を設定してください}"
 TODAY=$(date +%Y-%m-%d)
 LOCK_DAYS=7
 CLAUDE="env -u CLAUDECODE PATH=$HOME/.local/bin:$PATH claude -p"
@@ -50,12 +50,12 @@ SLUG_COUNT=$(echo "$SLUG_LIST" | tr ',' '\n' | wc -l | tr -d ' ')
 # ロック済み記事
 LOCKED_SLUGS=""
 if [ -f "$LOCK_FILE" ]; then
-  LOCKED_SLUGS=$(python3 -c "
-import json
+  LOCKED_SLUGS=$(LOCK_FILE="$LOCK_FILE" LOCK_DAYS="$LOCK_DAYS" python3 -c "
+import json, os
 from datetime import datetime, timedelta
 try:
-    locks = json.load(open('$LOCK_FILE'))
-    cutoff = datetime.now() - timedelta(days=$LOCK_DAYS)
+    locks = json.load(open(os.environ['LOCK_FILE']))
+    cutoff = datetime.now() - timedelta(days=int(os.environ['LOCK_DAYS']))
     print(','.join(k for k,v in locks.items() if datetime.fromisoformat(v) > cutoff))
 except: pass
 " 2>/dev/null)
@@ -76,10 +76,10 @@ fi
 # ============================================
 # カニバリ検知: GSCで同一キーワードに複数記事
 # ============================================
-CANNIBALIZATION=$(python3 -c "
-import json
+CANNIBALIZATION=$(ANALYTICS_FILE="$ANALYTICS_FILE" python3 -c "
+import json, os
 try:
-    d = json.load(open('$ANALYTICS_FILE'))
+    d = json.load(open(os.environ['ANALYTICS_FILE']))
     pages = d.get('gsc', {}).get('top_pages', [])
     blog_pages = [p for p in pages if '/blog/' in p.get('page', '')]
     if len(blog_pages) >= 2:
@@ -224,9 +224,10 @@ for i in $(seq 0 $((TASK_COUNT - 1))); do
 
   # ロックチェック（リライト対象）
   if [ "$ACTION" = "rewrite" ]; then
-    IS_LOCKED=$(python3 -c "
-locked = '${LOCKED_SLUGS}'.split(',')
-print('yes' if '$SLUG' in locked else 'no')
+    IS_LOCKED=$(LOCKED_SLUGS="$LOCKED_SLUGS" SLUG="$SLUG" python3 -c "
+import os
+locked = os.environ.get('LOCKED_SLUGS','').split(',')
+print('yes' if os.environ.get('SLUG','') in locked else 'no')
 " 2>/dev/null)
     if [ "$IS_LOCKED" = "yes" ]; then
       log "スキップ: ${SLUG} はロック中"
@@ -244,11 +245,12 @@ print('yes' if '$SLUG' in locked else 'no')
   if [ "$ACTION" = "rewrite" ]; then
     ARTICLE_FILE="$SITE_DIR/src/content/blog/${SLUG}.md"
 
-    GSC_DATA=$(python3 -c "
-import json
-d = json.load(open('$ANALYTICS_FILE'))
+    GSC_DATA=$(ANALYTICS_FILE="$ANALYTICS_FILE" SLUG="$SLUG" python3 -c "
+import json, os
+d = json.load(open(os.environ['ANALYTICS_FILE']))
 queries = d.get('gsc',{}).get('top_queries',[])[:5]
-pages = [p for p in d.get('gsc',{}).get('top_pages',[]) if '$SLUG' in p.get('page','')]
+slug = os.environ.get('SLUG','')
+pages = [p for p in d.get('gsc',{}).get('top_pages',[]) if slug in p.get('page','')]
 print('キーワード:', json.dumps(queries, ensure_ascii=False))
 print('ページ:', json.dumps(pages, ensure_ascii=False))
 " 2>/dev/null || echo "データなし")
@@ -352,13 +354,13 @@ NEW_EOF
   fi
 
   # --- ロック設定 ---
-  python3 -c "
-import json
+  LOCK_FILE="$LOCK_FILE" SLUG="$SLUG" python3 -c "
+import json, os
 from datetime import datetime
-f = '$LOCK_FILE'
+f = os.environ['LOCK_FILE']
 try: locks = json.load(open(f))
 except: locks = {}
-locks['$SLUG'] = datetime.now().isoformat()
+locks[os.environ['SLUG']] = datetime.now().isoformat()
 json.dump(locks, open(f, 'w'), indent=2)
 " 2>/dev/null
   log "ロック設定: ${SLUG} (${LOCK_DAYS}日間)"

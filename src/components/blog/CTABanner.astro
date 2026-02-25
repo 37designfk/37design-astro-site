@@ -31,7 +31,7 @@ const variantStyles = {
 const s = variantStyles[variant];
 ---
 
-<aside class="my-10 relative overflow-hidden rounded-2xl border {s.border} {s.bg} p-6 md:p-8">
+<aside class={`my-10 relative overflow-hidden rounded-2xl border ${s.border} ${s.bg} p-6 md:p-8`}>
   <!-- Gradient accent -->
   <div class={`absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l ${s.gradient} pointer-events-none`} aria-hidden="true"></div>
 

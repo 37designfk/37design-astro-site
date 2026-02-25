@@ -45,16 +45,16 @@ process.stdin.on('end', () => {
     process.exit(1);
   }
 
-  const safeDesc = (description || '').replace(/"/g, '\\"');
+  const sanitize = (s) => (s || '').replace(/"/g, '\\"').replace(/\n/g, ' ');
 
   const frontmatter = `---
-title: "${title}"
-description: "${safeDesc}"
+title: "${sanitize(title)}"
+description: "${sanitize(description)}"
 publishDate: ${today}
 author: "古田 健"
-category: "${category || 'AI'}"
-tags: [${tags.map(t => `"${t}"`).join(', ')}]
-targetKeyword: "${targetKeyword || ''}"
+category: "${sanitize(category || 'AI')}"
+tags: [${tags.map(t => `"${sanitize(t)}"`).join(', ')}]
+targetKeyword: "${sanitize(targetKeyword || '')}"
 structuredDataType: "Article"
 ---
 
@@ -70,5 +70,5 @@ structuredDataType: "Article"
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ type: 'blog_generate', title, slug, category, status: 'done', priority: 'medium' }),
-  }).catch(() => {});
+  }).catch(e => console.error('n8nログ送信失敗:', e.message));
 });

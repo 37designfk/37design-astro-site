@@ -21,7 +21,7 @@ XSERVER_PATH="~/37design.co.jp/public_html/"
 LOLIPOP_USER="noor.jp-37design"
 LOLIPOP_HOST="ssh.lolipop.jp"
 LOLIPOP_PORT="2222"
-LOLIPOP_PASS="6fgp7xayMdiobgPTypKuhDf4wansjvOP"
+LOLIPOP_PASS="${LOLIPOP_PASS:?LOLIPOP_PASS環境変数を設定してください}"
 LOLIPOP_PATH="~/web/37design.co.jp/"
 
 log() {
@@ -56,19 +56,27 @@ else
   exit 1
 fi
 
-# 4. Deploy
+# 4. Safety check: dist/ が空でないことを確認
+FILE_COUNT=$(find "$PROJECT_DIR/dist/" -type f | wc -l | tr -d ' ')
+if [ "$FILE_COUNT" -lt 10 ]; then
+  log "ERROR: dist/ のファイル数が少なすぎます (${FILE_COUNT} files)。デプロイを中止します。"
+  exit 1
+fi
+log "dist/ ファイル数: ${FILE_COUNT}"
+
+# 5. Deploy
 case "$DEPLOY_TARGET" in
   xserver)
     log "Deploying to Xserver (37design.co.jp)..."
     rsync -avz --delete \
-      -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=no" \
+      -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=accept-new" \
       "$PROJECT_DIR/dist/" \
       "$XSERVER_USER@$XSERVER_HOST:$XSERVER_PATH"
     ;;
   lolipop)
     log "Deploying to Lolipop (37design.co.jp)..."
     sshpass -p "$LOLIPOP_PASS" rsync -avz --delete \
-      -e "ssh -p $LOLIPOP_PORT -o PubkeyAuthentication=no -o StrictHostKeyChecking=no" \
+      -e "ssh -p $LOLIPOP_PORT -o PubkeyAuthentication=no -o StrictHostKeyChecking=accept-new" \
       "$PROJECT_DIR/dist/" \
       "$LOLIPOP_USER@$LOLIPOP_HOST:$LOLIPOP_PATH"
     ;;
