@@ -1,123 +1,39 @@
 {
-  "name": "Contact Form Handler (37Design)",
-  "active": true,
-  "versionId": "1",
+  "name": "37Design - AI診断フォーム → Mautic登録",
   "nodes": [
     {
-      "id": "form-01-webhook",
-      "name": "Receive Form",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [0, 300],
-      "webhookId": "ai-diagnosis",
       "parameters": {
-        "path": "ai-diagnosis",
         "httpMethod": "POST",
+        "path": "ai-diagnosis",
         "responseMode": "lastNode",
-        "options": {
-          "allowedOrigins": "https://37design.co.jp"
-        }
-      }
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "id": "4f227964-5dcc-4712-863a-3591563c6416",
+      "name": "Webhook",
+      "webhookId": "d1415518-1da7-4b8b-afdf-b8d7df690502"
     },
     {
-      "id": "form-02-validate",
-      "name": "Validate & Format",
+      "parameters": {
+        "jsCode": "// Mautic OAuth2 Client Credentials → Create Contact + Add to Segment\nconst tokenRes = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://m6.37d.jp/oauth/v2/token',\n  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: 'grant_type=client_credentials&client_id=1_46bdyfromw008400kggo08oc04gogwkg04ogko48wskg0ssogo&client_secret=1vwu89kc7mw0o80gssgsk004804ok00w884c08os0884kk04cc',\n  returnFullResponse: false\n});\nconst token = tokenRes.access_token;\n\nconst body = $input.first().json.body || $input.first().json;\nconst contactData = {\n  email: body.email || '',\n  firstname: body.name || body.firstname || '',\n  company: body.company || '',\n  phone: body.phone || ''\n};\n\nlet contactId = null;\ntry {\n  const contactRes = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://m6.37d.jp/api/contacts/new',\n    headers: {\n      'Authorization': `Bearer ${token}`,\n      'Content-Type': 'application/json'\n    },\n    body: contactData,\n    returnFullResponse: false\n  });\n  contactId = contactRes?.contact?.id;\n} catch (e) {}\n\nif (contactId) {\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: `https://m6.37d.jp/api/segments/1/contact/${contactId}/add`,\n      headers: { 'Authorization': `Bearer ${token}` },\n      returnFullResponse: false\n    });\n  } catch (e) {}\n}\n\nreturn [{ json: { success: true, message: 'OK', contactId } }];"
+      },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [220, 300],
-      "parameters": {
-        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst name = (body.name || '').trim();\nconst email = (body.email || '').trim();\nconst company = (body.company || '').trim();\nconst phone = (body.phone || '').trim();\nconst message = (body.message || '').trim();\nconst source = body.source || 'website';\n\nif (!name || !email) {\n  return [{ json: { success: false, message: '名前とメールアドレスは必須です' } }];\n}\n\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nif (!emailRegex.test(email)) {\n  return [{ json: { success: false, message: 'メールアドレスの形式が正しくありません' } }];\n}\n\nreturn [{ json: {\n  name, email, company, phone, message, source,\n  received_at: new Date().toISOString(),\n  _valid: true\n} }];"
-      }
-    },
-    {
-      "id": "form-03-check",
-      "name": "Valid?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [440, 300],
-      "parameters": {
-        "conditions": {
-          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
-          "conditions": [
-            {
-              "id": "valid-check",
-              "leftValue": "={{ $json._valid }}",
-              "rightValue": true,
-              "operator": { "type": "boolean", "operation": "equals", "singleValue": true }
-            }
-          ],
-          "combinator": "and"
-        }
-      }
-    },
-    {
-      "id": "form-04-save",
-      "name": "Save to Log",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [660, 200],
-      "parameters": {
-        "jsCode": "const fs = require('fs');\nconst logPath = '/home/node/.n8n/37design-inquiries.jsonl';\nconst data = { ...$json };\ndelete data._valid;\nfs.appendFileSync(logPath, JSON.stringify(data) + '\\n');\nreturn [{ json: data }];"
-      }
-    },
-    {
-      "id": "form-05-notify",
-      "name": "Email Notify",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2,
-      "position": [880, 200],
-      "parameters": {
-        "fromEmail": "os@37d.jp",
-        "toEmail": "info@37design.co.jp",
-        "subject": "=【37Design】新しいお問い合わせ: {{ $json.name }}",
-        "emailType": "text",
-        "message": "=新しいお問い合わせがありました。\n\n名前: {{ $json.name }}\nメール: {{ $json.email }}\n会社: {{ $json.company }}\n電話: {{ $json.phone }}\nメッセージ: {{ $json.message }}\nソース: {{ $json.source }}\n受信: {{ $json.received_at }}"
-      },
-      "credentials": {
-        "smtp": { "id": "smtp-credentials", "name": "SMTP" }
-      },
+      "position": [260, 0],
+      "id": "mautic-code-node",
+      "name": "Mautic Create Contact",
       "continueOnFail": true
-    },
-    {
-      "id": "form-06-respond-ok",
-      "name": "Respond OK",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [1100, 200],
-      "parameters": {
-        "jsCode": "return [{ json: { success: true, message: 'お問い合わせを受け付けました' } }];"
-      }
-    },
-    {
-      "id": "form-07-respond-error",
-      "name": "Respond Error",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [660, 400],
-      "parameters": {
-        "jsCode": "return [{ json: { success: false, message: $json.message || 'バリデーションエラー' } }];"
-      }
     }
   ],
   "connections": {
-    "Receive Form": {
-      "main": [[{ "node": "Validate & Format", "type": "main", "index": 0 }]]
-    },
-    "Validate & Format": {
-      "main": [[{ "node": "Valid?", "type": "main", "index": 0 }]]
-    },
-    "Valid?": {
-      "main": [
-        [{ "node": "Save to Log", "type": "main", "index": 0 }],
-        [{ "node": "Respond Error", "type": "main", "index": 0 }]
-      ]
-    },
-    "Save to Log": {
-      "main": [[{ "node": "Email Notify", "type": "main", "index": 0 }]]
-    },
-    "Email Notify": {
-      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    "Webhook": {
+      "main": [[{"node": "Mautic Create Contact", "type": "main", "index": 0}]]
     }
   },
-  "settings": { "executionOrder": "v1" }
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  }
 }
