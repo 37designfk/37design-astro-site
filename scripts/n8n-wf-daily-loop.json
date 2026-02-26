@@ -1,7 +1,7 @@
 {
   "name": "Daily Loop (37Design)",
   "active": true,
-  "versionId": "1",
+  "versionId": "2",
   "nodes": [
     {
       "id": "loop-01-schedule",
@@ -21,71 +21,31 @@
       }
     },
     {
-      "id": "loop-02-analytics",
-      "name": "Fetch Analytics",
+      "id": "loop-02-run",
+      "name": "Run Daily Loop",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [220, 300],
       "parameters": {
-        "command": "python3 /home/ken/37design-astro-site/scripts/fetch-analytics.py 2>&1 | tail -5"
+        "command": "cd /home/ken/37design-astro-site && git pull origin main -q 2>/dev/null && bash scripts/daily-loop.sh 2>&1"
       }
     },
     {
-      "id": "loop-03-plan",
-      "name": "Analyze & Plan",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [440, 300],
-      "parameters": {
-        "command": "cd /home/ken/37design-astro-site && git pull origin main -q && bash scripts/analyze-and-plan.sh 2>&1"
-      }
-    },
-    {
-      "id": "loop-04-execute",
-      "name": "Execute Tasks",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [660, 300],
-      "parameters": {
-        "command": "bash /home/ken/37design-astro-site/scripts/execute-daily-tasks.sh 2>&1"
-      }
-    },
-    {
-      "id": "loop-05-deploy",
-      "name": "Deploy",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [880, 300],
-      "parameters": {
-        "command": "cd /home/ken/37design-astro-site && bash scripts/deploy.sh main 2>&1 | tail -5"
-      }
-    },
-    {
-      "id": "loop-06-log",
-      "name": "Log & Analytics Cache",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [1100, 300],
-      "parameters": {
-        "command": "docker cp /home/ken/37design-astro-site/.analytics-cache.json n8n:/home/node/.n8n/analytics-cache.json 2>/dev/null; echo 'cache updated'"
-      }
-    },
-    {
-      "id": "loop-07-summary",
+      "id": "loop-03-summary",
       "name": "Summary",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1320, 300],
+      "position": [440, 300],
       "parameters": {
-        "jsCode": "const fetchOut = $('Fetch Analytics').first().json.stdout || '';\nconst planOut = $('Analyze & Plan').first().json.stdout || '';\nconst execOut = $('Execute Tasks').first().json.stdout || '';\nconst deployOut = $('Deploy').first().json.stdout || '';\n\nconst fetchOk = !fetchOut.toLowerCase().includes('error');\nconst planOk = !planOut.toLowerCase().includes('error');\nconst execOk = !execOut.toLowerCase().includes('error');\nconst deployOk = deployOut.includes('Deploy completed');\nconst allOk = fetchOk && planOk && execOk && deployOk;\n\nconst now = new Date();\nreturn [{ json: {\n  date: now.toISOString().split('T')[0],\n  status: allOk ? 'success' : 'failed',\n  started_at: $('Schedule').first().json.timestamp || now.toISOString(),\n  finished_at: now.toISOString(),\n  steps: [\n    { name: 'Fetch Analytics', success: fetchOk, output: fetchOut.substring(0, 200) },\n    { name: 'Analyze & Plan', success: planOk, output: planOut.substring(0, 200) },\n    { name: 'Execute Tasks', success: execOk, output: execOut.substring(0, 300) },\n    { name: 'Deploy', success: deployOk, output: deployOut.substring(0, 200) }\n  ],\n  error: allOk ? null : 'One or more steps failed'\n} }];"
+        "jsCode": "const out = $('Run Daily Loop').first().json.stdout || '';\nconst stderr = $('Run Daily Loop').first().json.stderr || '';\nconst exitCode = $('Run Daily Loop').first().json.exitCode;\nconst allOk = exitCode === 0;\n\nconst now = new Date();\nconst lines = out.split('\\n').filter(l => l.trim());\nconst taskLines = lines.filter(l => l.includes('タスク') || l.includes('完了') || l.includes('ERROR') || l.includes('スキップ'));\n\nreturn [{ json: {\n  date: now.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),\n  status: allOk ? 'success' : 'error',\n  started_at: $('Schedule').first().json.timestamp || now.toISOString(),\n  finished_at: now.toISOString(),\n  steps: taskLines.slice(0, 10).map(l => ({\n    name: l.replace(/^\\[.*?\\]\\s*/, '').substring(0, 60),\n    success: !l.toLowerCase().includes('error') && !l.toLowerCase().includes('fail'),\n    output: l.substring(0, 200)\n  })),\n  error: allOk ? null : (stderr || out).substring(0, 300)\n} }];"
       }
     },
     {
-      "id": "loop-08-post-log",
+      "id": "loop-04-post-log",
       "name": "POST Daily Loop Log",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1540, 300],
+      "position": [660, 300],
       "parameters": {
         "method": "POST",
         "url": "https://n8n-onprem.37d.jp/webhook/37design-daily-loop-log",
@@ -101,21 +61,9 @@
   ],
   "connections": {
     "Schedule": {
-      "main": [[{ "node": "Fetch Analytics", "type": "main", "index": 0 }]]
+      "main": [[{ "node": "Run Daily Loop", "type": "main", "index": 0 }]]
     },
-    "Fetch Analytics": {
-      "main": [[{ "node": "Analyze & Plan", "type": "main", "index": 0 }]]
-    },
-    "Analyze & Plan": {
-      "main": [[{ "node": "Execute Tasks", "type": "main", "index": 0 }]]
-    },
-    "Execute Tasks": {
-      "main": [[{ "node": "Deploy", "type": "main", "index": 0 }]]
-    },
-    "Deploy": {
-      "main": [[{ "node": "Log & Analytics Cache", "type": "main", "index": 0 }]]
-    },
-    "Log & Analytics Cache": {
+    "Run Daily Loop": {
       "main": [[{ "node": "Summary", "type": "main", "index": 0 }]]
     },
     "Summary": {

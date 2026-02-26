@@ -8,7 +8,7 @@ set -euo pipefail
 SITE_DIR="/home/ken/37design-astro-site"
 LOCK_FILE="$SITE_DIR/.article-lock.json"
 ANALYTICS_FILE="$SITE_DIR/.analytics-cache.json"
-DISCORD_WEBHOOK="${DISCORD_WEBHOOK:?DISCORD_WEBHOOK環境変数を設定してください}"
+DISCORD_WEBHOOK="${DISCORD_WEBHOOK:-}"
 TODAY=$(date +%Y-%m-%d)
 LOCK_DAYS=7
 CLAUDE="env -u CLAUDECODE PATH=$HOME/.local/bin:$PATH claude -p"
@@ -18,6 +18,7 @@ cd "$SITE_DIR"
 log() { echo "[$(date '+%H:%M:%S')] $1"; }
 
 notify() {
+  [ -z "$DISCORD_WEBHOOK" ] && return 0
   local msg="$1" color="${2:-3447003}"
   curl -s -X POST "$DISCORD_WEBHOOK" \
     -H "Content-Type: application/json" \
