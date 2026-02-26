@@ -3,7 +3,7 @@
 # GA4/GSC取得 → Claude分析(2タスク) → Claude記事生成×2 → ビルド → デプロイ
 # n8n: SSH 1コマンドで呼ぶだけ
 
-set -euo pipefail
+set -uo pipefail
 
 SITE_DIR="/home/ken/37design-astro-site"
 LOCK_FILE="$SITE_DIR/.article-lock.json"
@@ -36,7 +36,7 @@ log "Git pull..."
 git pull origin main -q 2>/dev/null || true
 
 log "Analytics取得中..."
-python3 "$SITE_DIR/scripts/fetch-analytics.py" > /dev/null 2>&1
+python3 "$SITE_DIR/scripts/fetch-analytics.py" > /dev/null 2>&1 || log "WARN: Analytics取得スクリプトが非ゼロ終了"
 if [ ! -f "$ANALYTICS_FILE" ]; then
   log "ERROR: Analytics取得失敗"
   notify "❌ Analytics取得失敗" 16711680
@@ -159,7 +159,9 @@ $([ -n "$CANNIBALIZATION" ] && echo "以下の記事がGSC上位20位内で競�
 ]
 ANALYZE_EOF
 
-$CLAUDE < /tmp/daily-loop-analyze.$$ > /tmp/daily-loop-plan.$$ 2>/dev/null
+if ! $CLAUDE < /tmp/daily-loop-analyze.$$ > /tmp/daily-loop-plan.$$ 2>/dev/null; then
+  log "WARN: Claude分析で非ゼロ終了（応答は取得済みの場合あり）"
+fi
 
 # JSON配列をパース
 TASKS=$(python3 -c "
@@ -337,7 +339,9 @@ ${SLUG_LIST}
 NEW_EOF
   fi
 
-  $CLAUDE < /tmp/daily-loop-generate-${i}.$$ > /tmp/daily-loop-article-${i}.$$ 2>/dev/null
+  if ! $CLAUDE < /tmp/daily-loop-generate-${i}.$$ > /tmp/daily-loop-article-${i}.$$ 2>/dev/null; then
+    log "WARN: Claude生成で非ゼロ終了（応答は取得済みの場合あり）"
+  fi
 
   if [ ! -s /tmp/daily-loop-article-${i}.$$ ]; then
     log "WARN: Claude応答なし (${SLUG}) → スキップ"

@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://37design.co.jp',
+  trailingSlash: 'always',
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],

@@ -31,7 +31,7 @@ const categoryColors: Record<string, string> = {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {articles.map((article) => (
         <a
-          href={`/blog/${article.slug}`}
+          href={`/blog/${article.slug}/`}
           class="group block rounded-2xl border border-border bg-white overflow-hidden card-hover"
         >
           {article.image ? (
