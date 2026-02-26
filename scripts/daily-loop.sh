@@ -400,8 +400,21 @@ if ! npm run build > /dev/null 2>&1; then
 fi
 log "ビルド成功"
 
+log "Git push中..."
+git push origin main -q 2>/dev/null || log "WARN: git push失敗（後で手動push必要）"
+
 log "デプロイ中..."
-bash "$SITE_DIR/scripts/deploy.sh" main > /dev/null 2>&1
+XSERVER_USER="server37"
+XSERVER_HOST="sv2023.xserver.jp"
+XSERVER_PORT="10022"
+XSERVER_KEY="$HOME/.ssh/server37.key"
+XSERVER_PATH="~/37design.co.jp/public_html/"
+
+rsync -avz --delete \
+  -e "ssh -i $XSERVER_KEY -p $XSERVER_PORT -o StrictHostKeyChecking=accept-new" \
+  "$SITE_DIR/dist/" \
+  "$XSERVER_USER@$XSERVER_HOST:$XSERVER_PATH" > /dev/null 2>&1 \
+  || log "WARN: rsyncデプロイ失敗"
 log "デプロイ完了"
 
 # ============================================

@@ -3,7 +3,7 @@
 # Usage: ./scripts/deploy.sh [branch]
 # Called by n8n webhook or manually
 
-set -euo pipefail
+set -uo pipefail
 
 PROJECT_DIR="$HOME/37design-astro-site"
 BRANCH="${1:-main}"
@@ -25,9 +25,9 @@ cd "$PROJECT_DIR"
 
 # 1. Pull latest
 log "Pulling latest from origin/$BRANCH..."
-git fetch origin
-git checkout "$BRANCH"
-git pull origin "$BRANCH"
+git fetch origin || log "WARN: git fetch failed"
+git checkout "$BRANCH" 2>/dev/null || true
+git pull origin "$BRANCH" || log "WARN: git pull failed (local commits may exist)"
 
 COMMIT=$(git rev-parse --short HEAD)
 log "Current commit: $COMMIT"
