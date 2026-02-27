@@ -1,0 +1,80 @@
+---
+import type { ComparisonRow } from "../../data/types";
+
+interface Column {
+  sublabel: string;
+  label: string;
+  price: string;
+}
+
+interface Props {
+  comparisons: ComparisonRow[];
+  columns: Column[];
+  label?: string;
+  title?: string;
+  subtitle?: string;
+  bgClass?: string;
+}
+
+const {
+  comparisons,
+  columns,
+  label = "Compare",
+  title = "プランの比較",
+  subtitle = "目的に合ったプランをお選びください",
+  bgClass = "bg-surface-alt",
+} = Astro.props;
+---
+
+<section class={`py-16 md:py-20 ${bgClass}`}>
+  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">{label}</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">{title}</h2>
+      {subtitle && <p class="text-text-secondary text-sm mt-3">{subtitle}</p>}
+    </div>
+
+    <div class="bg-white rounded-2xl border border-border overflow-hidden">
+      <div class={`grid bg-primary-950 text-white text-center`} style={`grid-template-columns: repeat(${columns.length + 1}, minmax(0, 1fr))`}>
+        <div class="p-4"></div>
+        {columns.map((col) => (
+          <div class="p-4 border-l border-white/10">
+            <p class="text-xs font-semibold text-white/60 mb-1">{col.sublabel}</p>
+            <p class="text-sm font-bold">{col.label}</p>
+            <p class="text-accent-400 text-xs font-bold mt-1">{col.price}</p>
+          </div>
+        ))}
+      </div>
+
+      {comparisons.map((item, i) => (
+        <div class={`grid text-sm`} style={`grid-template-columns: repeat(${columns.length + 1}, minmax(0, 1fr))`}>
+          <div class={`p-3 md:p-4 flex items-center text-text-primary text-xs md:text-sm ${i % 2 === 0 ? 'bg-white' : 'bg-surface-alt'}`}>{item.label}</div>
+          <div class={`p-3 md:p-4 flex items-center justify-center border-l border-border ${i % 2 === 0 ? 'bg-white' : 'bg-surface-alt'}`}>
+            {item.online ? (
+              <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg class="w-5 h-5 text-neutral-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            )}
+          </div>
+          <div class={`p-3 md:p-4 flex items-center justify-center border-l border-border ${i % 2 === 0 ? 'bg-white' : 'bg-surface-alt'}`}>
+            {item.dedicated ? (
+              <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg class="w-5 h-5 text-neutral-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <slot />
+  </div>
+</section>

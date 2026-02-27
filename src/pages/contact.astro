@@ -6,6 +6,7 @@ import "../styles/global.css";
 import ParticleCanvas from "../components/ParticleCanvas.astro";
 import { inquiryTypes } from "../data/inquiry-types";
 import { faqGeneral as faqs } from "../data/faq-general";
+import FAQSection from "../components/common/FAQSection.astro";
 ---
 
 <Layout
@@ -307,49 +308,17 @@ import { faqGeneral as faqs } from "../data/faq-general";
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-16 md:py-20 bg-white">
-      <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">FAQ</p>
-          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">よくあるご質問</h2>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          {faqs.map((faq, i) => (
-            <details
-              class="group rounded-xl border border-border bg-surface-alt overflow-hidden"
-            >
-              <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none">
-                <div class="flex items-center gap-3">
-                  <span class="w-7 h-7 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-xs font-bold shrink-0">Q</span>
-                  <span class="text-sm md:text-base font-semibold text-text-primary">{faq.q}</span>
-                </div>
-                <svg class="w-5 h-5 text-text-muted shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </summary>
-              <div class="px-6 pb-5">
-                <div class="flex gap-3 pt-2 border-t border-border/50">
-                  <span class="w-7 h-7 rounded-full bg-primary-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">A</span>
-                  <p class="text-sm text-text-body leading-relaxed">{faq.a}</p>
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-
-        <div class="mt-10 text-center">
-          <p class="text-sm text-text-secondary mb-4">その他のご質問がある方は、お気軽にお問い合わせください</p>
-          <a
-            href="#form"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
-          >
-            お問い合わせフォームへ
-          </a>
-        </div>
+    <FAQSection faqs={faqs}>
+      <div class="mt-10 text-center">
+        <p class="text-sm text-text-secondary mb-4">その他のご質問がある方は、お気軽にお問い合わせください</p>
+        <a
+          href="#form"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
+        >
+          お問い合わせフォームへ
+        </a>
       </div>
-    </section>
+    </FAQSection>
 
     <!-- Business Hours -->
     <section class="py-12 bg-surface">

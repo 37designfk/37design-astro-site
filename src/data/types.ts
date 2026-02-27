@@ -57,6 +57,27 @@ export interface ComparisonRow {
   dedicated: boolean;
 }
 
+export interface CaseStudyMetric {
+  label: string;
+  value: string;
+  width: string;
+}
+
+export interface CaseStudy {
+  industry: string;
+  employeeCount: string;
+  gradientClass: string;
+  iconBgClass: string;
+  iconTextClass: string;
+  iconPath: string;
+  problem: string;
+  solution: string;
+  metrics: CaseStudyMetric[];
+  quote: string;
+  quoteAuthor: string;
+  planBadge: string;
+}
+
 export interface ServiceItem {
   name: string;
   description: string;
