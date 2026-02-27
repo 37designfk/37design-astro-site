@@ -15,19 +15,24 @@ import WaveDivider from "./WaveDivider.astro";
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <!-- Text -->
       <div class="order-2 lg:order-1">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
-          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-          <span class="text-white/70 text-xs font-medium">無料相談受付中</span>
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/15 border border-red-400/25 backdrop-blur-sm mb-6">
+          <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+          <span class="text-white/80 text-xs font-semibold">今月の無料診断枠：<span class="text-accent-400">残り5名</span></span>
         </div>
         <h1 class="text-[clamp(2rem,5.5vw,4.5rem)] font-black text-white leading-[1.1] mb-6 md:mb-8">
           あなたの会社を<br />
           <span class="text-accent-400">1週間</span>で<br />
           <span class="text-accent-400">AI企業</span>へ
         </h1>
-        <p class="text-white/60 text-base md:text-lg leading-relaxed mb-8 md:mb-10 max-w-xl">
+        <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 max-w-xl">
           属人化した業務、手作業の繰り返し、散らばった顧客情報——<br class="hidden md:block" />
           AIとテクノロジーで、その課題を解決します。
         </p>
+
+        <div class="flex items-center gap-3 mb-8 md:mb-10 max-w-xl">
+          <div class="h-px w-8 bg-accent-400/50 shrink-0"></div>
+          <p class="text-accent-400/90 text-sm font-semibold">導入企業の平均：<span class="text-accent-400">月20時間</span>の業務削減・<span class="text-accent-400">年間200万円</span>のコスト削減</p>
+        </div>
         <div class="flex flex-col sm:flex-row gap-4">
           <a
             href="#contact"
@@ -51,6 +56,22 @@ import WaveDivider from "./WaveDivider.astro";
           </a>
         </div>
 
+        <!-- Friction reduction -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-white/50 text-xs">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            30秒で完了
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            しつこい営業なし
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            完全無料
+          </span>
+        </div>
+
         <!-- Trust indicators -->
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 text-white/50 text-xs">
           <div class="flex items-center gap-1.5">
@@ -70,6 +91,17 @@ import WaveDivider from "./WaveDivider.astro";
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
             </svg>
             <span>最短<strong class="text-white/70">1週間</strong>で導入</span>
+          </div>
+        </div>
+
+        <!-- Social proof -->
+        <div class="mt-6 flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/8 backdrop-blur-sm max-w-md">
+          <svg class="w-5 h-5 text-accent-400/70 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 0 1-3.5 3.5 3.871 3.871 0 0 1-2.748-1.179Zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 0 1-3.5 3.5 3.871 3.871 0 0 1-2.748-1.179Z" />
+          </svg>
+          <div>
+            <p class="text-white/70 text-xs italic leading-relaxed">「何から始めればいいか分からなかったが、毎週の定例で一つずつ解決していけた」</p>
+            <p class="text-white/40 text-[10px] mt-1">— 製造業 経営者様（従業員50名）</p>
           </div>
         </div>
       </div>
