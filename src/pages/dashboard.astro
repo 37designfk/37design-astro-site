@@ -194,6 +194,30 @@
         </div>
       </div>
 
+      <!-- オーナーメモ -->
+      <div class="card p-5">
+        <h2 class="text-base font-semibold text-white mb-1 flex items-center gap-2">
+          <span style="color:#f5d020">&#9656;</span> オーナーメモ
+          <span class="text-xs text-gray-400 font-normal ml-1">— 次回のWF4分析に反映されます</span>
+        </h2>
+        <p class="text-xs text-gray-500 mb-3">方針・注力テーマ・避けたいキーワードなど自由に入力</p>
+        <textarea
+          id="owner-memo-input"
+          rows="5"
+          placeholder="例: 営業支援系の記事を優先したい。AI税務・会計系は競合が強いので避ける。来月は採用系テーマを強化予定。"
+          class="w-full bg-white/[.05] border border-white/10 rounded-lg p-3 text-sm text-gray-200 placeholder-gray-600 resize-y focus:outline-none focus:border-yellow-400/50 transition-colors"
+        ></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="memo-status" class="text-xs text-gray-500"></span>
+          <button
+            id="memo-save-btn"
+            onclick="saveMemo()"
+            class="px-4 py-1.5 text-sm font-medium rounded-lg transition-colors"
+            style="background:#f5d020; color:#0a0f1e;"
+          >保存</button>
+        </div>
+      </div>
+
     </main>
 
     <script is:inline>
@@ -461,6 +485,7 @@
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
           renderData(data);
+          loadMemoFromData(data);
           document.getElementById('last-updated').textContent =
             '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
         } catch(e) {
@@ -469,6 +494,42 @@
         } finally {
           btn.textContent = '↻ 更新';
           btn.disabled = false;
+        }
+      }
+
+      const MEMO_SAVE_URL = 'https://n8n-37design.37d.jp/webhook/pBGHNSab94koWsS1/webhook/owner-memo-save';
+
+      /* ── オーナーメモ読み込み（WF7 APIレスポンスから） ── */
+      function loadMemoFromData(data) {
+        const ta = document.getElementById('owner-memo-input');
+        if (ta && data.owner_memo !== undefined) {
+          ta.value = data.owner_memo;
+        }
+      }
+
+      async function saveMemo() {
+        const ta = document.getElementById('owner-memo-input');
+        const btn = document.getElementById('memo-save-btn');
+        const status = document.getElementById('memo-status');
+        if (!ta) return;
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+        try {
+          const res = await fetch(MEMO_SAVE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: ta.value })
+          });
+          const d = await res.json();
+          status.textContent = d.ok ? `保存しました（${ta.value.length}字）` : '保存失敗';
+          status.style.color = d.ok ? '#86efac' : '#fca5a5';
+          setTimeout(() => { status.textContent = ''; }, 3000);
+        } catch(e) {
+          status.textContent = 'エラー: ' + e.message;
+          status.style.color = '#fca5a5';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '保存';
         }
       }
 

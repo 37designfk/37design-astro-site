@@ -109,6 +109,14 @@ for u in urls:
 SITEMAP_COUNT=$(echo "$SITEMAP" | wc -l | tr -d ' ')
 log "サイトマップ: ${SITEMAP_COUNT} URL"
 
+# オーナーメモ取得（PostgreSQL）
+OWNER_MEMO=$(docker exec postgres-37design psql \
+  -U n8n_37design -d n8n_37design -t -A \
+  -c "SELECT COALESCE(content,'') FROM owner_memo WHERE id=1" 2>/dev/null || echo "")
+if [ -n "$OWNER_MEMO" ]; then
+  log "オーナーメモ取得: ${#OWNER_MEMO}字"
+fi
+
 # ============================================
 # Step 2: Claude 1回目 — サイト分析 → 2タスク選定
 # ============================================
@@ -146,6 +154,9 @@ ${SLUG_COUNT}本 / 上限${MAX_ARTICLES}本
 
 ## カニバリ警告
 $([ -n "$CANNIBALIZATION" ] && echo "以下の記事がGSC上位20位内で競合中: ${CANNIBALIZATION}" || echo "なし")
+
+## オーナーからのメモ・方針（最優先で考慮すること）
+${OWNER_MEMO:-（メモなし）}
 
 ## 返却（JSON配列のみ、説明不要）
 [
