@@ -19,17 +19,13 @@
       rel="stylesheet"
     />
     <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
     <script is:inline>
       tailwind.config = {
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['"Noto Sans JP"', 'sans-serif'],
-            },
-            colors: {
-              surface: '#0a0f1e',
-              accent: '#f5d020',
-            },
+            fontFamily: { sans: ['"Noto Sans JP"', 'sans-serif'] },
+            colors: { surface: '#0a0f1e', accent: '#f5d020' },
           },
         },
       };
@@ -41,8 +37,9 @@
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 1rem;
+        transition: border-color .2s;
       }
-      .card:hover { border-color: rgba(245,208,32,0.2); }
+      .card:hover { border-color: rgba(245,208,32,0.25); }
       @keyframes shimmer {
         0% { background-position: -200% 0; }
         100% { background-position: 200% 0; }
@@ -51,39 +48,43 @@
         background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%);
         background-size: 200% 100%;
         animation: shimmer 1.5s ease-in-out infinite;
-        border-radius: 0.5rem;
+        border-radius: .5rem;
       }
-      .fade-in { animation: fadeIn 0.4s ease-out; }
+      .fade-in { animation: fadeIn .4s ease-out; }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(6px); }
-        to { opacity: 1; transform: translateY(0); }
+        to   { opacity: 1; transform: translateY(0); }
       }
       ::-webkit-scrollbar { width: 6px; height: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+      /* トグル */
+      .reason-toggle { cursor: pointer; }
+      .reason-body { display: none; }
+      .reason-body.open { display: block; }
+      /* CTRバー */
+      .bar { height: 4px; border-radius: 2px; background: rgba(245,208,32,.7); }
     </style>
   </head>
   <body class="text-gray-200 min-h-screen antialiased">
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 border-b border-white/10" style="background:rgba(10,15,30,0.9);backdrop-filter:blur(16px)">
+    <header class="sticky top-0 z-50 border-b border-white/10"
+            style="background:rgba(10,15,30,.92);backdrop-filter:blur(16px)">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-              <span style="color:#f5d020">&#9670;</span>
-              Marketing OS ダッシュボード
+              <span style="color:#f5d020">&#9670;</span> Marketing OS ダッシュボード
             </h1>
             <p class="text-sm text-gray-400 mt-0.5">37Design 自動運用システム</p>
           </div>
           <div class="flex items-center gap-4">
             <span id="last-updated" class="text-xs text-gray-500">読み込み中...</span>
-            <button
-              id="refresh-btn"
-              onclick="fetchData()"
-              class="px-3 py-1.5 text-sm rounded-lg border border-white/10 text-gray-300 hover:border-accent hover:text-accent transition-colors"
-            >↻ 更新</button>
+            <button id="refresh-btn" onclick="fetchData()"
+              class="px-3 py-1.5 text-sm rounded-lg border border-white/10 text-gray-300 hover:border-yellow-400 hover:text-yellow-400 transition-colors">
+              ↻ 更新
+            </button>
           </div>
         </div>
       </div>
@@ -103,7 +104,7 @@
           <p id="kpi-sessions" class="text-2xl font-bold text-white skeleton h-8">-</p>
         </div>
         <div class="card p-4">
-          <p class="text-xs text-gray-400 mb-1">クリック (GSC)</p>
+          <p class="text-xs text-gray-400 mb-1">GSCクリック (今日)</p>
           <p id="kpi-clicks" class="text-2xl font-bold text-white skeleton h-8">-</p>
         </div>
         <div class="card p-4">
@@ -112,7 +113,18 @@
         </div>
       </div>
 
-      <!-- WFステータス + タスクキュー -->
+      <!-- GA4グラフ -->
+      <div class="card p-5">
+        <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+          <span style="color:#f5d020">&#9656;</span> GA4 トレンド（直近14日）
+        </h2>
+        <div class="relative" style="height:220px">
+          <canvas id="ga4-chart"></canvas>
+          <div id="ga4-chart-skeleton" class="skeleton absolute inset-0"></div>
+        </div>
+      </div>
+
+      <!-- WFステータス + WF4分析結果 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <!-- WF実行状況 -->
@@ -130,53 +142,55 @@
           </div>
         </div>
 
-        <!-- タスクキュー -->
+        <!-- WF4 Claude分析結果 -->
         <div class="card p-5">
           <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
-            <span style="color:#f5d020">&#9656;</span> タスクキュー (直近10件)
+            <span style="color:#f5d020">&#9656;</span> WF4 Claude分析（直近タスク）
           </h2>
-          <div id="task-list" class="space-y-2">
-            <div class="skeleton h-10 w-full"></div>
-            <div class="skeleton h-10 w-full"></div>
-            <div class="skeleton h-10 w-full"></div>
-            <div class="skeleton h-10 w-full"></div>
+          <div id="wf4-list" class="space-y-3">
+            <div class="skeleton h-16 w-full"></div>
+            <div class="skeleton h-16 w-full"></div>
+            <div class="skeleton h-16 w-full"></div>
           </div>
         </div>
 
       </div>
 
-      <!-- GA4 / GSC -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- GSCキーワード + トップページ -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- GA4 -->
+        <!-- GSCキーワード -->
         <div class="card p-5">
           <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
-            <span style="color:#f5d020">&#9656;</span> GA4 (直近7日)
+            <span style="color:#f5d020">&#9656;</span> GSC キーワード上位20（直近14日）
           </h2>
-          <div id="ga4-table" class="overflow-x-auto">
-            <div class="skeleton h-40 w-full"></div>
+          <div id="gsc-keywords" class="overflow-x-auto">
+            <div class="skeleton h-64 w-full"></div>
           </div>
         </div>
 
-        <!-- GSC -->
+        <!-- GSC トップページ -->
         <div class="card p-5">
           <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
-            <span style="color:#f5d020">&#9656;</span> GSC (直近7日)
+            <span style="color:#f5d020">&#9656;</span> GSC トップページ（最新日）
           </h2>
-          <div id="gsc-table" class="overflow-x-auto">
-            <div class="skeleton h-40 w-full"></div>
+          <div id="gsc-top-pages" class="overflow-x-auto">
+            <div class="skeleton h-64 w-full"></div>
           </div>
         </div>
 
       </div>
 
-      <!-- GSC トップページ -->
+      <!-- タスクキュー -->
       <div class="card p-5">
         <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
-          <span style="color:#f5d020">&#9656;</span> GSC トップページ
+          <span style="color:#f5d020">&#9656;</span> タスクキュー（直近20件）
         </h2>
-        <div id="gsc-top-pages" class="overflow-x-auto">
-          <div class="skeleton h-32 w-full"></div>
+        <div id="task-list" class="space-y-2">
+          <div class="skeleton h-10 w-full"></div>
+          <div class="skeleton h-10 w-full"></div>
+          <div class="skeleton h-10 w-full"></div>
+          <div class="skeleton h-10 w-full"></div>
         </div>
       </div>
 
@@ -184,62 +198,264 @@
 
     <script is:inline>
       const API_URL = '/api/dashboard-data';
+      let ga4ChartInst = null;
 
-      // ステータスバッジ
-      function statusBadge(status) {
+      /* ── ステータスバッジ ── */
+      function badge(status) {
         const map = {
-          success:   ['bg-green-500/20 text-green-400 border border-green-500/30', '✓ success'],
-          error:     ['bg-red-500/20 text-red-400 border border-red-500/30', '✗ error'],
-          running:   ['bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse', '⟳ running'],
-          pending:   ['bg-yellow-500/20 text-yellow-400 border border-yellow-500/30', '◌ pending'],
-          completed: ['bg-green-500/20 text-green-400 border border-green-500/30', '✓ completed'],
-          warning:   ['bg-orange-500/20 text-orange-400 border border-orange-500/30', '⚠ warning'],
+          success:   ['bg-green-500/20 text-green-400 border-green-500/30',  '✓'],
+          error:     ['bg-red-500/20 text-red-400 border-red-500/30',        '✗'],
+          running:   ['bg-blue-500/20 text-blue-400 border-blue-500/30',     '⟳'],
+          pending:   ['bg-yellow-500/20 text-yellow-400 border-yellow-500/30','◌'],
+          completed: ['bg-green-500/20 text-green-400 border-green-500/30',  '✓'],
+          warning:   ['bg-orange-500/20 text-orange-400 border-orange-500/30','⚠'],
+          never:     ['bg-gray-500/20 text-gray-500 border-gray-600/30',     '—'],
+          rewrite:   ['bg-purple-500/20 text-purple-300 border-purple-500/30','✎'],
+          new_article:['bg-blue-500/20 text-blue-300 border-blue-500/30',   '+'],
         };
-        const [cls, label] = map[status] || ['bg-gray-500/20 text-gray-400 border border-gray-500/30', status];
-        return `<span class="px-2 py-0.5 rounded text-xs font-medium ${cls}">${label}</span>`;
+        const [cls, icon] = map[status] || ['bg-gray-500/20 text-gray-400 border-gray-500/30', status];
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border ${cls}">${icon} ${status}</span>`;
       }
 
-      // 経過時間
-      function timeAgo(dtStr) {
-        if (!dtStr) return '-';
+      /* ── 経過時間 ── */
+      function timeAgo(s) {
+        if (!s) return '-';
         try {
-          const dt = new Date(dtStr.replace(' ', 'T'));
-          const diff = Math.floor((Date.now() - dt) / 1000);
-          if (diff < 60) return `${diff}秒前`;
-          if (diff < 3600) return `${Math.floor(diff/60)}分前`;
-          if (diff < 86400) return `${Math.floor(diff/3600)}時間前`;
-          return `${Math.floor(diff/86400)}日前`;
-        } catch(e) { return dtStr; }
+          const d = Math.floor((Date.now() - new Date(s.replace(' ','T'))) / 1000);
+          if (d < 60) return `${d}秒前`;
+          if (d < 3600) return `${Math.floor(d/60)}分前`;
+          if (d < 86400) return `${Math.floor(d/3600)}時間前`;
+          return `${Math.floor(d/86400)}日前`;
+        } catch { return s; }
       }
 
-      // 実行秒数
-      function execSec(start, stop) {
-        if (!start || !stop) return '';
+      /* ── 実行秒 ── */
+      function execSec(a, b) {
+        if (!a || !b) return '';
         try {
-          const s = new Date(start.replace(' ', 'T'));
-          const e = new Date(stop.replace(' ', 'T'));
-          const sec = Math.round((e - s) / 1000);
-          return ` (${sec}s)`;
-        } catch(e) { return ''; }
+          return ` (${Math.round((new Date(b.replace(' ','T'))-new Date(a.replace(' ','T')))/1000)}s)`;
+        } catch { return ''; }
       }
 
-      // テーブル生成ヘルパー
-      function buildTable(headers, rows) {
-        if (!rows || rows.length === 0) {
-          return '<p class="text-sm text-gray-500 italic py-4 text-center">データなし</p>';
-        }
-        const thead = `<tr>${headers.map(h => `<th class="text-left text-xs text-gray-400 font-medium py-2 px-2 whitespace-nowrap">${h}</th>`).join('')}</tr>`;
-        const tbody = rows.map((row, i) =>
-          `<tr class="${i % 2 === 0 ? '' : 'bg-white/[0.02]'}">${row.map(cell => `<td class="py-1.5 px-2 text-sm text-gray-300 whitespace-nowrap">${cell}</td>`).join('')}</tr>`
+      /* ── テーブル ── */
+      function table(headers, rows) {
+        if (!rows || !rows.length) return '<p class="text-sm text-gray-500 italic py-4 text-center">データなし</p>';
+        const th = headers.map(h=>`<th class="text-left text-xs text-gray-400 font-medium py-2 px-2 whitespace-nowrap">${h}</th>`).join('');
+        const tb = rows.map((r,i)=>
+          `<tr class="${i%2?'bg-white/[.02]':''}">
+            ${r.map(c=>`<td class="py-1.5 px-2 text-sm text-gray-300">${c}</td>`).join('')}
+          </tr>`
         ).join('');
-        return `<table class="w-full min-w-full"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+        return `<table class="w-full min-w-full"><thead><tr>${th}</tr></thead><tbody>${tb}</tbody></table>`;
       }
 
+      /* ── KPI helper ── */
+      function setKpi(id, val) {
+        const el = document.getElementById(id);
+        el.textContent = val;
+        el.classList.remove('skeleton');
+        el.classList.add('fade-in');
+      }
+
+      /* ── GA4グラフ描画 ── */
+      function renderGa4Chart(ga4) {
+        const skeleton = document.getElementById('ga4-chart-skeleton');
+        if (skeleton) skeleton.remove();
+
+        const sorted = [...ga4].sort((a,b) => a.date > b.date ? 1 : -1);
+        const labels = sorted.map(r => r.date.slice(5)); // MM-DD
+        const sessions = sorted.map(r => r.sessions);
+        const pvs = sorted.map(r => r.page_views);
+
+        const ctx = document.getElementById('ga4-chart').getContext('2d');
+        if (ga4ChartInst) ga4ChartInst.destroy();
+
+        ga4ChartInst = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'セッション',
+                data: sessions,
+                borderColor: '#f5d020',
+                backgroundColor: 'rgba(245,208,32,.08)',
+                borderWidth: 2,
+                pointBackgroundColor: '#f5d020',
+                pointRadius: 4,
+                fill: true,
+                tension: 0.4,
+              },
+              {
+                label: 'ページビュー',
+                data: pvs,
+                borderColor: '#60a5fa',
+                backgroundColor: 'rgba(96,165,250,.08)',
+                borderWidth: 2,
+                pointBackgroundColor: '#60a5fa',
+                pointRadius: 4,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: {
+                labels: { color: '#9ca3af', font: { size: 12 } },
+              },
+              tooltip: {
+                backgroundColor: 'rgba(10,15,30,.95)',
+                borderColor: 'rgba(255,255,255,.1)',
+                borderWidth: 1,
+                titleColor: '#e5e7eb',
+                bodyColor: '#d1d5db',
+              },
+            },
+            scales: {
+              x: {
+                ticks: { color: '#6b7280', font: { size: 11 } },
+                grid: { color: 'rgba(255,255,255,.04)' },
+              },
+              y: {
+                ticks: { color: '#6b7280', font: { size: 11 } },
+                grid: { color: 'rgba(255,255,255,.06)' },
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      /* ── メインレンダリング ── */
+      function renderData(data) {
+        const ga4 = data.ga4 || [];
+        const gsc = data.gsc || [];
+        const latest_ga4 = ga4[0] || {};
+        const latest_gsc = gsc[0] || {};
+
+        // KPI
+        setKpi('kpi-articles',  data.article_count ?? '-');
+        setKpi('kpi-sessions',  latest_ga4.sessions != null ? latest_ga4.sessions.toLocaleString() : '-');
+        setKpi('kpi-clicks',    latest_gsc.clicks   != null ? latest_gsc.clicks.toLocaleString()   : '-');
+        setKpi('kpi-position',  latest_gsc.avg_position != null ? latest_gsc.avg_position.toFixed(1) : '-');
+
+        // GA4グラフ
+        renderGa4Chart(ga4);
+
+        // WF実行状況
+        const wfs = data.wf_status || [];
+        document.getElementById('wf-list').innerHTML = wfs.length
+          ? wfs.map(wf =>
+            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[.03] fade-in">
+              <div class="flex items-center gap-3 min-w-0">
+                ${badge(wf.status)}
+                <span class="text-sm text-gray-200 font-medium truncate">${wf.name}</span>
+              </div>
+              <span class="text-xs text-gray-500 shrink-0 ml-2">
+                ${timeAgo(wf.stoppedAt)}${execSec(wf.startedAt, wf.stoppedAt)}
+              </span>
+            </div>`
+          ).join('')
+          : '<p class="text-sm text-gray-500 italic">データなし</p>';
+
+        // WF4 Claude分析結果
+        const tasks = data.tasks || [];
+        const wf4Tasks = tasks.filter(t => t.reason && t.reason.trim() !== '').slice(0, 6);
+        document.getElementById('wf4-list').innerHTML = wf4Tasks.length
+          ? wf4Tasks.map((t, i) =>
+            `<div class="rounded-lg border border-white/[.07] overflow-hidden fade-in">
+              <button class="reason-toggle w-full text-left flex items-start gap-2 p-3 hover:bg-white/[.03] transition-colors"
+                      onclick="toggleReason(${i})">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  ${badge(t.action)}
+                  <span class="text-sm text-gray-200 font-medium truncate">${t.keyword}</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  ${badge(t.status)}
+                  <span class="text-xs text-gray-500">${t.date}</span>
+                  <span class="text-gray-500 text-xs" id="reason-arrow-${i}">▼</span>
+                </div>
+              </button>
+              <div id="reason-body-${i}" class="reason-body px-3 pb-3">
+                <p class="text-xs text-gray-400 leading-relaxed bg-white/[.03] rounded p-2">${t.reason}</p>
+              </div>
+            </div>`
+          ).join('')
+          : '<p class="text-sm text-gray-500 italic">分析データなし</p>';
+
+        // GSCキーワード
+        const kws = data.gsc_keywords || [];
+        const maxImp = kws.length ? Math.max(...kws.map(k => k.impressions)) : 1;
+        document.getElementById('gsc-keywords').innerHTML = kws.length
+          ? `<table class="w-full min-w-full">
+              <thead><tr>
+                <th class="text-left text-xs text-gray-400 font-medium py-2 px-2">キーワード</th>
+                <th class="text-right text-xs text-gray-400 font-medium py-2 px-2">表示</th>
+                <th class="text-right text-xs text-gray-400 font-medium py-2 px-2">クリック</th>
+                <th class="text-right text-xs text-gray-400 font-medium py-2 px-2">順位</th>
+              </tr></thead>
+              <tbody>
+                ${kws.map((k, i) => {
+                  const barW = maxImp > 0 ? Math.round(k.impressions / maxImp * 100) : 0;
+                  return `<tr class="${i%2?'bg-white/[.02]':''}">
+                    <td class="py-1.5 px-2">
+                      <div class="text-sm text-gray-200">${k.query}</div>
+                      <div class="bar mt-1" style="width:${barW}%"></div>
+                    </td>
+                    <td class="py-1.5 px-2 text-sm text-gray-300 text-right tabular-nums">${k.impressions.toLocaleString()}</td>
+                    <td class="py-1.5 px-2 text-sm text-gray-300 text-right tabular-nums">${k.clicks}</td>
+                    <td class="py-1.5 px-2 text-sm text-right tabular-nums ${k.position <= 10 ? 'text-green-400' : k.position <= 20 ? 'text-yellow-400' : 'text-gray-400'}">${k.position.toFixed(1)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>`
+          : '<p class="text-sm text-gray-500 italic py-4 text-center">データなし</p>';
+
+        // GSCトップページ
+        const tp = data.gsc_top_pages || [];
+        document.getElementById('gsc-top-pages').innerHTML = table(
+          ['ページ', 'クリック', '表示', '順位'],
+          tp.map(p => [
+            `<span class="text-xs text-gray-400 break-all">${p.page.replace('https://37design.co.jp','')}</span>`,
+            p.clicks,
+            p.impressions.toLocaleString(),
+            `<span class="${p.position<=10?'text-green-400':p.position<=20?'text-yellow-400':'text-gray-400'}">${p.position.toFixed(1)}</span>`,
+          ])
+        );
+
+        // タスクキュー
+        document.getElementById('task-list').innerHTML = tasks.length
+          ? tasks.map(t =>
+            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[.03] fade-in">
+              <div class="flex items-center gap-2 min-w-0">
+                ${badge(t.status)}
+                ${badge(t.action)}
+                <span class="text-sm text-gray-200 truncate" title="${t.keyword}">${t.slug}</span>
+              </div>
+              <span class="text-xs text-gray-500 shrink-0 ml-2">${t.date}</span>
+            </div>`
+          ).join('')
+          : '<p class="text-sm text-gray-500 italic">タスクなし</p>';
+      }
+
+      /* ── reasonトグル ── */
+      function toggleReason(i) {
+        const body = document.getElementById(`reason-body-${i}`);
+        const arrow = document.getElementById(`reason-arrow-${i}`);
+        const isOpen = body.classList.contains('open');
+        body.classList.toggle('open', !isOpen);
+        arrow.textContent = isOpen ? '▼' : '▲';
+      }
+
+      /* ── データ取得 ── */
       async function fetchData() {
         const btn = document.getElementById('refresh-btn');
         btn.textContent = '読込中...';
         btn.disabled = true;
-
         try {
           const res = await fetch(API_URL, { cache: 'no-store' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -248,7 +464,7 @@
           document.getElementById('last-updated').textContent =
             '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
         } catch(e) {
-          console.error('Fetch error:', e);
+          console.error(e);
           document.getElementById('last-updated').textContent = 'エラー: ' + e.message;
         } finally {
           btn.textContent = '↻ 更新';
@@ -256,97 +472,7 @@
         }
       }
 
-      function renderData(data) {
-        // KPIs
-        const ga4 = data.ga4 || [];
-        const gsc = data.gsc || [];
-        const latestGa4 = ga4[0] || {};
-        const latestGsc = gsc[0] || {};
-
-        function setKpi(id, val) {
-          const el = document.getElementById(id);
-          el.textContent = val;
-          el.classList.remove('skeleton');
-          el.classList.add('fade-in');
-        }
-        setKpi('kpi-articles', data.article_count ?? '-');
-        setKpi('kpi-sessions', latestGa4.sessions != null ? latestGa4.sessions.toLocaleString() : '-');
-        setKpi('kpi-clicks', latestGsc.clicks != null ? latestGsc.clicks.toLocaleString() : '-');
-        setKpi('kpi-position', latestGsc.avg_position != null ? latestGsc.avg_position.toFixed(1) : '-');
-
-        // WF実行状況
-        const wfList = document.getElementById('wf-list');
-        const wfs = data.wf_status || [];
-        if (wfs.length === 0) {
-          wfList.innerHTML = '<p class="text-sm text-gray-500 italic">データなし</p>';
-        } else {
-          wfList.innerHTML = wfs.map(wf =>
-            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03] fade-in">
-              <div class="flex items-center gap-3 min-w-0">
-                ${statusBadge(wf.status)}
-                <span class="text-sm text-gray-200 font-medium truncate">${wf.name}</span>
-              </div>
-              <span class="text-xs text-gray-500 shrink-0 ml-2">
-                ${timeAgo(wf.stoppedAt)}${execSec(wf.startedAt, wf.stoppedAt)}
-              </span>
-            </div>`
-          ).join('');
-        }
-
-        // タスクキュー
-        const taskList = document.getElementById('task-list');
-        const tasks = data.tasks || [];
-        if (tasks.length === 0) {
-          taskList.innerHTML = '<p class="text-sm text-gray-500 italic">タスクなし</p>';
-        } else {
-          taskList.innerHTML = tasks.map(t =>
-            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03] fade-in">
-              <div class="flex items-center gap-2 min-w-0">
-                ${statusBadge(t.status)}
-                <span class="text-xs px-1.5 py-0.5 rounded bg-white/5 text-gray-400">${t.action === 'rewrite' ? '✎ rewrite' : '+ new'}</span>
-                <span class="text-sm text-gray-200 truncate" title="${t.keyword}">${t.slug}</span>
-              </div>
-              <span class="text-xs text-gray-500 shrink-0 ml-2">${t.date}</span>
-            </div>`
-          ).join('');
-        }
-
-        // GA4テーブル
-        document.getElementById('ga4-table').innerHTML = buildTable(
-          ['日付', 'セッション', 'PV'],
-          ga4.map(row => [row.date, row.sessions?.toLocaleString() ?? '-', row.page_views?.toLocaleString() ?? '-'])
-        );
-
-        // GSCテーブル
-        document.getElementById('gsc-table').innerHTML = buildTable(
-          ['日付', 'クリック', '表示', 'CTR', '平均順位'],
-          gsc.map(row => [
-            row.date,
-            row.clicks ?? '-',
-            row.impressions?.toLocaleString() ?? '-',
-            row.ctr != null ? (row.ctr * 100).toFixed(1) + '%' : '-',
-            row.avg_position?.toFixed(1) ?? '-'
-          ])
-        );
-
-        // GSCトップページ
-        const topPages = data.gsc_top_pages || [];
-        document.getElementById('gsc-top-pages').innerHTML = buildTable(
-          ['ページ', 'クリック', '表示', 'CTR', '平均順位'],
-          topPages.map(p => [
-            `<span class="text-xs text-gray-400">${p.page}</span>`,
-            p.clicks ?? '-',
-            p.impressions?.toLocaleString() ?? '-',
-            p.ctr != null ? (p.ctr * 100).toFixed(1) + '%' : '-',
-            p.position?.toFixed(1) ?? '-'
-          ])
-        );
-      }
-
-      // 初回ロード
       fetchData();
-
-      // 60秒ごとに自動更新
       setInterval(fetchData, 60000);
     </script>
 
