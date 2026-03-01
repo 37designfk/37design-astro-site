@@ -1,0 +1,57 @@
+---
+import type { FAQ } from "../../data/types";
+
+interface Props {
+  faqs: FAQ[];
+  label?: string;
+  title?: string;
+  bgClass?: string;
+  sectionId?: string;
+  animate?: boolean;
+}
+
+const {
+  faqs,
+  label = "FAQ",
+  title = "よくあるご質問",
+  bgClass = "bg-white",
+  sectionId,
+  animate = false,
+} = Astro.props;
+---
+
+<section id={sectionId} class={`py-16 md:py-20 ${bgClass}`}>
+  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class:list={["text-center mb-12", { "md:mb-16 animate-on-scroll": animate }]}>
+      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">{label}</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">{title}</h2>
+    </div>
+
+    <div class:list={["flex flex-col gap-3", { "animate-on-scroll": animate }]}>
+      {faqs.map((faq, i) => (
+        <details
+          class="group rounded-xl border border-border bg-surface-alt overflow-hidden"
+          style={animate ? `animation-delay: ${i * 0.05}s` : undefined}
+        >
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-xs font-bold shrink-0">Q</span>
+              <span class="text-sm md:text-base font-semibold text-text-primary">{faq.q}</span>
+            </div>
+            <svg class="w-5 h-5 text-text-muted shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-5">
+            <div class="flex gap-3 pt-2 border-t border-border/50">
+              <span class="w-7 h-7 rounded-full bg-primary-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">A</span>
+              <p class="text-sm text-text-body leading-relaxed">{faq.a}</p>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <slot />
+  </div>
+</section>

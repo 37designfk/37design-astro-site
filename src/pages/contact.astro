@@ -4,41 +4,9 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import ParticleCanvas from "../components/ParticleCanvas.astro";
-
-const inquiryTypes = [
-  "業務自動化について",
-  "CRM・顧客管理の導入",
-  "AI導入・活用について",
-  "料金・プランについて",
-  "その他",
-];
-
-const faqs = [
-  {
-    q: "ITに詳しくなくても大丈夫ですか？",
-    a: "はい、まったく問題ありません。専門知識は一切不要です。ツールの操作方法から丁寧にご説明し、マニュアルもお渡しします。「パソコンはメールとExcelくらい」というお客様にも多くご利用いただいています。",
-  },
-  {
-    q: "本当に1週間で導入できるのですか？",
-    a: "スターターパックの場合、ヒアリングから初期導入まで最短1週間で対応可能です。ただし、業務の複雑さや既存システムとの連携が必要な場合は、2〜4週間程度いただくこともあります。事前のヒアリングで正確なスケジュールをお伝えします。",
-  },
-  {
-    q: "費用はどのくらいかかりますか？",
-    a: "スターターパックは30万円〜、スタンダードパックは80万円〜が目安です。まずは無料ヒアリングで課題を整理し、最適なプランとお見積りをご提示します。無料診断だけでも構いませんので、お気軽にご相談ください。",
-  },
-  {
-    q: "既存のシステムと連携できますか？",
-    a: "多くの場合、連携可能です。kintone、Salesforce、freee、マネーフォワード、各種Googleサービスなど、主要なビジネスツールとの連携実績があります。現在お使いのシステムをヒアリング時にお知らせください。",
-  },
-  {
-    q: "導入後のサポートはありますか？",
-    a: "すべてのプランに導入後サポート期間が含まれています。サポート期間中は、操作のご質問・設定変更・トラブル対応に無料で対応します。サポート期間終了後も、月額保守プラン（オプション）で継続的な支援が可能です。",
-  },
-  {
-    q: "まだ具体的なイメージがないのですが相談できますか？",
-    a: "もちろんです。「業務を効率化したいけど何から始めればいいかわからない」というご相談が最も多いです。無料ヒアリングで現在の業務をお伺いし、どこを自動化・AI化すれば効果が大きいかをご提案します。",
-  },
-];
+import { inquiryTypes } from "../data/inquiry-types";
+import { faqGeneral as faqs } from "../data/faq-general";
+import FAQSection from "../components/common/FAQSection.astro";
 ---
 
 <Layout
@@ -340,49 +308,17 @@ const faqs = [
       </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-16 md:py-20 bg-white">
-      <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-        <div class="text-center mb-12">
-          <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">FAQ</p>
-          <h2 class="text-2xl md:text-3xl font-bold text-text-primary">よくあるご質問</h2>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          {faqs.map((faq, i) => (
-            <details
-              class="group rounded-xl border border-border bg-surface-alt overflow-hidden"
-            >
-              <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none">
-                <div class="flex items-center gap-3">
-                  <span class="w-7 h-7 rounded-full bg-accent-400 text-primary-950 flex items-center justify-center text-xs font-bold shrink-0">Q</span>
-                  <span class="text-sm md:text-base font-semibold text-text-primary">{faq.q}</span>
-                </div>
-                <svg class="w-5 h-5 text-text-muted shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </summary>
-              <div class="px-6 pb-5">
-                <div class="flex gap-3 pt-2 border-t border-border/50">
-                  <span class="w-7 h-7 rounded-full bg-primary-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">A</span>
-                  <p class="text-sm text-text-body leading-relaxed">{faq.a}</p>
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-
-        <div class="mt-10 text-center">
-          <p class="text-sm text-text-secondary mb-4">その他のご質問がある方は、お気軽にお問い合わせください</p>
-          <a
-            href="#form"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
-          >
-            お問い合わせフォームへ
-          </a>
-        </div>
+    <FAQSection faqs={faqs}>
+      <div class="mt-10 text-center">
+        <p class="text-sm text-text-secondary mb-4">その他のご質問がある方は、お気軽にお問い合わせください</p>
+        <a
+          href="#form"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
+        >
+          お問い合わせフォームへ
+        </a>
       </div>
-    </section>
+    </FAQSection>
 
     <!-- Business Hours -->
     <section class="py-12 bg-surface">
@@ -410,116 +346,28 @@ const faqs = [
   <Footer />
 </Layout>
 
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contact-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const successMsg = document.getElementById('success-msg');
-    const startedAtInput = document.getElementById('started-at');
-    const statusMsg = document.getElementById('form-status');
-    const consentInput = document.getElementById('consent');
-    const honeypotInput = document.getElementById('website');
-    const RATE_LIMIT_KEY = 'contact_page_last_submitted_at';
-    const RATE_LIMIT_MS = 60 * 1000;
-    const MIN_FILL_TIME_MS = 4000;
-    const readStorage = (key) => {
-      try {
-        return localStorage.getItem(key);
-      } catch (_) {
-        return null;
-      }
-    };
-    const writeStorage = (key, value) => {
-      try {
-        localStorage.setItem(key, value);
-      } catch (_) {}
-    };
-
-    const showStatus = (message, isError) => {
-      if (!statusMsg) return;
-      statusMsg.textContent = message;
-      statusMsg.classList.remove('hidden', 'text-red-600', 'text-green-600');
-      statusMsg.classList.add(isError ? 'text-red-600' : 'text-green-600');
-    };
-
-    if (startedAtInput) {
-      startedAtInput.value = String(Date.now());
-    }
-
-    form?.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      if (!submitBtn || !form) return;
-      if (successMsg) successMsg.classList.add('hidden');
-      if (!consentInput || !consentInput.checked) {
-        showStatus('プライバシーポリシーへの同意が必要です。', true);
-        return;
-      }
-      if (honeypotInput && honeypotInput.value) {
-        showStatus('送信内容を確認できませんでした。時間をおいて再度お試しください。', true);
-        return;
-      }
-      const startedAt = Number(startedAtInput?.value || '0');
-      if (!startedAt || Date.now() - startedAt < MIN_FILL_TIME_MS) {
-        showStatus('入力時間が短すぎます。内容をご確認のうえ再送信してください。', true);
-        return;
-      }
-      const lastSubmittedAt = Number(readStorage(RATE_LIMIT_KEY) || '0');
-      if (Date.now() - lastSubmittedAt < RATE_LIMIT_MS) {
-        showStatus('連続送信を防ぐため、1分ほど待ってから再送信してください。', true);
-        return;
-      }
-
-      // Disable submit button
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送信中...';
-      showStatus('送信しています...', false);
-
-      const formData = new FormData(form);
-      const data = {
-        company: formData.get('company'),
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone') || '',
-        type: formData.get('type'),
-        message: formData.get('message') || '',
-      };
-
-      try {
-        const response = await fetch('https://n8n-onprem.37d.jp/webhook/ai-diagnosis', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          // Show success message
-          form.reset();
-          writeStorage(RATE_LIMIT_KEY, String(Date.now()));
-          if (startedAtInput) startedAtInput.value = String(Date.now());
-          successMsg?.classList.remove('hidden');
-          showStatus('送信が完了しました。ありがとうございます。', false);
-
-          // Scroll to success message
-          successMsg?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-          // Hide success message after 5 seconds
-          setTimeout(() => {
-            successMsg?.classList.add('hidden');
-          }, 5000);
-        } else {
-          showStatus('送信に失敗しました。時間をおいてもう一度お試しください。', true);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        showStatus('通信エラーが発生しました。時間をおいて再度お試しください。', true);
-      } finally {
-        // Re-enable submit button
-        submitBtn.disabled = false;
-        submitBtn.textContent = '送信する';
-      }
-    });
+<script>
+  import { initFormHandler } from "../lib/form-handler";
+  initFormHandler({
+    formId: "contact-form",
+    submitBtnId: "submit-btn",
+    successMsgId: "success-msg",
+    webhookUrl: "https://n8n-onprem.37d.jp/webhook/ai-diagnosis",
+    defaultButtonText: "送信する",
+    enableValidation: true,
+    rateLimitKey: "contact_page_last_submitted_at",
+    honeypotId: "website",
+    consentId: "consent",
+    startedAtId: "started-at",
+    statusMsgId: "form-status",
+    scrollToSuccess: true,
+    fieldExtractor: (fd) => ({
+      company: fd.get("company") as string,
+      name: fd.get("name") as string,
+      email: fd.get("email") as string,
+      phone: (fd.get("phone") as string) || "",
+      type: fd.get("type") as string,
+      message: (fd.get("message") as string) || "",
+    }),
   });
 </script>

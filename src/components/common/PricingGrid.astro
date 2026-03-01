@@ -1,0 +1,83 @@
+---
+import type { PlanAiConsultant } from "../../data/types";
+
+interface Props {
+  plans: PlanAiConsultant[];
+  label?: string;
+  title?: string;
+  subtitle?: string;
+  bgClass?: string;
+  sectionId?: string;
+}
+
+const {
+  plans,
+  label = "Pricing",
+  title = "料金プラン",
+  subtitle = "すべて月額・税別表記です",
+  bgClass = "bg-surface-alt",
+  sectionId,
+} = Astro.props;
+---
+
+<section id={sectionId} class={`py-16 md:py-20 ${bgClass}`}>
+  <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-amber-600 text-sm font-semibold tracking-[.2em] uppercase mb-3">{label}</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">{title}</h2>
+      {subtitle && <p class="text-text-secondary text-sm mt-3">{subtitle}</p>}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {plans.map((plan) => (
+        <div class={`relative flex flex-col bg-white rounded-2xl p-6 md:p-8 border-2 transition-all duration-300 hover:shadow-xl ${plan.recommended ? 'border-amber-400 shadow-lg' : 'border-border hover:border-amber-200'}`}>
+          {plan.recommended && (
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-full whitespace-nowrap">
+              おすすめ
+            </div>
+          )}
+
+          <div class="mb-6">
+            <h3 class="text-lg font-bold text-text-primary">{plan.name}</h3>
+            <p class="text-xs text-text-muted mt-1">{plan.description}</p>
+          </div>
+
+          <div class="mb-2">
+            <span class="text-4xl font-black text-amber-600">{plan.price}</span>
+            <span class="text-lg font-bold text-amber-600">万円〜</span>
+            <span class="text-xs text-text-muted ml-1">/月</span>
+          </div>
+          <p class="text-xs text-amber-700/70 mb-6 leading-relaxed">{plan.roi}</p>
+
+          <ul class="flex flex-col gap-3 flex-1 mb-6">
+            {plan.included.map((item) => (
+              <li class="flex items-start gap-2 text-sm">
+                <svg class="w-4 h-4 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-text-primary">{item}</span>
+              </li>
+            ))}
+            {plan.excluded.map((item) => (
+              <li class="flex items-start gap-2 text-sm">
+                <svg class="w-4 h-4 text-neutral-300 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span class="text-text-muted">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="#contact"
+            class={`inline-flex items-center justify-center py-3 rounded-full font-bold text-sm transition-colors ${plan.recommended ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700' : 'bg-primary-950 text-white hover:bg-primary-800'}`}
+          >
+            このプランで相談する
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <slot />
+  </div>
+</section>
