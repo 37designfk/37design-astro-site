@@ -28,7 +28,6 @@
             },
             colors: {
               surface: '#0a0f1e',
-              'surface-card': 'rgba(255,255,255,0.05)',
               accent: '#f5d020',
             },
           },
@@ -36,46 +35,27 @@
       };
     </script>
     <style is:inline>
-      body {
-        background: #0a0f1e;
-        font-family: 'Noto Sans JP', sans-serif;
-      }
-      @keyframes pulse-dot {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-      }
-      .animate-pulse-dot {
-        animation: pulse-dot 1.5s ease-in-out infinite;
-      }
-      @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-      }
-      .skeleton {
-        background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s ease-in-out infinite;
-        border-radius: 0.5rem;
-      }
+      body { background: #0a0f1e; font-family: 'Noto Sans JP', sans-serif; }
       .card {
         background: rgba(255,255,255,0.05);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 1rem;
-        transition: all 0.3s ease;
       }
-      .card:hover {
-        border-color: rgba(245,208,32,0.2);
-        box-shadow: 0 0 20px rgba(245,208,32,0.05);
+      .card:hover { border-color: rgba(245,208,32,0.2); }
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
       }
-      .progress-bar {
-        transition: width 0.6s ease;
+      .skeleton {
+        background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s ease-in-out infinite;
+        border-radius: 0.5rem;
       }
-      .fade-in {
-        animation: fadeIn 0.4s ease-out;
-      }
+      .fade-in { animation: fadeIn 0.4s ease-out; }
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
+        from { opacity: 0; transform: translateY(6px); }
         to { opacity: 1; transform: translateY(0); }
       }
       ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -85,890 +65,290 @@
     </style>
   </head>
   <body class="text-gray-200 min-h-screen antialiased">
+
     <!-- Header -->
-    <header class="sticky top-0 z-50 border-b border-white/10" style="background: rgba(10,15,30,0.9); backdrop-filter: blur(16px);">
+    <header class="sticky top-0 z-50 border-b border-white/10" style="background:rgba(10,15,30,0.9);backdrop-filter:blur(16px)">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-              <span class="text-accent">&#9670;</span>
+              <span style="color:#f5d020">&#9670;</span>
               Marketing OS ダッシュボード
             </h1>
             <p class="text-sm text-gray-400 mt-0.5">37Design 自動運用システム</p>
           </div>
           <div class="flex items-center gap-4">
-            <div id="connection-status" class="flex items-center gap-2 text-sm text-gray-400">
-              <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
-              <span id="status-text">接続中...</span>
-            </div>
-            <div id="last-updated" class="text-xs text-gray-500 hidden sm:block"></div>
+            <span id="last-updated" class="text-xs text-gray-500">読み込み中...</span>
             <button
               id="refresh-btn"
-              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-gray-300 hover:bg-white/10 hover:border-accent/30 hover:text-accent transition-all"
               onclick="fetchData()"
-            >
-              <svg id="refresh-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-              </svg>
-              更新
-            </button>
+              class="px-3 py-1.5 text-sm rounded-lg border border-white/10 text-gray-300 hover:border-accent hover:text-accent transition-colors"
+            >↻ 更新</button>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      <!-- Loading State -->
-      <div id="loading-state" class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="skeleton h-28"></div>
-          <div class="skeleton h-28"></div>
-          <div class="skeleton h-28"></div>
-          <div class="skeleton h-28"></div>
-        </div>
-        <div class="skeleton h-40"></div>
-        <div class="skeleton h-64"></div>
-      </div>
 
-      <!-- Error State -->
-      <div id="error-state" class="hidden">
-        <div class="card p-8 text-center">
-          <div class="text-4xl mb-4">&#9888;&#65039;</div>
-          <h2 class="text-lg font-semibold text-white mb-2">データの取得に失敗しました</h2>
-          <p id="error-message" class="text-sm text-gray-400 mb-4"></p>
-          <button
-            onclick="fetchData()"
-            class="px-4 py-2 rounded-lg bg-accent text-surface font-semibold text-sm hover:bg-yellow-400 transition-colors"
-          >
-            再試行
-          </button>
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="card p-4">
+          <p class="text-xs text-gray-400 mb-1">記事数</p>
+          <p id="kpi-articles" class="text-2xl font-bold text-white skeleton h-8">-</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-xs text-gray-400 mb-1">セッション (今日)</p>
+          <p id="kpi-sessions" class="text-2xl font-bold text-white skeleton h-8">-</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-xs text-gray-400 mb-1">クリック (GSC)</p>
+          <p id="kpi-clicks" class="text-2xl font-bold text-white skeleton h-8">-</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-xs text-gray-400 mb-1">平均順位 (GSC)</p>
+          <p id="kpi-position" class="text-2xl font-bold text-white skeleton h-8">-</p>
         </div>
       </div>
 
-      <!-- Dashboard Content (hidden until data loads) -->
-      <div id="dashboard-content" class="hidden space-y-6 fade-in">
+      <!-- WFステータス + タスクキュー -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Section 0: Claude Usage -->
-        <section id="usage-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Claude Usage <span id="usage-period" class="normal-case font-normal text-gray-600 ml-2 text-xs"></span></h2>
-          <div id="usage-container" class="space-y-3">
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="usage-cards"></div>
-            <div class="card p-4">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs text-gray-400">今月のOpus使用量</span>
-                <span id="usage-pct-text" class="text-xs text-gray-400"></span>
-              </div>
-              <div class="h-3 rounded-full bg-white/5 overflow-hidden">
-                <div id="usage-bar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
-              </div>
-              <div id="usage-daily" class="mt-4 flex items-end gap-0.5 h-12"></div>
-            </div>
+        <!-- WF実行状況 -->
+        <div class="card p-5">
+          <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+            <span style="color:#f5d020">&#9656;</span> WF実行状況
+          </h2>
+          <div id="wf-list" class="space-y-2">
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
           </div>
-          <div id="usage-empty" class="hidden card p-4 text-center text-gray-600 text-xs">
-            使用データなし — セッション終了時に自動同期されます
+        </div>
+
+        <!-- タスクキュー -->
+        <div class="card p-5">
+          <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+            <span style="color:#f5d020">&#9656;</span> タスクキュー (直近10件)
+          </h2>
+          <div id="task-list" class="space-y-2">
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
+            <div class="skeleton h-10 w-full"></div>
           </div>
-        </section>
-
-        <!-- Section: Daily Loop -->
-        <section id="daily-loop-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Daily Loop</h2>
-          <!-- Latest run status card -->
-          <div id="daily-loop-latest" class="mb-4"></div>
-          <!-- History table -->
-          <div id="daily-loop-history" class="card overflow-hidden">
-            <div class="px-4 py-3 border-b border-white/10">
-              <span class="text-sm font-semibold text-white">実行履歴（直近7日間）</span>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="border-b border-white/10 text-left">
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">日付</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">ステップ</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">所要時間</th>
-                  </tr>
-                </thead>
-                <tbody id="daily-loop-tbody" class="divide-y divide-white/5"></tbody>
-              </table>
-            </div>
-          </div>
-          <div id="daily-loop-empty" class="hidden card p-6 text-center text-gray-500 text-sm">Daily Loopの実行ログはまだありません</div>
-        </section>
-
-        <!-- Section 1: Pipeline Overview -->
-        <section id="pipeline-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pipeline Overview</h2>
-          <div id="pipeline-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
-        </section>
-
-        <!-- Section 2: Analytics -->
-        <section id="analytics-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Analytics <span id="analytics-period" class="normal-case font-normal text-gray-600 ml-2 text-xs"></span></h2>
-          <div id="analytics-container" class="space-y-4">
-            <!-- GA4 Summary -->
-            <div id="ga4-summary" class="grid grid-cols-2 sm:grid-cols-5 gap-3"></div>
-            <!-- GSC + GA4 Pages -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div class="card overflow-hidden">
-                <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-                  <span class="text-sm font-semibold text-white">検索キーワード</span>
-                  <span class="text-xs text-gray-500">Search Console</span>
-                </div>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-xs">
-                    <thead>
-                      <tr class="border-b border-white/10 text-left">
-                        <th class="px-4 py-2 text-gray-500 font-medium">キーワード</th>
-                        <th class="px-4 py-2 text-gray-500 font-medium text-right">クリック</th>
-                        <th class="px-4 py-2 text-gray-500 font-medium text-right">表示</th>
-                        <th class="px-4 py-2 text-gray-500 font-medium text-right">CTR</th>
-                        <th class="px-4 py-2 text-gray-500 font-medium text-right">順位</th>
-                      </tr>
-                    </thead>
-                    <tbody id="gsc-queries-tbody" class="divide-y divide-white/5"></tbody>
-                  </table>
-                </div>
-                <div id="gsc-empty" class="hidden p-4 text-center text-gray-600 text-xs">データなし（Search Consoleのデータが蓄積されるまでお待ちください）</div>
-              </div>
-              <div class="card overflow-hidden">
-                <div class="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-                  <span class="text-sm font-semibold text-white">人気ページ</span>
-                  <span class="text-xs text-gray-500">GA4 Top Pages</span>
-                </div>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-xs">
-                    <thead>
-                      <tr class="border-b border-white/10 text-left">
-                        <th class="px-4 py-2 text-gray-500 font-medium">ページ</th>
-                        <th class="px-4 py-2 text-gray-500 font-medium text-right">PV</th>
-                      </tr>
-                    </thead>
-                    <tbody id="ga4-pages-tbody" class="divide-y divide-white/5"></tbody>
-                  </table>
-                </div>
-                <div id="ga4-pages-empty" class="hidden p-4 text-center text-gray-600 text-xs">データなし</div>
-              </div>
-            </div>
-          </div>
-          <div id="analytics-empty" class="hidden card p-6 text-center text-gray-500 text-sm">アナリティクスデータなし</div>
-        </section>
-
-        <!-- Section 3: Daily Limits -->
-        <section id="limits-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Daily Limits</h2>
-          <div id="limits-container" class="card p-5 space-y-4"></div>
-        </section>
-
-        <!-- Section 3: Recent Tasks -->
-        <section id="tasks-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Tasks</h2>
-          <div class="card overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="border-b border-white/10 text-left">
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Title / Slug</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Priority</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Created</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Duration</th>
-                  </tr>
-                </thead>
-                <tbody id="tasks-tbody" class="divide-y divide-white/5"></tbody>
-              </table>
-            </div>
-            <div id="tasks-empty" class="hidden p-8 text-center text-gray-500 text-sm">タスクはありません</div>
-          </div>
-        </section>
-
-        <!-- Section 4: Active Page Locks -->
-        <section id="locks-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Active Page Locks</h2>
-          <div id="locks-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-          <div id="locks-empty" class="hidden card p-6 text-center text-gray-500 text-sm">アクティブなロックはありません</div>
-        </section>
-
-        <!-- Section 5: AB Tests -->
-        <section id="abtests-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">A/B Tests</h2>
-          <div id="abtests-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-          <div id="abtests-empty" class="hidden card p-6 text-center text-gray-500 text-sm">実行中のA/Bテストはありません</div>
-        </section>
-
-        <!-- Section 6: KPI Targets -->
-        <section id="kpi-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">KPI Targets</h2>
-          <div class="card overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm">
-                <thead>
-                  <tr class="border-b border-white/10 text-left">
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Metric</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Current</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Target</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Gap</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-center">Trend</th>
-                  </tr>
-                </thead>
-                <tbody id="kpi-tbody" class="divide-y divide-white/5"></tbody>
-              </table>
-            </div>
-            <div id="kpi-empty" class="hidden p-8 text-center text-gray-500 text-sm">KPIデータはありません</div>
-          </div>
-        </section>
-
-        <!-- Section 7: Page Freshness -->
-        <section id="freshness-section">
-          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Page Freshness</h2>
-          <div id="freshness-container" class="card p-5 space-y-3"></div>
-          <div id="freshness-empty" class="hidden card p-6 text-center text-gray-500 text-sm">ページデータはありません</div>
-        </section>
+        </div>
 
       </div>
+
+      <!-- GA4 / GSC -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <!-- GA4 -->
+        <div class="card p-5">
+          <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+            <span style="color:#f5d020">&#9656;</span> GA4 (直近7日)
+          </h2>
+          <div id="ga4-table" class="overflow-x-auto">
+            <div class="skeleton h-40 w-full"></div>
+          </div>
+        </div>
+
+        <!-- GSC -->
+        <div class="card p-5">
+          <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+            <span style="color:#f5d020">&#9656;</span> GSC (直近7日)
+          </h2>
+          <div id="gsc-table" class="overflow-x-auto">
+            <div class="skeleton h-40 w-full"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GSC トップページ -->
+      <div class="card p-5">
+        <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+          <span style="color:#f5d020">&#9656;</span> GSC トップページ
+        </h2>
+        <div id="gsc-top-pages" class="overflow-x-auto">
+          <div class="skeleton h-32 w-full"></div>
+        </div>
+      </div>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/5 mt-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-xs text-gray-600">
-        37Design Marketing OS &mdash; Internal Dashboard
-      </div>
-    </footer>
-
     <script is:inline>
-      const API_URL = 'https://n8n-onprem.37d.jp/webhook/37design-dashboard-api';
-      let refreshInterval;
-      let isLoading = false;
+      const API_URL = 'https://n8n-37design.37d.jp/webhook/Hjb8yPWw97g6m0C5/webhooktrigger/wf7-dashboard-api';
 
-      // --- Utility Functions ---
-
-      function timeAgo(dateString) {
-        if (!dateString) return '-';
-        const now = new Date();
-        const date = new Date(dateString);
-        const diffMs = now - date;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffSec < 60) return 'たった今';
-        if (diffMin < 60) return `${diffMin}分前`;
-        if (diffHour < 24) return `${diffHour}時間前`;
-        if (diffDay < 30) return `${diffDay}日前`;
-        return date.toLocaleDateString('ja-JP');
-      }
-
-      function formatDuration(seconds) {
-        if (!seconds && seconds !== 0) return '-';
-        if (seconds < 60) return `${seconds}秒`;
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-        if (min < 60) return `${min}分${sec > 0 ? sec + '秒' : ''}`;
-        const hr = Math.floor(min / 60);
-        const remainMin = min % 60;
-        return `${hr}時間${remainMin > 0 ? remainMin + '分' : ''}`;
-      }
-
-      function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-      }
-
-      // --- Status Badge ---
-
+      // ステータスバッジ
       function statusBadge(status) {
         const map = {
-          pending: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'Pending' },
-          running: { color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Running', pulse: true },
-          done: { color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', label: 'Done' },
-          completed: { color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', label: 'Done' },
-          failed: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'Failed' },
-          timeout: { color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30', label: 'Timeout' },
+          success:   ['bg-green-500/20 text-green-400 border border-green-500/30', '✓ success'],
+          error:     ['bg-red-500/20 text-red-400 border border-red-500/30', '✗ error'],
+          running:   ['bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse', '⟳ running'],
+          pending:   ['bg-yellow-500/20 text-yellow-400 border border-yellow-500/30', '◌ pending'],
+          completed: ['bg-green-500/20 text-green-400 border border-green-500/30', '✓ completed'],
+          warning:   ['bg-orange-500/20 text-orange-400 border border-orange-500/30', '⚠ warning'],
         };
-        const s = map[status] || { color: 'bg-gray-500/20 text-gray-400 border-gray-500/30', label: status || '-' };
-        return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${s.color}">
-          ${s.pulse ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse-dot"></span>' : ''}
-          ${escapeHtml(s.label)}
-        </span>`;
+        const [cls, label] = map[status] || ['bg-gray-500/20 text-gray-400 border border-gray-500/30', status];
+        return `<span class="px-2 py-0.5 rounded text-xs font-medium ${cls}">${label}</span>`;
       }
 
-      // --- Task Type Icons ---
-
-      function taskTypeIcon(type) {
-        const icons = {
-          blog_generate: '\u{1F4DD}',
-          lp_generate: '\u{1F3AF}',
-          page_improve: '\u{2728}',
-          ab_test: '\u{1F9EA}',
-          seo_audit: '\u{1F50D}',
-          content_refresh: '\u{1F504}',
-          analytics_report: '\u{1F4CA}',
-        };
-        return icons[type] || '\u{2699}\u{FE0F}';
+      // 経過時間
+      function timeAgo(dtStr) {
+        if (!dtStr) return '-';
+        try {
+          const dt = new Date(dtStr.replace(' ', 'T'));
+          const diff = Math.floor((Date.now() - dt) / 1000);
+          if (diff < 60) return `${diff}秒前`;
+          if (diff < 3600) return `${Math.floor(diff/60)}分前`;
+          if (diff < 86400) return `${Math.floor(diff/3600)}時間前`;
+          return `${Math.floor(diff/86400)}日前`;
+        } catch(e) { return dtStr; }
       }
 
-      // --- Progress Bar Color ---
-
-      function progressColor(ratio) {
-        if (ratio < 0.5) return 'bg-emerald-500';
-        if (ratio < 0.8) return 'bg-yellow-500';
-        return 'bg-red-500';
+      // 実行秒数
+      function execSec(start, stop) {
+        if (!start || !stop) return '';
+        try {
+          const s = new Date(start.replace(' ', 'T'));
+          const e = new Date(stop.replace(' ', 'T'));
+          const sec = Math.round((e - s) / 1000);
+          return ` (${sec}s)`;
+        } catch(e) { return ''; }
       }
 
-      function agingColor(score) {
-        if (score <= 30) return 'bg-emerald-500';
-        if (score <= 60) return 'bg-yellow-500';
-        if (score <= 80) return 'bg-orange-500';
-        return 'bg-red-500';
+      // テーブル生成ヘルパー
+      function buildTable(headers, rows) {
+        if (!rows || rows.length === 0) {
+          return '<p class="text-sm text-gray-500 italic py-4 text-center">データなし</p>';
+        }
+        const thead = `<tr>${headers.map(h => `<th class="text-left text-xs text-gray-400 font-medium py-2 px-2 whitespace-nowrap">${h}</th>`).join('')}</tr>`;
+        const tbody = rows.map((row, i) =>
+          `<tr class="${i % 2 === 0 ? '' : 'bg-white/[0.02]'}">${row.map(cell => `<td class="py-1.5 px-2 text-sm text-gray-300 whitespace-nowrap">${cell}</td>`).join('')}</tr>`
+        ).join('');
+        return `<table class="w-full min-w-full"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
       }
-
-      // --- Render Functions ---
-
-      function renderPipeline(pipeline) {
-        const container = document.getElementById('pipeline-cards');
-        if (!pipeline) {
-          container.innerHTML = '<p class="text-gray-500 text-sm col-span-full">パイプラインデータなし</p>';
-          return;
-        }
-        const cards = [
-          { label: 'Pending', value: pipeline.pending ?? 0, color: 'yellow', icon: '\u{23F3}' },
-          { label: 'Running', value: pipeline.running ?? 0, color: 'blue', icon: '\u{26A1}', pulse: true },
-          { label: 'Completed Today', value: pipeline.done ?? 0, color: 'emerald', icon: '\u{2705}' },
-          { label: 'Failed', value: pipeline.failed ?? 0, color: 'red', icon: '\u{274C}' },
-        ];
-        container.innerHTML = cards.map(c => `
-          <div class="card p-5 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${c.label}</span>
-              <span class="text-lg">${c.icon}</span>
-            </div>
-            <div class="flex items-end gap-2">
-              <span class="text-3xl font-bold text-${c.color}-400 ${c.pulse ? 'animate-pulse-dot' : ''}">${c.value}</span>
-              <span class="text-xs text-gray-500 mb-1">tasks</span>
-            </div>
-            <div class="mt-3 h-1 rounded-full bg-white/5">
-              <div class="h-full rounded-full bg-${c.color}-500/50" style="width: ${Math.min(c.value * 10, 100)}%"></div>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      function renderLimits(limits) {
-        const container = document.getElementById('limits-container');
-        if (!limits || Object.keys(limits).length === 0) {
-          container.innerHTML = '<p class="text-gray-500 text-sm text-center">制限データなし</p>';
-          return;
-        }
-        container.innerHTML = Object.entries(limits).map(([key, val]) => {
-          const used = val.used ?? 0;
-          const limit = val.limit ?? 1;
-          const ratio = limit > 0 ? used / limit : 0;
-          const pct = Math.min(ratio * 100, 100);
-          const color = progressColor(ratio);
-          return `
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-sm font-medium text-gray-300">${escapeHtml(key)}</span>
-                <span class="text-xs text-gray-400">${used} / ${limit}</span>
-              </div>
-              <div class="h-2 rounded-full bg-white/5 overflow-hidden">
-                <div class="h-full rounded-full progress-bar ${color}" style="width: ${pct}%"></div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      function renderTasks(tasks) {
-        const tbody = document.getElementById('tasks-tbody');
-        const empty = document.getElementById('tasks-empty');
-        if (!tasks || tasks.length === 0) {
-          tbody.innerHTML = '';
-          empty.classList.remove('hidden');
-          return;
-        }
-        empty.classList.add('hidden');
-        tbody.innerHTML = tasks.map(t => `
-          <tr class="hover:bg-white/[0.02] transition-colors">
-            <td class="px-4 py-3">${statusBadge(t.status)}</td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <span class="mr-1">${taskTypeIcon(t.type)}</span>
-              <span class="text-gray-400 text-xs">${escapeHtml(t.type)}</span>
-            </td>
-            <td class="px-4 py-3 text-white font-medium max-w-xs truncate">
-              ${t.slug
-                ? `<a href="/blog/${escapeHtml(t.slug)}/" target="_blank" class="text-accent hover:underline transition-colors">${escapeHtml(t.title || t.slug)}</a>`
-                : escapeHtml(t.title || '-')
-              }
-            </td>
-            <td class="px-4 py-3">
-              ${t.priority ? `<span class="text-xs font-medium ${t.priority === 'high' ? 'text-red-400' : t.priority === 'medium' ? 'text-yellow-400' : 'text-gray-400'}">${escapeHtml(t.priority)}</span>` : '<span class="text-gray-600">-</span>'}
-            </td>
-            <td class="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">${timeAgo(t.created_at || t.created)}</td>
-            <td class="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">${t.duration ? formatDuration(t.duration) : '-'}</td>
-          </tr>
-        `).join('');
-      }
-
-      function renderLocks(locks) {
-        const container = document.getElementById('locks-container');
-        const empty = document.getElementById('locks-empty');
-        if (!locks || locks.length === 0) {
-          container.innerHTML = '';
-          container.classList.add('hidden');
-          empty.classList.remove('hidden');
-          return;
-        }
-        container.classList.remove('hidden');
-        empty.classList.add('hidden');
-        container.innerHTML = locks.map(lock => {
-          const remaining = lock.remaining_minutes ?? lock.remaining ?? 0;
-          const total = lock.total_minutes ?? lock.total ?? 60;
-          const pct = total > 0 ? Math.max((remaining / total) * 100, 0) : 0;
-          return `
-            <div class="card p-4">
-              <div class="flex items-start justify-between mb-2">
-                <code class="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">${escapeHtml(lock.path || lock.page)}</code>
-                <span class="text-xs text-gray-500">${remaining}分</span>
-              </div>
-              <p class="text-xs text-gray-400 mb-3">
-                <span class="inline-block px-1.5 py-0.5 rounded bg-white/5 text-gray-300 mr-1">${escapeHtml(lock.reason)}</span>
-              </p>
-              <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                <div class="h-full rounded-full progress-bar bg-accent/60" style="width: ${pct}%"></div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      function renderABTests(tests) {
-        const container = document.getElementById('abtests-container');
-        const empty = document.getElementById('abtests-empty');
-        if (!tests || tests.length === 0) {
-          container.innerHTML = '';
-          container.classList.add('hidden');
-          empty.classList.remove('hidden');
-          return;
-        }
-        container.classList.remove('hidden');
-        empty.classList.add('hidden');
-        container.innerHTML = tests.map(test => `
-          <div class="card p-5">
-            <div class="flex items-start justify-between mb-3">
-              <code class="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">${escapeHtml(test.path || test.page)}</code>
-              ${statusBadge(test.status)}
-            </div>
-            <p class="text-sm text-gray-300 mb-3 line-clamp-2">${escapeHtml(test.hypothesis)}</p>
-            <div class="flex items-center gap-4 text-xs text-gray-400">
-              <span>${test.days_running ?? '-'}日間実行中</span>
-              ${test.winner ? `<span class="text-emerald-400 font-medium">Winner: ${escapeHtml(test.winner)}</span>` : ''}
-            </div>
-          </div>
-        `).join('');
-      }
-
-      function renderKPI(kpi) {
-        const tbody = document.getElementById('kpi-tbody');
-        const empty = document.getElementById('kpi-empty');
-        if (!kpi || kpi.length === 0) {
-          tbody.innerHTML = '';
-          empty.classList.remove('hidden');
-          return;
-        }
-        empty.classList.add('hidden');
-        tbody.innerHTML = kpi.map(k => {
-          const gap = (k.current ?? 0) - (k.target ?? 0);
-          const gapColor = gap >= 0 ? 'text-emerald-400' : 'text-red-400';
-          const gapPrefix = gap >= 0 ? '+' : '';
-          const trend = k.trend;
-          let trendEl = '<span class="text-gray-500">\u2192</span>';
-          if (trend === 'up') trendEl = '<span class="text-emerald-400">\u2191</span>';
-          else if (trend === 'down') trendEl = '<span class="text-red-400">\u2193</span>';
-          return `
-            <tr class="hover:bg-white/[0.02] transition-colors">
-              <td class="px-4 py-3 text-white font-medium">${escapeHtml(k.name || k.metric)}</td>
-              <td class="px-4 py-3 text-right tabular-nums">${k.current ?? '-'}</td>
-              <td class="px-4 py-3 text-right text-gray-400 tabular-nums">${k.target ?? '-'}</td>
-              <td class="px-4 py-3 text-right font-medium tabular-nums ${gapColor}">${gapPrefix}${gap}</td>
-              <td class="px-4 py-3 text-center text-lg">${trendEl}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      function renderFreshness(pages) {
-        const container = document.getElementById('freshness-container');
-        const empty = document.getElementById('freshness-empty');
-        if (!pages || pages.length === 0) {
-          container.innerHTML = '';
-          container.classList.add('hidden');
-          empty.classList.remove('hidden');
-          return;
-        }
-        container.classList.remove('hidden');
-        empty.classList.add('hidden');
-
-        const sorted = [...pages].sort((a, b) => (b.aging_score ?? 0) - (a.aging_score ?? 0));
-        container.innerHTML = sorted.map(p => {
-          const score = p.aging_score ?? 0;
-          const color = agingColor(score);
-          const needsRefresh = score >= 70;
-          return `
-            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2 ${needsRefresh ? 'border-l-2 border-red-500/50 pl-3' : ''}">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                  <code class="text-xs text-gray-300 truncate">${escapeHtml(p.path || p.page)}</code>
-                  ${needsRefresh ? '<span class="shrink-0 text-[10px] font-semibold text-red-400 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded-full">要更新</span>' : ''}
-                </div>
-                <div class="text-[11px] text-gray-500">${p.last_refreshed ? `最終更新: ${timeAgo(p.last_refreshed)}` : ''}</div>
-              </div>
-              <div class="flex items-center gap-3 sm:w-64 shrink-0">
-                <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
-                  <div class="h-full rounded-full progress-bar ${color}" style="width: ${score}%"></div>
-                </div>
-                <span class="text-xs font-mono text-gray-400 w-8 text-right">${score}</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // --- Claude Usage Render ---
-
-      function renderUsage(usage) {
-        if (!usage || !usage.billing_period) {
-          document.getElementById('usage-container').classList.add('hidden');
-          document.getElementById('usage-empty').classList.remove('hidden');
-          return;
-        }
-        document.getElementById('usage-container').classList.remove('hidden');
-        document.getElementById('usage-empty').classList.add('hidden');
-
-        const period = usage.billing_period;
-        const updatedAt = usage.updated_at ? new Date(usage.updated_at) : null;
-        document.getElementById('usage-period').textContent =
-          period + (updatedAt ? ` · ${timeAgo(usage.updated_at)}に同期` : '');
-
-        const byModel = usage.month_by_model || {};
-        const total = usage.month_total_tokens || 0;
-        const opus = byModel.opus || 0;
-        const sonnet = byModel.sonnet || 0;
-        const haiku = byModel.haiku || 0;
-        const pct = usage.opus_usage_pct || 0;
-
-        // カード
-        const cards = [
-          { label: '今月合計', value: (total / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'accent' },
-          { label: 'Opus', value: (opus / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'purple' },
-          { label: 'Sonnet', value: (sonnet / 1000).toFixed(1) + 'K', sub: 'tokens', color: 'blue' },
-          { label: 'セッション数', value: (usage.total_sessions || 0).toLocaleString(), sub: '累計', color: 'emerald' },
-        ];
-        document.getElementById('usage-cards').innerHTML = cards.map(c => `
-          <div class="card p-4">
-            <div class="text-gray-500 text-xs mb-1">${c.label}</div>
-            <div class="text-white font-bold text-xl tabular-nums">${c.value}</div>
-            <div class="text-gray-600 text-[10px]">${c.sub}</div>
-          </div>
-        `).join('');
-
-        // 使用率バー
-        const barColor = pct < 50 ? 'bg-emerald-500' : pct < 80 ? 'bg-yellow-500' : 'bg-red-500';
-        document.getElementById('usage-bar').className = `h-full rounded-full transition-all duration-700 ${barColor}`;
-        document.getElementById('usage-bar').style.width = Math.min(pct, 100) + '%';
-        document.getElementById('usage-pct-text').textContent = `${pct}% 使用`;
-
-        // 日別ミニグラフ
-        const daily = usage.monthly_daily || [];
-        if (daily.length > 0) {
-          const maxTok = Math.max(...daily.map(d => d.tokens), 1);
-          document.getElementById('usage-daily').innerHTML = daily.map(d => {
-            const h = Math.max(Math.round(d.tokens / maxTok * 100), 2);
-            const date = d.date.slice(5); // MM-DD
-            return `<div class="flex-1 flex flex-col items-center gap-1 group relative">
-              <div class="w-full rounded-sm bg-accent/50 group-hover:bg-accent transition-colors" style="height:${h}%"></div>
-              <div class="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
-                ${date}: ${(d.tokens/1000).toFixed(1)}K
-              </div>
-            </div>`;
-          }).join('');
-        }
-      }
-
-      // --- Analytics Render ---
-
-      function renderAnalytics(analytics) {
-        if (!analytics || (!analytics.ga4 && !analytics.gsc)) {
-          document.getElementById('analytics-container').classList.add('hidden');
-          document.getElementById('analytics-empty').classList.remove('hidden');
-          return;
-        }
-        document.getElementById('analytics-container').classList.remove('hidden');
-        document.getElementById('analytics-empty').classList.add('hidden');
-
-        const ga4 = analytics.ga4 || {};
-        const gsc = analytics.gsc || {};
-        const period = analytics.period;
-
-        if (period) {
-          document.getElementById('analytics-period').textContent =
-            `${period.start} 〜 ${period.end}（28日間）`;
-        }
-
-        // GA4 Summary Cards
-        const sessions = ga4.sessions || 0;
-        const prevSessions = ga4.prev_sessions || 0;
-        const users = ga4.users || 0;
-        const prevUsers = ga4.prev_users || 0;
-        const sessionDiff = prevSessions > 0 ? Math.round((sessions - prevSessions) / prevSessions * 100) : null;
-        const userDiff = prevUsers > 0 ? Math.round((users - prevUsers) / prevUsers * 100) : null;
-
-        function diffBadge(diff) {
-          if (diff === null) return '';
-          const color = diff >= 0 ? 'text-emerald-400' : 'text-red-400';
-          const arrow = diff >= 0 ? '▲' : '▼';
-          return `<span class="text-[10px] ${color} ml-1">${arrow}${Math.abs(diff)}%</span>`;
-        }
-
-        const summaryItems = [
-          { label: 'セッション', value: sessions.toLocaleString(), diff: sessionDiff, icon: '📊' },
-          { label: 'ユーザー', value: users.toLocaleString(), diff: userDiff, icon: '👤' },
-          { label: 'PV', value: (ga4.pageviews || 0).toLocaleString(), diff: null, icon: '📄' },
-          { label: '直帰率', value: (ga4.bounce_rate || 0) + '%', diff: null, icon: '↩️' },
-          { label: '平均滞在', value: formatDuration(ga4.avg_session_sec), diff: null, icon: '⏱' },
-        ];
-
-        document.getElementById('ga4-summary').innerHTML = summaryItems.map(s => `
-          <div class="card p-4">
-            <div class="text-gray-500 text-xs mb-1">${s.icon} ${s.label}</div>
-            <div class="text-white font-bold text-xl tabular-nums">
-              ${escapeHtml(String(s.value))}${s.diff !== null ? diffBadge(s.diff) : ''}
-            </div>
-            ${s.diff !== null && prevSessions > 0 ? `<div class="text-gray-600 text-[10px] mt-0.5">前期比</div>` : ''}
-          </div>
-        `).join('');
-
-        // GSC Queries
-        const queries = gsc.top_queries || [];
-        const gscTbody = document.getElementById('gsc-queries-tbody');
-        if (queries.length === 0) {
-          gscTbody.innerHTML = '';
-          document.getElementById('gsc-empty').classList.remove('hidden');
-        } else {
-          document.getElementById('gsc-empty').classList.add('hidden');
-          gscTbody.innerHTML = queries.map(q => `
-            <tr class="hover:bg-white/[0.02]">
-              <td class="px-4 py-2 text-gray-300 max-w-[180px] truncate">${escapeHtml(q.query)}</td>
-              <td class="px-4 py-2 text-right tabular-nums text-white font-medium">${q.clicks}</td>
-              <td class="px-4 py-2 text-right tabular-nums text-gray-400">${q.impressions?.toLocaleString()}</td>
-              <td class="px-4 py-2 text-right tabular-nums text-gray-400">${q.ctr}%</td>
-              <td class="px-4 py-2 text-right tabular-nums ${q.position <= 10 ? 'text-emerald-400' : q.position <= 20 ? 'text-yellow-400' : 'text-gray-400'}">${q.position}</td>
-            </tr>
-          `).join('');
-        }
-
-        // GA4 Top Pages
-        const pages = ga4.top_pages || [];
-        const pagesTbody = document.getElementById('ga4-pages-tbody');
-        if (pages.length === 0) {
-          pagesTbody.innerHTML = '';
-          document.getElementById('ga4-pages-empty').classList.remove('hidden');
-        } else {
-          document.getElementById('ga4-pages-empty').classList.add('hidden');
-          const maxPv = Math.max(...pages.map(p => p.pv), 1);
-          pagesTbody.innerHTML = pages.map(p => `
-            <tr class="hover:bg-white/[0.02]">
-              <td class="px-4 py-2">
-                <div class="text-gray-300 text-xs truncate max-w-[220px]">${escapeHtml(p.path)}</div>
-                <div class="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <div class="h-full rounded-full bg-accent/40" style="width:${Math.round(p.pv/maxPv*100)}%"></div>
-                </div>
-              </td>
-              <td class="px-4 py-2 text-right tabular-nums text-white font-medium">${p.pv}</td>
-            </tr>
-          `).join('');
-        }
-      }
-
-      // --- Daily Loop Render ---
-
-      function renderDailyLoop(logs) {
-        const latest = document.getElementById('daily-loop-latest');
-        const history = document.getElementById('daily-loop-history');
-        const tbody = document.getElementById('daily-loop-tbody');
-        const empty = document.getElementById('daily-loop-empty');
-
-        if (!logs || logs.length === 0) {
-          latest.innerHTML = '';
-          history.classList.add('hidden');
-          empty.classList.remove('hidden');
-          return;
-        }
-
-        empty.classList.add('hidden');
-        history.classList.remove('hidden');
-
-        // Latest run card
-        const last = logs[0];
-        const isSuccess = last.status === 'success';
-        const statusColor = isSuccess ? 'emerald' : 'red';
-        const statusIcon = isSuccess ? '\u2705' : '\u274C';
-        const statusLabel = isSuccess ? '成功' : '失敗';
-
-        let duration = '-';
-        if (last.started_at && last.finished_at) {
-          const diffSec = Math.round((new Date(last.finished_at) - new Date(last.started_at)) / 1000);
-          duration = formatDuration(diffSec);
-        }
-
-        latest.innerHTML = `
-          <div class="card p-5">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">${statusIcon}</span>
-                <div>
-                  <div class="text-white font-semibold">最新実行: ${escapeHtml(last.date)}</div>
-                  <div class="text-xs text-gray-400 mt-0.5">所要時間: ${duration}${last.error ? ' \u00b7 ' + escapeHtml(last.error) : ''}</div>
-                </div>
-              </div>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold border bg-${statusColor}-500/20 text-${statusColor}-400 border-${statusColor}-500/30">
-                ${statusLabel}
-              </span>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              ${(last.steps || []).map(step => {
-                const ok = step.success;
-                const c = ok ? 'emerald' : 'red';
-                const icon = ok ? '\u2713' : '\u2717';
-                return `<div class="rounded-lg p-3 bg-white/[0.03] border border-white/5">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="w-5 h-5 rounded-full bg-${c}-500/20 text-${c}-400 flex items-center justify-center text-xs font-bold">${icon}</span>
-                    <span class="text-xs font-medium text-gray-300">${escapeHtml(step.name)}</span>
-                  </div>
-                  <div class="text-[10px] text-gray-500 line-clamp-2 mt-1">${escapeHtml(step.output || '')}</div>
-                </div>`;
-              }).join('')}
-            </div>
-          </div>
-        `;
-
-        // History table (last 7 entries)
-        const recent = logs.slice(0, 7);
-        tbody.innerHTML = recent.map(log => {
-          const ok = log.status === 'success';
-          let dur = '-';
-          if (log.started_at && log.finished_at) {
-            dur = formatDuration(Math.round((new Date(log.finished_at) - new Date(log.started_at)) / 1000));
-          }
-          const stepsOk = (log.steps || []).filter(s => s.success).length;
-          const stepsTotal = (log.steps || []).length;
-          return `
-            <tr class="hover:bg-white/[0.02] transition-colors">
-              <td class="px-4 py-3 text-white font-medium text-xs whitespace-nowrap">${escapeHtml(log.date)}</td>
-              <td class="px-4 py-3">${statusBadge(log.status === 'success' ? 'done' : 'failed')}</td>
-              <td class="px-4 py-3 text-xs text-gray-400">${stepsOk}/${stepsTotal} ステップ成功</td>
-              <td class="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">${dur}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      // --- Main Fetch ---
 
       async function fetchData() {
-        if (isLoading) return;
-        isLoading = true;
-
-        const refreshIcon = document.getElementById('refresh-icon');
-        refreshIcon.style.transform = 'rotate(360deg)';
-
-        const loadingState = document.getElementById('loading-state');
-        const errorState = document.getElementById('error-state');
-        const dashboardContent = document.getElementById('dashboard-content');
-
-        // Show loading only on first load
-        if (dashboardContent.classList.contains('hidden')) {
-          loadingState.classList.remove('hidden');
-        }
-        errorState.classList.add('hidden');
+        const btn = document.getElementById('refresh-btn');
+        btn.textContent = '読込中...';
+        btn.disabled = true;
 
         try {
-          const response = await fetch(API_URL, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' },
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          const data = await response.json();
-
-          // Hide loading, show content
-          loadingState.classList.add('hidden');
-          dashboardContent.classList.remove('hidden');
-
-          // Render all sections
-          renderUsage(data.claude_usage);
-          renderDailyLoop(data.daily_loop_logs);
-          renderPipeline(data.pipeline);
-          renderAnalytics(data.analytics);
-          renderLimits(data.limits || data.daily_limits);
-          renderTasks(data.tasks || data.recent_tasks);
-          renderLocks(data.locks || data.page_locks || data.active_locks);
-          renderABTests(data.ab_tests || data.abtests);
-          renderKPI(data.kpi || data.kpi_targets);
-          renderFreshness(data.freshness || data.page_freshness);
-
-          // Update connection status
-          setConnectionStatus(true);
-          updateTimestamp();
-
-        } catch (err) {
-          console.error('Dashboard fetch error:', err);
-
-          // Only show error state if no data has been displayed yet
-          if (dashboardContent.classList.contains('hidden')) {
-            loadingState.classList.add('hidden');
-            errorState.classList.remove('hidden');
-            document.getElementById('error-message').textContent = err.message;
-          }
-
-          setConnectionStatus(false, err.message);
+          const res = await fetch(API_URL, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          renderData(data);
+          document.getElementById('last-updated').textContent =
+            '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
+        } catch(e) {
+          console.error('Fetch error:', e);
+          document.getElementById('last-updated').textContent = 'エラー: ' + e.message;
         } finally {
-          isLoading = false;
-          setTimeout(() => { refreshIcon.style.transform = ''; }, 400);
+          btn.textContent = '↻ 更新';
+          btn.disabled = false;
         }
       }
 
-      function setConnectionStatus(connected, msg) {
-        const dot = document.getElementById('status-dot');
-        const text = document.getElementById('status-text');
-        if (connected) {
-          dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50';
-          text.textContent = '接続済み';
-          text.className = 'text-emerald-400 text-sm';
+      function renderData(data) {
+        // KPIs
+        const ga4 = data.ga4 || [];
+        const gsc = data.gsc || [];
+        const latestGa4 = ga4[0] || {};
+        const latestGsc = gsc[0] || {};
+
+        function setKpi(id, val) {
+          const el = document.getElementById(id);
+          el.textContent = val;
+          el.classList.remove('skeleton');
+          el.classList.add('fade-in');
+        }
+        setKpi('kpi-articles', data.article_count ?? '-');
+        setKpi('kpi-sessions', latestGa4.sessions != null ? latestGa4.sessions.toLocaleString() : '-');
+        setKpi('kpi-clicks', latestGsc.clicks != null ? latestGsc.clicks.toLocaleString() : '-');
+        setKpi('kpi-position', latestGsc.avg_position != null ? latestGsc.avg_position.toFixed(1) : '-');
+
+        // WF実行状況
+        const wfList = document.getElementById('wf-list');
+        const wfs = data.wf_status || [];
+        if (wfs.length === 0) {
+          wfList.innerHTML = '<p class="text-sm text-gray-500 italic">データなし</p>';
         } else {
-          dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50';
-          text.textContent = msg ? `エラー` : '切断';
-          text.className = 'text-red-400 text-sm';
+          wfList.innerHTML = wfs.map(wf =>
+            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03] fade-in">
+              <div class="flex items-center gap-3 min-w-0">
+                ${statusBadge(wf.status)}
+                <span class="text-sm text-gray-200 font-medium truncate">${wf.name}</span>
+              </div>
+              <span class="text-xs text-gray-500 shrink-0 ml-2">
+                ${timeAgo(wf.stoppedAt)}${execSec(wf.startedAt, wf.stoppedAt)}
+              </span>
+            </div>`
+          ).join('');
         }
+
+        // タスクキュー
+        const taskList = document.getElementById('task-list');
+        const tasks = data.tasks || [];
+        if (tasks.length === 0) {
+          taskList.innerHTML = '<p class="text-sm text-gray-500 italic">タスクなし</p>';
+        } else {
+          taskList.innerHTML = tasks.map(t =>
+            `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03] fade-in">
+              <div class="flex items-center gap-2 min-w-0">
+                ${statusBadge(t.status)}
+                <span class="text-xs px-1.5 py-0.5 rounded bg-white/5 text-gray-400">${t.action === 'rewrite' ? '✎ rewrite' : '+ new'}</span>
+                <span class="text-sm text-gray-200 truncate" title="${t.keyword}">${t.slug}</span>
+              </div>
+              <span class="text-xs text-gray-500 shrink-0 ml-2">${t.date}</span>
+            </div>`
+          ).join('');
+        }
+
+        // GA4テーブル
+        document.getElementById('ga4-table').innerHTML = buildTable(
+          ['日付', 'セッション', 'PV'],
+          ga4.map(row => [row.date, row.sessions?.toLocaleString() ?? '-', row.page_views?.toLocaleString() ?? '-'])
+        );
+
+        // GSCテーブル
+        document.getElementById('gsc-table').innerHTML = buildTable(
+          ['日付', 'クリック', '表示', 'CTR', '平均順位'],
+          gsc.map(row => [
+            row.date,
+            row.clicks ?? '-',
+            row.impressions?.toLocaleString() ?? '-',
+            row.ctr != null ? (row.ctr * 100).toFixed(1) + '%' : '-',
+            row.avg_position?.toFixed(1) ?? '-'
+          ])
+        );
+
+        // GSCトップページ
+        const topPages = data.gsc_top_pages || [];
+        document.getElementById('gsc-top-pages').innerHTML = buildTable(
+          ['ページ', 'クリック', '表示', 'CTR', '平均順位'],
+          topPages.map(p => [
+            `<span class="text-xs text-gray-400">${p.page}</span>`,
+            p.clicks ?? '-',
+            p.impressions?.toLocaleString() ?? '-',
+            p.ctr != null ? (p.ctr * 100).toFixed(1) + '%' : '-',
+            p.position?.toFixed(1) ?? '-'
+          ])
+        );
       }
 
-      function updateTimestamp() {
-        const el = document.getElementById('last-updated');
-        const now = new Date();
-        el.textContent = `最終更新: ${now.toLocaleTimeString('ja-JP')}`;
-      }
-
-      // --- Init ---
-      refreshInterval = setInterval(fetchData, 30000);
+      // 初回ロード
       fetchData();
+
+      // 60秒ごとに自動更新
+      setInterval(fetchData, 60000);
     </script>
+
   </body>
 </html>
