@@ -158,6 +158,38 @@ def main():
     import subprocess
     subprocess.run(["docker", "cp", OUTPUT_FILE, "n8n:/home/node/.n8n/analytics-cache.json"], capture_output=True)
 
+    # GA4: 日別集計を analytics_ga4 テーブルに保存（直近28日分）
+    try:
+        daily_ga4 = ga4_report(token, {
+            'dateRanges': [{'startDate': '27daysAgo', 'endDate': 'today'}],
+            'dimensions': [{'name': 'date'}],
+            'metrics': [{'name': 'sessions'}, {'name': 'screenPageViews'}],
+            'limit': 100
+        })
+        if daily_ga4.get('rows'):
+            vals = []
+            for row in daily_ga4['rows']:
+                d = row['dimensionValues'][0]['value']  # YYYYMMDD
+                date_fmt = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+                s = int(row['metricValues'][0]['value'])
+                p = int(row['metricValues'][1]['value'])
+                vals.append((date_fmt, s, p))
+            if vals:
+                min_date = min(v[0] for v in vals)
+                subprocess.run(
+                    ['docker', 'exec', 'postgres-37design', 'psql',
+                     '-U', 'n8n_37design', '-d', 'n8n_37design', '-c',
+                     f"DELETE FROM analytics_ga4 WHERE page_path='(daily_total)' AND date >= '{min_date}'"],
+                    capture_output=True)
+                insert_vals = ','.join(f"('{d}','(daily_total)',{s},{p})" for d, s, p in vals)
+                subprocess.run(
+                    ['docker', 'exec', 'postgres-37design', 'psql',
+                     '-U', 'n8n_37design', '-d', 'n8n_37design', '-c',
+                     f"INSERT INTO analytics_ga4 (date, page_path, sessions, page_views) VALUES {insert_vals}"],
+                    capture_output=True)
+    except Exception:
+        pass  # 失敗しても analytics-cache.json は保存済みなので続行
+
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 if __name__ == '__main__':

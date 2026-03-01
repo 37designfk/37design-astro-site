@@ -115,9 +115,22 @@
 
       <!-- GA4グラフ -->
       <div class="card p-5">
-        <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
-          <span style="color:#f5d020">&#9656;</span> GA4 トレンド（直近14日）
-        </h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-semibold text-white flex items-center gap-2">
+            <span style="color:#f5d020">&#9656;</span> GA4 トレンド
+          </h2>
+          <div class="flex items-center gap-2">
+            <span id="ga4-range-label" class="text-xs text-gray-500"></span>
+            <button id="ga4-prev-btn" onclick="shiftGa4(-1)" disabled
+              class="px-2 py-1 text-xs rounded border border-white/10 text-gray-400 hover:border-yellow-400/50 hover:text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+              ← 前へ
+            </button>
+            <button id="ga4-next-btn" onclick="shiftGa4(1)" disabled
+              class="px-2 py-1 text-xs rounded border border-white/10 text-gray-400 hover:border-yellow-400/50 hover:text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+              次へ →
+            </button>
+          </div>
+        </div>
         <div class="relative" style="height:220px">
           <canvas id="ga4-chart"></canvas>
           <div id="ga4-chart-skeleton" class="skeleton absolute inset-0"></div>
@@ -223,6 +236,8 @@
     <script is:inline>
       const API_URL = '/api/dashboard-data';
       let ga4ChartInst = null;
+      let ga4All = [];        // 全GA4データ（ソート済み）
+      let ga4WindowEnd = 0;   // 表示ウィンドウの末尾インデックス
 
       /* ── HTML エスケープ ── */
       function esc(s) {
@@ -286,15 +301,41 @@
         el.classList.add('fade-in');
       }
 
-      /* ── GA4グラフ描画 ── */
+      /* ── GA4グラフ描画（全データをセットしてウィンドウ初期化） ── */
       function renderGa4Chart(ga4) {
         const skeleton = document.getElementById('ga4-chart-skeleton');
         if (skeleton) skeleton.remove();
+        ga4All = [...ga4].sort((a,b) => a.date > b.date ? 1 : -1);
+        ga4WindowEnd = ga4All.length;
+        renderGa4Window();
+      }
 
-        const sorted = [...ga4].sort((a,b) => a.date > b.date ? 1 : -1);
-        const labels = sorted.map(r => r.date.slice(5)); // MM-DD
-        const sessions = sorted.map(r => r.sessions);
-        const pvs = sorted.map(r => r.page_views);
+      /* ── 表示ウィンドウをシフト（direction: -1=前へ, +1=次へ） ── */
+      function shiftGa4(direction) {
+        const newEnd = ga4WindowEnd + direction * 14;
+        ga4WindowEnd = Math.max(14, Math.min(ga4All.length, newEnd));
+        renderGa4Window();
+      }
+
+      /* ── 現在のウィンドウでグラフを描画 ── */
+      function renderGa4Window() {
+        const end = ga4WindowEnd;
+        const start = Math.max(0, end - 14);
+        const slice = ga4All.slice(start, end);
+
+        // ラベル・ボタン更新
+        const rangeLabel = document.getElementById('ga4-range-label');
+        const prevBtn = document.getElementById('ga4-prev-btn');
+        const nextBtn = document.getElementById('ga4-next-btn');
+        if (rangeLabel && slice.length > 0) {
+          rangeLabel.textContent = `${slice[0].date.slice(5)} 〜 ${slice[slice.length-1].date.slice(5)}`;
+        }
+        if (prevBtn) prevBtn.disabled = start === 0;
+        if (nextBtn) nextBtn.disabled = end === ga4All.length;
+
+        const labels = slice.map(r => r.date.slice(5));
+        const sessions = slice.map(r => r.sessions);
+        const pvs = slice.map(r => r.page_views);
 
         const ctx = document.getElementById('ga4-chart').getContext('2d');
         if (ga4ChartInst) ga4ChartInst.destroy();
