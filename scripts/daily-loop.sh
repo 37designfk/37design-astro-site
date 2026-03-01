@@ -4,6 +4,7 @@
 # n8n: SSH 1コマンドで呼ぶだけ
 
 set -uo pipefail
+export TZ=Asia/Tokyo
 
 SITE_DIR="/home/ken/37design-astro-site"
 LOCK_FILE="$SITE_DIR/.article-lock.json"
@@ -46,7 +47,11 @@ log "Analytics取得完了"
 
 # 既存記事一覧
 SLUG_LIST=$(ls "$SITE_DIR/src/content/blog/"*.md 2>/dev/null | xargs -n1 basename | sed 's/\.md$//' | sort | tr '\n' ',' | sed 's/,$//')
-SLUG_COUNT=$(echo "$SLUG_LIST" | tr ',' '\n' | wc -l | tr -d ' ')
+if [ -z "$SLUG_LIST" ]; then
+  SLUG_COUNT=0
+else
+  SLUG_COUNT=$(echo "$SLUG_LIST" | tr ',' '\n' | wc -l | tr -d ' ')
+fi
 
 # ロック済み記事
 LOCKED_SLUGS=""
@@ -115,6 +120,8 @@ OWNER_MEMO=$(docker exec postgres-37design psql \
   -c "SELECT COALESCE(content,'') FROM owner_memo WHERE id=1" 2>/dev/null || echo "")
 if [ -n "$OWNER_MEMO" ]; then
   log "オーナーメモ取得: ${#OWNER_MEMO}字"
+else
+  log "オーナーメモ: なし（またはPostgreSQL接続失敗）"
 fi
 
 # ============================================

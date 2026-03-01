@@ -224,6 +224,11 @@
       const API_URL = '/api/dashboard-data';
       let ga4ChartInst = null;
 
+      /* ── HTML エスケープ ── */
+      function esc(s) {
+        return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      }
+
       /* ── ステータスバッジ ── */
       function badge(status) {
         const map = {
@@ -377,7 +382,7 @@
             `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[.03] fade-in">
               <div class="flex items-center gap-3 min-w-0">
                 ${badge(wf.status)}
-                <span class="text-sm text-gray-200 font-medium truncate">${wf.name}</span>
+                <span class="text-sm text-gray-200 font-medium truncate">${esc(wf.name)}</span>
               </div>
               <span class="text-xs text-gray-500 shrink-0 ml-2">
                 ${timeAgo(wf.stoppedAt)}${execSec(wf.startedAt, wf.stoppedAt)}
@@ -396,16 +401,16 @@
                       onclick="toggleReason(${i})">
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   ${badge(t.action)}
-                  <span class="text-sm text-gray-200 font-medium truncate">${t.keyword}</span>
+                  <span class="text-sm text-gray-200 font-medium truncate">${esc(t.keyword)}</span>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   ${badge(t.status)}
-                  <span class="text-xs text-gray-500">${t.date}</span>
+                  <span class="text-xs text-gray-500">${esc(t.date)}</span>
                   <span class="text-gray-500 text-xs" id="reason-arrow-${i}">▼</span>
                 </div>
               </button>
               <div id="reason-body-${i}" class="reason-body px-3 pb-3">
-                <p class="text-xs text-gray-400 leading-relaxed bg-white/[.03] rounded p-2">${t.reason}</p>
+                <p class="text-xs text-gray-400 leading-relaxed bg-white/[.03] rounded p-2">${esc(t.reason)}</p>
               </div>
             </div>`
           ).join('')
@@ -427,7 +432,7 @@
                   const barW = maxImp > 0 ? Math.round(k.impressions / maxImp * 100) : 0;
                   return `<tr class="${i%2?'bg-white/[.02]':''}">
                     <td class="py-1.5 px-2">
-                      <div class="text-sm text-gray-200">${k.query}</div>
+                      <div class="text-sm text-gray-200">${esc(k.query)}</div>
                       <div class="bar mt-1" style="width:${barW}%"></div>
                     </td>
                     <td class="py-1.5 px-2 text-sm text-gray-300 text-right tabular-nums">${k.impressions.toLocaleString()}</td>
@@ -444,7 +449,7 @@
         document.getElementById('gsc-top-pages').innerHTML = table(
           ['ページ', 'クリック', '表示', '順位'],
           tp.map(p => [
-            `<span class="text-xs text-gray-400 break-all">${p.page.replace('https://37design.co.jp','')}</span>`,
+            `<span class="text-xs text-gray-400 break-all">${esc(p.page.replace('https://37design.co.jp',''))}</span>`,
             p.clicks,
             p.impressions.toLocaleString(),
             `<span class="${p.position<=10?'text-green-400':p.position<=20?'text-yellow-400':'text-gray-400'}">${p.position.toFixed(1)}</span>`,
@@ -458,7 +463,7 @@
               <div class="flex items-center gap-2 min-w-0">
                 ${badge(t.status)}
                 ${badge(t.action)}
-                <span class="text-sm text-gray-200 truncate" title="${t.keyword}">${t.slug}</span>
+                <span class="text-sm text-gray-200 truncate" title="${esc(t.keyword)}">${esc(t.slug)}</span>
               </div>
               <span class="text-xs text-gray-500 shrink-0 ml-2">${t.date}</span>
             </div>`
@@ -502,8 +507,8 @@
       /* ── オーナーメモ読み込み（WF7 APIレスポンスから） ── */
       function loadMemoFromData(data) {
         const ta = document.getElementById('owner-memo-input');
-        if (ta && data.owner_memo !== undefined) {
-          ta.value = data.owner_memo;
+        if (ta && data?.owner_memo !== undefined) {
+          ta.value = data.owner_memo || '';
         }
       }
 
@@ -514,20 +519,25 @@
         if (!ta) return;
         btn.disabled = true;
         btn.textContent = '保存中...';
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 10000);
         try {
           const res = await fetch(MEMO_SAVE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: ta.value })
+            body: JSON.stringify({ content: ta.value }),
+            signal: controller.signal
           });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const d = await res.json();
           status.textContent = d.ok ? `保存しました（${ta.value.length}字）` : '保存失敗';
           status.style.color = d.ok ? '#86efac' : '#fca5a5';
           setTimeout(() => { status.textContent = ''; }, 3000);
         } catch(e) {
-          status.textContent = 'エラー: ' + e.message;
+          status.textContent = e.name === 'AbortError' ? 'タイムアウト' : 'エラー: ' + e.message;
           status.style.color = '#fca5a5';
         } finally {
+          clearTimeout(timer);
           btn.disabled = false;
           btn.textContent = '保存';
         }
