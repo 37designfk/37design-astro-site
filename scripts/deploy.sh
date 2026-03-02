@@ -17,6 +17,15 @@ log "=== Deploy started (branch: $BRANCH) ==="
 
 cd "$PROJECT_DIR"
 
+# 0. git pull（リモートの変更を取り込む）
+log "Pulling latest from origin..."
+git pull origin "$BRANCH" 2>&1 | tee -a "$LOG_FILE" || true
+
+# 記事ファイルとロックファイルをステージ・コミット
+DEPLOY_DATE=$(date +%Y-%m-%d)
+git add -A src/content/blog/
+git diff --cached --quiet || git commit -m "auto: 記事生成 ${DEPLOY_DATE}" 2>&1 | tee -a "$LOG_FILE"
+
 COMMIT=$(git rev-parse --short HEAD)
 log "Current commit: $COMMIT"
 
