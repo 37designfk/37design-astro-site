@@ -115,20 +115,27 @@
 
       <!-- GA4グラフ -->
       <div class="card p-5">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h2 class="text-base font-semibold text-white flex items-center gap-2">
             <span style="color:#f5d020">&#9656;</span> GA4 トレンド
+            <span id="ga4-range-label" class="text-xs text-gray-500 font-normal"></span>
           </h2>
-          <div class="flex items-center gap-2">
-            <span id="ga4-range-label" class="text-xs text-gray-500"></span>
-            <button id="ga4-prev-btn" onclick="shiftGa4(-1)" disabled
-              class="px-2 py-1 text-xs rounded border border-white/10 text-gray-400 hover:border-yellow-400/50 hover:text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-              ← 前へ
-            </button>
-            <button id="ga4-next-btn" onclick="shiftGa4(1)" disabled
-              class="px-2 py-1 text-xs rounded border border-white/10 text-gray-400 hover:border-yellow-400/50 hover:text-yellow-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-              次へ →
-            </button>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- 期間ボタン -->
+            <div class="flex rounded-lg overflow-hidden border border-white/10 text-xs">
+              <button onclick="setGa4Mode('7d')"  id="ga4-btn-7d"  class="ga4-mode-btn px-3 py-1.5 text-gray-400 hover:text-white transition-colors">7日</button>
+              <button onclick="setGa4Mode('30d')" id="ga4-btn-30d" class="ga4-mode-btn px-3 py-1.5 text-gray-400 hover:text-white transition-colors border-l border-white/10">30日</button>
+              <button onclick="setGa4Mode('all')" id="ga4-btn-all" class="ga4-mode-btn px-3 py-1.5 text-gray-400 hover:text-white transition-colors border-l border-white/10">全期間</button>
+              <button onclick="setGa4Mode('custom')" id="ga4-btn-custom" class="ga4-mode-btn px-3 py-1.5 text-gray-400 hover:text-white transition-colors border-l border-white/10">日時指定</button>
+            </div>
+            <!-- カスタム日付入力（日時指定モード時のみ表示） -->
+            <div id="ga4-custom-range" class="hidden flex items-center gap-1 text-xs">
+              <input type="date" id="ga4-start" onchange="renderGa4Window()"
+                class="bg-white/[.05] border border-white/10 rounded px-2 py-1 text-gray-300 text-xs focus:outline-none focus:border-yellow-400/50" />
+              <span class="text-gray-500">〜</span>
+              <input type="date" id="ga4-end" onchange="renderGa4Window()"
+                class="bg-white/[.05] border border-white/10 rounded px-2 py-1 text-gray-300 text-xs focus:outline-none focus:border-yellow-400/50" />
+            </div>
           </div>
         </div>
         <div class="relative" style="height:220px">
@@ -236,8 +243,8 @@
     <script is:inline>
       const API_URL = '/api/dashboard-data';
       let ga4ChartInst = null;
-      let ga4All = [];        // 全GA4データ（ソート済み）
-      let ga4WindowEnd = 0;   // 表示ウィンドウの末尾インデックス
+      let ga4All = [];        // 全GA4データ（昇順ソート済み）
+      let ga4Mode = '30d';    // '7d' | '30d' | 'all' | 'custom'
 
       /* ── HTML エスケープ ── */
       function esc(s) {
@@ -306,36 +313,64 @@
         const skeleton = document.getElementById('ga4-chart-skeleton');
         if (skeleton) skeleton.remove();
         ga4All = [...ga4].sort((a,b) => a.date > b.date ? 1 : -1);
-        ga4WindowEnd = ga4All.length;
-        renderGa4Window();
+        // カスタムの初期値を全データの端に設定
+        const startEl = document.getElementById('ga4-start');
+        const endEl   = document.getElementById('ga4-end');
+        if (startEl && !startEl.value && ga4All.length) startEl.value = ga4All[0].date;
+        if (endEl   && !endEl.value   && ga4All.length) endEl.value   = ga4All[ga4All.length-1].date;
+        setGa4Mode(ga4Mode, false);
       }
 
-      /* ── 表示ウィンドウをシフト（direction: -1=前へ, +1=次へ） ── */
-      function shiftGa4(direction) {
-        const newEnd = ga4WindowEnd + direction * 14;
-        ga4WindowEnd = Math.max(14, Math.min(ga4All.length, newEnd));
-        renderGa4Window();
+      /* ── モード切替（active表示 + 描画） ── */
+      function setGa4Mode(mode, draw = true) {
+        ga4Mode = mode;
+        // ボタンのアクティブスタイル
+        ['7d','30d','all','custom'].forEach(m => {
+          const btn = document.getElementById('ga4-btn-' + m);
+          if (!btn) return;
+          if (m === mode) {
+            btn.style.background = 'rgba(245,208,32,.15)';
+            btn.style.color = '#f5d020';
+          } else {
+            btn.style.background = '';
+            btn.style.color = '';
+          }
+        });
+        // カスタム入力の表示切替
+        const customRange = document.getElementById('ga4-custom-range');
+        if (customRange) customRange.classList.toggle('hidden', mode !== 'custom');
+        if (draw) renderGa4Window();
       }
 
-      /* ── 現在のウィンドウでグラフを描画 ── */
+      /* ── 現在のモードでグラフを描画 ── */
       function renderGa4Window() {
-        const end = ga4WindowEnd;
-        const start = Math.max(0, end - 14);
-        const slice = ga4All.slice(start, end);
-
-        // ラベル・ボタン更新
-        const rangeLabel = document.getElementById('ga4-range-label');
-        const prevBtn = document.getElementById('ga4-prev-btn');
-        const nextBtn = document.getElementById('ga4-next-btn');
-        if (rangeLabel && slice.length > 0) {
-          rangeLabel.textContent = `${slice[0].date.slice(5)} 〜 ${slice[slice.length-1].date.slice(5)}`;
+        let slice;
+        const today = ga4All.length ? ga4All[ga4All.length-1].date : '';
+        if (ga4Mode === '7d') {
+          slice = ga4All.slice(-7);
+        } else if (ga4Mode === '30d') {
+          slice = ga4All.slice(-30);
+        } else if (ga4Mode === 'custom') {
+          const s = document.getElementById('ga4-start')?.value;
+          const e = document.getElementById('ga4-end')?.value;
+          slice = ga4All.filter(r => (!s || r.date >= s) && (!e || r.date <= e));
+        } else {
+          slice = ga4All;
         }
-        if (prevBtn) prevBtn.disabled = start === 0;
-        if (nextBtn) nextBtn.disabled = end === ga4All.length;
 
-        const labels = slice.map(r => r.date.slice(5));
+        // ラベル更新
+        const rangeLabel = document.getElementById('ga4-range-label');
+        if (rangeLabel && slice.length > 0) {
+          rangeLabel.textContent = `（${slice[0].date.slice(5)} 〜 ${slice[slice.length-1].date.slice(5)}）`;
+        } else if (rangeLabel) {
+          rangeLabel.textContent = '';
+        }
+
+        const labels   = slice.map(r => r.date.slice(5));
         const sessions = slice.map(r => r.sessions);
-        const pvs = slice.map(r => r.page_views);
+        const pvs      = slice.map(r => r.page_views);
+        // データ点が多いときはポイントを非表示に
+        const showPoint = slice.length <= 31;
 
         const ctx = document.getElementById('ga4-chart').getContext('2d');
         if (ga4ChartInst) ga4ChartInst.destroy();
@@ -352,7 +387,7 @@
                 backgroundColor: 'rgba(245,208,32,.08)',
                 borderWidth: 2,
                 pointBackgroundColor: '#f5d020',
-                pointRadius: 4,
+                pointRadius: showPoint ? 4 : 0,
                 fill: true,
                 tension: 0.4,
               },
@@ -363,7 +398,7 @@
                 backgroundColor: 'rgba(96,165,250,.08)',
                 borderWidth: 2,
                 pointBackgroundColor: '#60a5fa',
-                pointRadius: 4,
+                pointRadius: showPoint ? 4 : 0,
                 fill: true,
                 tension: 0.4,
               },
@@ -387,7 +422,7 @@
             },
             scales: {
               x: {
-                ticks: { color: '#6b7280', font: { size: 11 } },
+                ticks: { color: '#6b7280', font: { size: 11 }, maxTicksLimit: 14 },
                 grid: { color: 'rgba(255,255,255,.04)' },
               },
               y: {
