@@ -268,11 +268,21 @@
         return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border ${cls}">${icon} ${status}</span>`;
       }
 
+      /* ── タイムスタンプ正規化（+09 → +09:00） ── */
+      function normalizeTs(s) {
+        if (!s) return null;
+        let t = s.replace(' ', 'T');
+        // +09 や -05 のような短縮TZを +09:00 形式に修正
+        t = t.replace(/([+-]\d{2})$/, '$1:00');
+        return t;
+      }
+
       /* ── 経過時間 ── */
       function timeAgo(s) {
         if (!s) return '-';
         try {
-          const d = Math.floor((Date.now() - new Date(s.replace(' ','T'))) / 1000);
+          const d = Math.floor((Date.now() - new Date(normalizeTs(s))) / 1000);
+          if (isNaN(d)) return '-';
           if (d < 60) return `${d}秒前`;
           if (d < 3600) return `${Math.floor(d/60)}分前`;
           if (d < 86400) return `${Math.floor(d/3600)}時間前`;
@@ -284,7 +294,9 @@
       function execSec(a, b) {
         if (!a || !b) return '';
         try {
-          return ` (${Math.round((new Date(b.replace(' ','T'))-new Date(a.replace(' ','T')))/1000)}s)`;
+          const sec = Math.round((new Date(normalizeTs(b))-new Date(normalizeTs(a)))/1000);
+          if (isNaN(sec)) return '';
+          return ` (${sec}s)`;
         } catch { return ''; }
       }
 
@@ -318,7 +330,7 @@
         const endEl   = document.getElementById('ga4-end');
         if (startEl && !startEl.value && ga4All.length) startEl.value = ga4All[0].date;
         if (endEl   && !endEl.value   && ga4All.length) endEl.value   = ga4All[ga4All.length-1].date;
-        setGa4Mode(ga4Mode, false);
+        setGa4Mode(ga4Mode);
       }
 
       /* ── モード切替（active表示 + 描画） ── */
