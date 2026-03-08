@@ -1,0 +1,311 @@
+---
+import LPLayout from '../../layouts/LPLayout.astro';
+import LPFooter from '../../components/lp/LPFooter.astro';
+import ParticleCanvas from '../../components/ParticleCanvas.astro';
+---
+
+<LPLayout
+  title="無料サイト診断ツール｜あなたのWebサイトをAIが自動分析 | 株式会社37Design"
+  description="URLを入力するだけで、サイトの表示速度・SEO・モバイル対応を無料で診断。改善ポイントと優先順位がすぐにわかります。"
+>
+  <!-- Hero -->
+  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 hero-gradient"></div>
+    <ParticleCanvas />
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16">
+      <p class="text-sm font-semibold text-accent-400 tracking-wider uppercase mb-3">Free Site Audit</p>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
+        あなたのサイト、<br />今すぐ無料で診断
+      </h1>
+      <p class="text-lg text-primary-200 max-w-2xl mx-auto leading-relaxed">
+        URLを入力するだけ。表示速度・SEO・モバイル対応を自動分析します。
+      </p>
+    </div>
+  </section>
+
+  <!-- 診断ツール -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- URL入力 -->
+      <div id="input-section" class="rounded-2xl border border-gray-200 p-8 md:p-10">
+        <h2 class="text-xl font-bold text-text-primary mb-6">診断するサイトのURLを入力</h2>
+        <form id="audit-form" class="flex flex-col sm:flex-row gap-3">
+          <input
+            type="url"
+            id="url-input"
+            placeholder="https://example.com"
+            required
+            class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-sm"
+          />
+          <button type="submit" id="audit-btn" class="lp-cta-button px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap cursor-pointer">
+            無料で診断する
+          </button>
+        </form>
+        <p class="text-xs text-text-secondary mt-3">※ Google PageSpeed Insights APIを使用しています。結果の表示に10〜30秒かかります。</p>
+      </div>
+
+      <!-- ローディング -->
+      <div id="loading-section" class="hidden mt-10 text-center py-16">
+        <div class="inline-block w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-text-primary font-bold text-lg">サイトを分析中...</p>
+        <p class="text-text-secondary text-sm mt-2" id="loading-status">PageSpeed Insights APIに接続しています</p>
+      </div>
+
+      <!-- エラー -->
+      <div id="error-section" class="hidden mt-10 rounded-2xl bg-red-50 border border-red-200 p-8 text-center">
+        <p class="text-red-600 font-bold mb-2">分析に失敗しました</p>
+        <p class="text-sm text-red-500" id="error-message"></p>
+        <button id="retry-btn" type="button" class="mt-4 px-6 py-2 rounded-xl bg-red-600 text-white font-bold text-sm cursor-pointer hover:bg-red-700 transition-colors">もう一度試す</button>
+      </div>
+
+      <!-- 結果セクション -->
+      <div id="result-section" class="hidden mt-10">
+        <!-- スコアカード -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <div class="rounded-2xl border border-gray-200 p-5 text-center" id="score-perf-card">
+            <p class="text-xs text-text-secondary mb-1">パフォーマンス</p>
+            <p class="text-3xl font-black" id="score-perf">-</p>
+          </div>
+          <div class="rounded-2xl border border-gray-200 p-5 text-center" id="score-a11y-card">
+            <p class="text-xs text-text-secondary mb-1">アクセシビリティ</p>
+            <p class="text-3xl font-black" id="score-a11y">-</p>
+          </div>
+          <div class="rounded-2xl border border-gray-200 p-5 text-center" id="score-bp-card">
+            <p class="text-xs text-text-secondary mb-1">ベストプラクティス</p>
+            <p class="text-3xl font-black" id="score-bp">-</p>
+          </div>
+          <div class="rounded-2xl border border-gray-200 p-5 text-center" id="score-seo-card">
+            <p class="text-xs text-text-secondary mb-1">SEO</p>
+            <p class="text-3xl font-black" id="score-seo">-</p>
+          </div>
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="rounded-2xl border border-gray-200 p-8 mb-10">
+          <h3 class="text-lg font-bold text-text-primary mb-6">Core Web Vitals</h3>
+          <div class="space-y-4" id="cwv-container"></div>
+        </div>
+
+        <!-- 改善ポイント -->
+        <div class="rounded-2xl border border-gray-200 p-8 mb-10">
+          <h3 class="text-lg font-bold text-text-primary mb-6">改善ポイント</h3>
+          <div class="space-y-3" id="opportunities-container"></div>
+        </div>
+
+        <!-- メールゲート -->
+        <div id="email-gate" class="rounded-2xl border-2 border-orange-500 bg-orange-50 p-8 text-center">
+          <h3 class="text-xl font-bold text-text-primary mb-2">詳細な改善レポートをメールでお届け</h3>
+          <p class="text-sm text-text-secondary mb-6">具体的な改善手順と優先順位をまとめたレポートを無料でお送りします。</p>
+          <form id="email-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              id="email-input"
+              placeholder="メールアドレス"
+              required
+              class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-sm"
+            />
+            <button type="submit" class="lp-cta-button px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap">
+              無料で受け取る
+            </button>
+          </form>
+          <p class="text-xs text-text-secondary mt-3">※ メール配信はいつでも解除できます。</p>
+        </div>
+
+        <!-- メール後CTA -->
+        <div id="post-email-cta" class="hidden mt-10 text-center rounded-2xl bg-primary-950 p-10">
+          <h3 class="text-2xl font-bold text-white mb-3">プロと一緒に改善しませんか？</h3>
+          <p class="text-primary-200 mb-6">診断結果をもとに、具体的な改善施策をご提案します。</p>
+          <a href="/service/ai-advisor/" class="lp-cta-button inline-flex items-center gap-2 text-lg font-bold px-8 py-4 rounded-full shadow-xl hover:scale-105 transition-all">
+            Web AI顧問を見る
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <LPFooter
+    companyName="株式会社37Design"
+    links={[
+      { text: "Web AI顧問", href: "/service/ai-advisor/" },
+      { text: "会社概要", href: "https://37design.co.jp/about" },
+      { text: "プライバシーポリシー", href: "https://37design.co.jp/privacy" },
+    ]}
+  />
+</LPLayout>
+
+<script is:inline>
+(function() {
+  // PageSpeed Insights API (公開API、キー不要で使える)
+  var API_BASE = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
+
+  var form = document.getElementById('audit-form');
+  var retryBtn = document.getElementById('retry-btn');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    runAudit();
+  });
+
+  retryBtn.addEventListener('click', function() {
+    document.getElementById('error-section').classList.add('hidden');
+    runAudit();
+  });
+
+  function runAudit() {
+    var url = document.getElementById('url-input').value.trim();
+    if (!url) return;
+    if (!url.startsWith('http')) url = 'https://' + url;
+
+    document.getElementById('input-section').classList.add('hidden');
+    document.getElementById('loading-section').classList.remove('hidden');
+    document.getElementById('result-section').classList.add('hidden');
+    document.getElementById('error-section').classList.add('hidden');
+
+    var statusEl = document.getElementById('loading-status');
+    var messages = ['ページを読み込んでいます...', 'パフォーマンスを分析中...', 'SEOをチェック中...', 'レポートを生成中...'];
+    var msgIndex = 0;
+    var msgInterval = setInterval(function() {
+      msgIndex = (msgIndex + 1) % messages.length;
+      statusEl.textContent = messages[msgIndex];
+    }, 3000);
+
+    var apiUrl = API_BASE + '?url=' + encodeURIComponent(url) + '&category=performance&category=accessibility&category=best-practices&category=seo&strategy=mobile';
+
+    fetch(apiUrl)
+      .then(function(res) {
+        if (!res.ok) throw new Error('API error: ' + res.status);
+        return res.json();
+      })
+      .then(function(data) {
+        clearInterval(msgInterval);
+        document.getElementById('loading-section').classList.add('hidden');
+        renderResult(data);
+      })
+      .catch(function(err) {
+        clearInterval(msgInterval);
+        document.getElementById('loading-section').classList.add('hidden');
+        document.getElementById('input-section').classList.remove('hidden');
+        document.getElementById('error-section').classList.remove('hidden');
+        document.getElementById('error-message').textContent = err.message || 'URLを確認してもう一度お試しください。';
+      });
+  }
+
+  function renderResult(data) {
+    document.getElementById('result-section').classList.remove('hidden');
+
+    var cats = data.lighthouseResult.categories;
+    var scoreMap = {
+      'perf': cats.performance ? Math.round(cats.performance.score * 100) : null,
+      'a11y': cats.accessibility ? Math.round(cats.accessibility.score * 100) : null,
+      'bp': cats['best-practices'] ? Math.round(cats['best-practices'].score * 100) : null,
+      'seo': cats.seo ? Math.round(cats.seo.score * 100) : null,
+    };
+
+    Object.keys(scoreMap).forEach(function(key) {
+      var el = document.getElementById('score-' + key);
+      var card = document.getElementById('score-' + key + '-card');
+      var score = scoreMap[key];
+      if (score === null) { el.textContent = '-'; return; }
+
+      el.textContent = score;
+      if (score >= 90) {
+        el.classList.add('text-green-600');
+        card.classList.add('border-green-300', 'bg-green-50');
+      } else if (score >= 50) {
+        el.classList.add('text-orange-600');
+        card.classList.add('border-orange-300', 'bg-orange-50');
+      } else {
+        el.classList.add('text-red-600');
+        card.classList.add('border-red-300', 'bg-red-50');
+      }
+    });
+
+    // Core Web Vitals
+    var audits = data.lighthouseResult.audits;
+    var cwvMetrics = [
+      { key: 'first-contentful-paint', name: 'FCP（初回コンテンツ描画）' },
+      { key: 'largest-contentful-paint', name: 'LCP（最大コンテンツ描画）' },
+      { key: 'total-blocking-time', name: 'TBT（ブロック時間）' },
+      { key: 'cumulative-layout-shift', name: 'CLS（レイアウトシフト）' },
+      { key: 'speed-index', name: 'Speed Index' },
+    ];
+
+    var cwvHTML = '';
+    cwvMetrics.forEach(function(m) {
+      var audit = audits[m.key];
+      if (!audit) return;
+      var value = audit.displayValue || '-';
+      var score = audit.score;
+      var color = score >= 0.9 ? 'text-green-600' : score >= 0.5 ? 'text-orange-600' : 'text-red-600';
+      var bg = score >= 0.9 ? 'bg-green-500' : score >= 0.5 ? 'bg-orange-500' : 'bg-red-500';
+      var width = Math.round(score * 100);
+
+      cwvHTML += '<div>' +
+        '<div class="flex justify-between items-center mb-1">' +
+        '<span class="text-sm font-medium text-text-primary">' + m.name + '</span>' +
+        '<span class="text-sm font-bold ' + color + '">' + value + '</span>' +
+        '</div>' +
+        '<div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">' +
+        '<div class="h-full ' + bg + ' rounded-full" style="width:' + width + '%"></div>' +
+        '</div></div>';
+    });
+    document.getElementById('cwv-container').innerHTML = cwvHTML;
+
+    // 改善ポイント（opportunities）
+    var opps = [];
+    Object.keys(audits).forEach(function(key) {
+      var a = audits[key];
+      if (a.score !== null && a.score < 0.9 && a.details && a.details.type === 'opportunity') {
+        opps.push({ title: a.title, savings: a.displayValue || '', score: a.score });
+      }
+    });
+    opps.sort(function(a, b) { return a.score - b.score; });
+
+    var oppsHTML = '';
+    opps.slice(0, 8).forEach(function(opp) {
+      var color = opp.score < 0.5 ? 'text-red-600 bg-red-50' : 'text-orange-600 bg-orange-50';
+      oppsHTML += '<div class="flex items-start gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50">' +
+        '<svg class="w-5 h-5 text-orange-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>' +
+        '<div class="flex-1">' +
+        '<p class="text-sm font-medium text-text-primary">' + opp.title + '</p>' +
+        (opp.savings ? '<p class="text-xs ' + color + ' font-medium mt-1">' + opp.savings + '</p>' : '') +
+        '</div></div>';
+    });
+    if (opps.length === 0) {
+      oppsHTML = '<p class="text-sm text-green-600 font-medium">大きな改善ポイントは見つかりませんでした。</p>';
+    }
+    document.getElementById('opportunities-container').innerHTML = oppsHTML;
+
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // メールフォーム
+  document.getElementById('email-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('email-input').value;
+    if (!email) return;
+
+    var btn = this.querySelector('button');
+    btn.textContent = '送信中...';
+    btn.disabled = true;
+
+    var formData = new FormData();
+    formData.append('mauticform[email]', email);
+    formData.append('mauticform[site_url]', document.getElementById('url-input').value);
+    formData.append('mauticform[formId]', '3');
+
+    fetch('https://m6.37d.jp/form/submit', {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors',
+    }).catch(function() {});
+
+    setTimeout(function() {
+      document.getElementById('email-gate').classList.add('hidden');
+      document.getElementById('post-email-cta').classList.remove('hidden');
+    }, 800);
+  });
+})();
+</script>

@@ -1,0 +1,407 @@
+---
+import LPLayout from '../../layouts/LPLayout.astro';
+import LPFooter from '../../components/lp/LPFooter.astro';
+import ParticleCanvas from '../../components/ParticleCanvas.astro';
+---
+
+<LPLayout
+  title="AI活用度診断｜無料であなたの会社のAI活用レベルをチェック | 株式会社37Design"
+  description="10問の質問に答えるだけで、あなたの会社のAI活用度がわかる無料診断ツール。改善ポイントと次のアクションも提案します。"
+>
+  <!-- Hero -->
+  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 hero-gradient"></div>
+    <ParticleCanvas />
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16">
+      <p class="text-sm font-semibold text-accent-400 tracking-wider uppercase mb-3">Free AI Assessment</p>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
+        あなたの会社の<br />AI活用度を無料診断
+      </h1>
+      <p class="text-lg text-primary-200 max-w-2xl mx-auto leading-relaxed">
+        10問の質問に答えるだけ。約2分で完了します。
+      </p>
+    </div>
+  </section>
+
+  <!-- 診断フォーム -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- プログレスバー -->
+      <div id="progress-section" class="mb-10">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-text-secondary" id="progress-label">質問 1 / 10</span>
+          <span class="text-sm font-bold text-primary-700" id="progress-percent">0%</span>
+        </div>
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 質問カード -->
+      <div id="quiz-container">
+        <!-- JSで質問が挿入される -->
+      </div>
+
+      <!-- 結果セクション（初期非表示） -->
+      <div id="result-section" class="hidden">
+        <!-- スコア表示 -->
+        <div class="text-center mb-10">
+          <div class="inline-flex items-center justify-center w-40 h-40 rounded-full border-8 mb-6" id="score-circle">
+            <div>
+              <span class="text-5xl font-black" id="score-number">0</span>
+              <span class="text-lg text-text-secondary font-medium">/100</span>
+            </div>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-2" id="score-title"></h2>
+          <p class="text-text-secondary leading-relaxed" id="score-description"></p>
+        </div>
+
+        <!-- カテゴリ別スコア -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10" id="category-scores">
+        </div>
+
+        <!-- メールゲート -->
+        <div id="email-gate" class="rounded-2xl border-2 border-orange-500 bg-orange-50 p-8 text-center">
+          <h3 class="text-xl font-bold text-text-primary mb-2">詳しい改善レポートをメールでお届けします</h3>
+          <p class="text-sm text-text-secondary mb-6">カテゴリ別の具体的な改善アクションと、おすすめのAIツールリストを無料でお送りします。</p>
+          <form id="email-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              id="email-input"
+              placeholder="メールアドレス"
+              required
+              class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-sm"
+            />
+            <button type="submit" class="lp-cta-button px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap">
+              無料で受け取る
+            </button>
+          </form>
+          <p class="text-xs text-text-secondary mt-3">※ メール配信はいつでも解除できます。</p>
+        </div>
+
+        <!-- メール送信後の詳細（初期非表示） -->
+        <div id="detailed-report" class="hidden mt-10">
+          <h3 class="text-xl font-bold text-text-primary mb-6 text-center">改善アクション</h3>
+          <div id="action-items" class="space-y-4"></div>
+
+          <!-- CTA -->
+          <div class="mt-12 text-center rounded-2xl bg-primary-950 p-10">
+            <h3 class="text-2xl font-bold text-white mb-3">AI活用を加速させませんか？</h3>
+            <p class="text-primary-200 mb-6">専門家があなたの会社に合ったAI導入プランをご提案します。</p>
+            <a href="/service/ai-advisor/" class="lp-cta-button inline-flex items-center gap-2 text-lg font-bold px-8 py-4 rounded-full shadow-xl hover:scale-105 transition-all">
+              Web AI顧問を見る
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <LPFooter
+    companyName="株式会社37Design"
+    links={[
+      { text: "Web AI顧問", href: "/service/ai-advisor/" },
+      { text: "会社概要", href: "https://37design.co.jp/about" },
+      { text: "プライバシーポリシー", href: "https://37design.co.jp/privacy" },
+    ]}
+  />
+</LPLayout>
+
+<script is:inline>
+(function() {
+  const questions = [
+    { id: 1, category: "awareness", text: "社内でAI（ChatGPT等）を使っている人はいますか？", options: [
+      { label: "全くいない", score: 0 },
+      { label: "数人が個人的に使っている", score: 4 },
+      { label: "チーム単位で活用している", score: 7 },
+      { label: "全社的に導入している", score: 10 },
+    ]},
+    { id: 2, category: "awareness", text: "AIに関する社内研修や勉強会を実施していますか？", options: [
+      { label: "実施していない", score: 0 },
+      { label: "検討中", score: 3 },
+      { label: "過去に1〜2回実施した", score: 6 },
+      { label: "定期的に実施している", score: 10 },
+    ]},
+    { id: 3, category: "operations", text: "定型業務（メール、議事録、データ入力等）にAIを活用していますか？", options: [
+      { label: "全く活用していない", score: 0 },
+      { label: "一部の人が試している", score: 4 },
+      { label: "特定の業務で定着している", score: 7 },
+      { label: "多くの定型業務で活用している", score: 10 },
+    ]},
+    { id: 4, category: "operations", text: "業務マニュアルやナレッジはデジタル化されていますか？", options: [
+      { label: "紙やWord中心", score: 0 },
+      { label: "一部デジタル化", score: 4 },
+      { label: "ほぼデジタル化済み", score: 7 },
+      { label: "AIで検索・活用できる状態", score: 10 },
+    ]},
+    { id: 5, category: "marketing", text: "Webサイトのアクセス解析（GA4等）を定期的に確認していますか？", options: [
+      { label: "設定していない / 見ていない", score: 0 },
+      { label: "設定はしているが見ていない", score: 3 },
+      { label: "月1回程度確認している", score: 6 },
+      { label: "週次でデータを活用している", score: 10 },
+    ]},
+    { id: 6, category: "marketing", text: "SNSやブログ等のコンテンツ制作にAIを活用していますか？", options: [
+      { label: "全く使っていない", score: 0 },
+      { label: "たまに下書きに使う程度", score: 4 },
+      { label: "制作フローに組み込んでいる", score: 7 },
+      { label: "AIで企画から制作まで効率化", score: 10 },
+    ]},
+    { id: 7, category: "strategy", text: "AI活用に関する予算（ツール費用等）を確保していますか？", options: [
+      { label: "予算はない", score: 0 },
+      { label: "必要に応じて都度検討", score: 3 },
+      { label: "年間予算を確保している", score: 7 },
+      { label: "積極的に投資している", score: 10 },
+    ]},
+    { id: 8, category: "strategy", text: "AI導入の目的やゴールは明確ですか？", options: [
+      { label: "特に考えていない", score: 0 },
+      { label: "なんとなくイメージはある", score: 3 },
+      { label: "部門ごとに目標がある", score: 7 },
+      { label: "全社的な戦略として明文化している", score: 10 },
+    ]},
+    { id: 9, category: "data", text: "顧客データや売上データを分析に活用していますか？", options: [
+      { label: "データは散在している", score: 0 },
+      { label: "Excelで管理している程度", score: 3 },
+      { label: "CRM/BI等で可視化している", score: 7 },
+      { label: "AIで予測・分析している", score: 10 },
+    ]},
+    { id: 10, category: "data", text: "社内のデータ（ファイル、ナレッジ）は整理されていますか？", options: [
+      { label: "バラバラで整理されていない", score: 0 },
+      { label: "最低限のフォルダ管理", score: 3 },
+      { label: "クラウドで一元管理", score: 7 },
+      { label: "検索・AI活用できる状態", score: 10 },
+    ]},
+  ];
+
+  const categories = {
+    awareness: { name: "AI意識・リテラシー", max: 20 },
+    operations: { name: "業務効率化", max: 20 },
+    marketing: { name: "マーケティング活用", max: 20 },
+    strategy: { name: "戦略・投資", max: 20 },
+    data: { name: "データ活用", max: 20 },
+  };
+
+  let currentQ = 0;
+  let answers = {};
+
+  const container = document.getElementById('quiz-container');
+  const progressBar = document.getElementById('progress-bar');
+  const progressLabel = document.getElementById('progress-label');
+  const progressPercent = document.getElementById('progress-percent');
+
+  function renderQuestion(index) {
+    const q = questions[index];
+    const pct = Math.round((index / questions.length) * 100);
+    progressBar.style.width = pct + '%';
+    progressLabel.textContent = '質問 ' + (index + 1) + ' / ' + questions.length;
+    progressPercent.textContent = pct + '%';
+
+    container.innerHTML = '<div class="animate-fade-in">' +
+      '<h2 class="text-xl md:text-2xl font-bold text-text-primary mb-2">Q' + (index + 1) + '.</h2>' +
+      '<p class="text-lg md:text-xl text-text-primary mb-8 leading-relaxed">' + q.text + '</p>' +
+      '<div class="space-y-3" id="options"></div>' +
+      '</div>';
+
+    var optionsEl = document.getElementById('options');
+    q.options.forEach(function(opt, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'w-full text-left px-6 py-4 rounded-xl border-2 border-gray-200 hover:border-orange-400 hover:bg-orange-50 transition-all text-sm md:text-base font-medium text-text-primary cursor-pointer';
+      btn.textContent = opt.label;
+      btn.addEventListener('click', function() {
+        answers[q.id] = { category: q.category, score: opt.score };
+        // ボタンハイライト
+        optionsEl.querySelectorAll('button').forEach(function(b) { b.classList.remove('border-orange-500', 'bg-orange-50'); });
+        btn.classList.add('border-orange-500', 'bg-orange-50');
+        // 次の質問へ
+        setTimeout(function() {
+          currentQ++;
+          if (currentQ < questions.length) {
+            renderQuestion(currentQ);
+          } else {
+            showResult();
+          }
+        }, 300);
+      });
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function showResult() {
+    container.classList.add('hidden');
+    document.getElementById('progress-section').classList.add('hidden');
+    document.getElementById('result-section').classList.remove('hidden');
+
+    // スコア計算
+    var totalScore = 0;
+    var catScores = {};
+    Object.keys(categories).forEach(function(c) { catScores[c] = 0; });
+
+    Object.values(answers).forEach(function(a) {
+      totalScore += a.score;
+      catScores[a.category] += a.score;
+    });
+
+    // スコアアニメーション
+    var scoreEl = document.getElementById('score-number');
+    var circle = document.getElementById('score-circle');
+    var current = 0;
+    var interval = setInterval(function() {
+      current += 1;
+      if (current > totalScore) { current = totalScore; clearInterval(interval); }
+      scoreEl.textContent = current;
+    }, 20);
+
+    // スコア色
+    if (totalScore >= 70) {
+      circle.classList.add('border-green-500');
+      scoreEl.classList.add('text-green-600');
+    } else if (totalScore >= 40) {
+      circle.classList.add('border-orange-500');
+      scoreEl.classList.add('text-orange-600');
+    } else {
+      circle.classList.add('border-red-500');
+      scoreEl.classList.add('text-red-600');
+    }
+
+    // レベル判定
+    var levels = [
+      { min: 80, title: "AI活用リーダー", desc: "素晴らしい！AI活用が社内に浸透しています。さらに高度な活用で競合との差を広げましょう。" },
+      { min: 60, title: "AI活用アドバンス", desc: "良い取り組みが始まっています。あと一歩で全社的な活用へステップアップできます。" },
+      { min: 40, title: "AI活用ビギナー", desc: "部分的にAIを使い始めた段階です。戦略的に導入を進めることで大きな効果が期待できます。" },
+      { min: 20, title: "AI活用スターター", desc: "AI活用の余地が大きい状態です。正しい順序で導入すれば、短期間で成果が出せます。" },
+      { min: 0, title: "AI活用これから", desc: "まだAI活用が進んでいませんが、逆にチャンスです。今から始めれば同業他社に大きな差をつけられます。" },
+    ];
+
+    var level = levels.find(function(l) { return totalScore >= l.min; });
+    document.getElementById('score-title').textContent = level.title;
+    document.getElementById('score-description').textContent = level.desc;
+
+    // カテゴリ別スコア
+    var catContainer = document.getElementById('category-scores');
+    Object.keys(categories).forEach(function(key) {
+      var cat = categories[key];
+      var score = catScores[key];
+      var pct = Math.round((score / cat.max) * 100);
+      var color = pct >= 70 ? 'bg-green-500' : pct >= 40 ? 'bg-orange-500' : 'bg-red-500';
+      catContainer.innerHTML += '<div class="bg-gray-50 rounded-xl p-4">' +
+        '<div class="flex justify-between items-center mb-2">' +
+        '<span class="text-sm font-bold text-text-primary">' + cat.name + '</span>' +
+        '<span class="text-sm font-bold text-text-secondary">' + score + '/' + cat.max + '</span>' +
+        '</div>' +
+        '<div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">' +
+        '<div class="h-full ' + color + ' rounded-full transition-all duration-700" style="width:' + pct + '%"></div>' +
+        '</div></div>';
+    });
+
+    // スクロール
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // 改善アクションデータ（メールゲート後に表示）
+    window._catScores = catScores;
+  }
+
+  // メールフォーム
+  document.getElementById('email-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('email-input').value;
+    if (!email) return;
+
+    var btn = this.querySelector('button');
+    btn.textContent = '送信中...';
+    btn.disabled = true;
+
+    // Mautic フォーム送信（TODO: 実際のMautic form IDに差し替え）
+    var totalScore = Object.values(answers).reduce(function(s, a) { return s + a.score; }, 0);
+    var formData = new FormData();
+    formData.append('mauticform[email]', email);
+    formData.append('mauticform[ai_score]', totalScore);
+    formData.append('mauticform[formId]', '1');
+
+    // Mautic送信を試みる（失敗してもUIは進める）
+    fetch('https://m6.37d.jp/form/submit', {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors',
+    }).catch(function() {});
+
+    // UIを進める
+    setTimeout(function() {
+      document.getElementById('email-gate').classList.add('hidden');
+      document.getElementById('detailed-report').classList.remove('hidden');
+
+      // 改善アクション表示
+      var actions = {
+        awareness: [
+          "ChatGPT/Claude の社内勉強会を月1回開催する",
+          "AIツールの利用ガイドラインを作成する",
+          "AI活用事例の社内共有チャンネルを作る",
+        ],
+        operations: [
+          "議事録作成をAI（Whisper等）で自動化する",
+          "メール返信のテンプレートをAIで生成する仕組みを導入",
+          "マニュアル類をNotionやConfluenceに集約し、AI検索を導入",
+        ],
+        marketing: [
+          "GA4のレポートを週次で確認する仕組みを作る",
+          "ブログやSNS投稿の下書きにAIを活用する",
+          "競合分析やキーワード調査にAIツールを導入",
+        ],
+        strategy: [
+          "AI活用の年間ロードマップを策定する",
+          "月1〜5万円のAIツール予算を確保する",
+          "外部のAI顧問に相談し、優先順位を明確にする",
+        ],
+        data: [
+          "顧客データをCRMに一元化する",
+          "社内ファイルをクラウド（Google Drive等）に集約",
+          "売上データのダッシュボードを作成する",
+        ],
+      };
+
+      var container = document.getElementById('action-items');
+      var catScores = window._catScores;
+
+      // スコアが低いカテゴリ順にソート
+      var sorted = Object.keys(catScores).sort(function(a, b) { return catScores[a] - catScores[b]; });
+      sorted.forEach(function(key) {
+        var cat = categories[key];
+        var score = catScores[key];
+        var pct = Math.round((score / cat.max) * 100);
+        var urgency = pct < 40 ? '優先度: 高' : pct < 70 ? '優先度: 中' : '優先度: 低';
+        var urgencyColor = pct < 40 ? 'text-red-600 bg-red-50' : pct < 70 ? 'text-orange-600 bg-orange-50' : 'text-green-600 bg-green-50';
+
+        var html = '<div class="rounded-xl border border-gray-200 p-6">' +
+          '<div class="flex items-center justify-between mb-3">' +
+          '<h4 class="font-bold text-text-primary">' + cat.name + '</h4>' +
+          '<span class="text-xs font-bold px-2 py-1 rounded-full ' + urgencyColor + '">' + urgency + '</span>' +
+          '</div>' +
+          '<ul class="space-y-2">';
+
+        actions[key].forEach(function(action) {
+          html += '<li class="flex items-start gap-2 text-sm text-text-body">' +
+            '<svg class="w-4 h-4 text-orange-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>' +
+            action + '</li>';
+        });
+
+        html += '</ul></div>';
+        container.innerHTML += html;
+      });
+    }, 800);
+  });
+
+  // 開始
+  renderQuestion(0);
+})();
+</script>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
