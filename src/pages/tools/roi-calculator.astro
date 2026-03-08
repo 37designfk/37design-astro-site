@@ -386,11 +386,13 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     var totalInputPerPerson = 0;
     var breakdownHTML = '';
 
+    var taskResults = [];
     data.tasks.forEach(function(task, i) {
       var inputHours = parseFloat(sliders[i].value);
       totalInputPerPerson += inputHours;
       var saved = Math.round(inputHours * task.pct * 10) / 10;
       totalSavedPerPerson += saved;
+      taskResults.push({ name: task.name, hours: inputHours, savedHours: saved, aiRate: task.pct });
 
       var totalSaved = Math.round(saved * selectedEmployees * 10) / 10;
       var barWidth = Math.min(100, Math.round(task.pct * 100));
@@ -442,6 +444,16 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     document.getElementById('roi-multiple').textContent = '投資対効果 ' + multiple + '倍';
 
     document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // n8n送信用にグローバル保存
+    window._roiData = {
+      industry: selectedIndustry,
+      employees: selectedEmployees,
+      tasks: taskResults,
+      totalSavedHours: totalSavedAll,
+      totalSavedCost: monthlyCost,
+      annualSavedCost: yearlyCost,
+    };
   });
 
   function animateNumber(id, target, isCurrency) {
@@ -465,14 +477,20 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     btn.textContent = '送信中...';
     btn.disabled = true;
 
-    var formData = new FormData();
-    formData.append('mauticform[email]', email);
-    formData.append('mauticform[formId]', '2');
-
-    fetch('https://m6.37d.jp/form/submit', {
+    // n8n webhook → Mautic連携
+    var rd = window._roiData || {};
+    fetch('https://n8n-37design.37d.jp/webhook/roi-calculator', {
       method: 'POST',
-      body: formData,
-      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        industry: rd.industry,
+        employees: rd.employees,
+        tasks: rd.tasks,
+        totalSavedHours: rd.totalSavedHours,
+        totalSavedCost: rd.totalSavedCost,
+        annualSavedCost: rd.annualSavedCost,
+      }),
     }).catch(function() {});
 
     setTimeout(function() {

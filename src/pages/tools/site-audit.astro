@@ -279,6 +279,14 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     document.getElementById('opportunities-container').innerHTML = oppsHTML;
 
     document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // n8n送信用にグローバル保存
+    window._auditData = {
+      siteUrl: document.getElementById('url-input').value,
+      scores: { performance: scoreMap.perf, accessibility: scoreMap.a11y, bestPractices: scoreMap.bp, seo: scoreMap.seo },
+      coreWebVitals: cwvMetrics.map(function(m) { var a = audits[m.key]; return a ? { name: m.name, value: a.displayValue, score: a.score } : null; }).filter(Boolean),
+      opportunities: opps.slice(0, 8).map(function(o) { return { title: o.title, savings: o.savings }; }),
+    };
   }
 
   // メールフォーム
@@ -291,15 +299,18 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     btn.textContent = '送信中...';
     btn.disabled = true;
 
-    var formData = new FormData();
-    formData.append('mauticform[email]', email);
-    formData.append('mauticform[site_url]', document.getElementById('url-input').value);
-    formData.append('mauticform[formId]', '3');
-
-    fetch('https://m6.37d.jp/form/submit', {
+    // n8n webhook → Mautic連携
+    var ad = window._auditData || {};
+    fetch('https://n8n-37design.37d.jp/webhook/site-audit', {
       method: 'POST',
-      body: formData,
-      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        siteUrl: ad.siteUrl,
+        scores: ad.scores,
+        coreWebVitals: ad.coreWebVitals,
+        opportunities: ad.opportunities,
+      }),
     }).catch(function() {});
 
     setTimeout(function() {
