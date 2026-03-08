@@ -1,4 +1,6 @@
 ---
+import ParticleCanvas from '../ParticleCanvas.astro';
+
 interface Props {
   headline: string;
   subheadline: string;
@@ -25,18 +27,16 @@ const { headline, subheadline, ctaText, ctaLink, backgroundImage } = Astro.props
     <div class="absolute inset-0 hero-gradient"></div>
   )}
 
+  <ParticleCanvas />
+
   <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
     <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-glow/10 rounded-full blur-3xl"></div>
     <div class="absolute bottom-1/3 right-1/4 w-48 h-48 bg-accent-500/8 rounded-full blur-3xl"></div>
   </div>
 
   <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
-      {headline}
-    </h1>
-    <p class="text-lg sm:text-xl md:text-2xl text-primary-200 max-w-3xl mx-auto mb-10 leading-relaxed">
-      {subheadline}
-    </p>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6" set:html={headline} />
+    <p class="text-lg sm:text-xl md:text-2xl text-primary-200 max-w-3xl mx-auto mb-10 leading-relaxed" set:html={subheadline} />
     <a
       href={ctaLink}
       class="lp-cta-button inline-flex items-center gap-2 text-lg sm:text-xl font-bold px-10 py-5 rounded-full shadow-xl transition-all duration-300 hover:scale-105"

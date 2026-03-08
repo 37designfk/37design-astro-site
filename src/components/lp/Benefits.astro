@@ -25,8 +25,14 @@ const { title, benefits } = Astro.props;
           class="animate-on-scroll text-center p-8"
           style={`animation-delay: ${i * 100}ms`}
         >
-          <div class="w-20 h-20 bg-primary-50 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-5" aria-hidden="true">
-            {benefit.icon}
+          <div class="w-20 h-20 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-5" aria-hidden="true">
+            {benefit.icon.startsWith("M") ? (
+              <svg class="w-10 h-10 text-primary-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d={benefit.icon} />
+              </svg>
+            ) : (
+              <span class="text-4xl">{benefit.icon}</span>
+            )}
           </div>
           <h3 class="text-xl font-bold text-text-primary mb-3">{benefit.title}</h3>
           <p class="text-text-body leading-relaxed">{benefit.description}</p>
