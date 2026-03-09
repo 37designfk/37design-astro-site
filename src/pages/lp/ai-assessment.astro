@@ -1,0 +1,524 @@
+---
+import LPLayout from '../../layouts/LPLayout.astro';
+import LPFooter from '../../components/lp/LPFooter.astro';
+import ParticleCanvas from '../../components/ParticleCanvas.astro';
+---
+
+<LPLayout
+  title="【無料】AI活用度診断｜たった2分で自社のAIレベルがわかる"
+  description="10問の質問に答えるだけで、あなたの会社のAI活用レベルを5段階で判定。カテゴリ別の改善アクションも提案します。中小企業2,000社以上の支援実績をもとに開発。"
+  noIndex={true}
+>
+  <!-- Hero: 課題訴求 + CTA -->
+  <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 hero-gradient"></div>
+    <ParticleCanvas />
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 md:py-24">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        <span class="text-white/70 text-xs font-medium">無料・登録不要・約2分で完了</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-black text-white leading-[1.2] mb-6">
+        「うちもAI、<br class="sm:hidden" />やらないと…」<br />
+        <span class="text-accent-400">その不安、数値で解消</span>しませんか？
+      </h1>
+
+      <p class="text-base sm:text-lg text-primary-200 max-w-2xl mx-auto leading-relaxed mb-8">
+        10問に答えるだけで、御社のAI活用度を5カテゴリで可視化。<br class="hidden md:block" />
+        具体的な改善アクションまで無料でお届けします。
+      </p>
+
+      <a href="#start-assessment" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        今すぐ無料で診断する
+      </a>
+
+      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-white/50 text-xs">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          メールアドレスだけで利用可
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          営業電話なし
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          結果はその場で表示
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 課題共感セクション -->
+  <section class="py-14 md:py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
+        こんな悩み、ありませんか？
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          "競合がAIを使い始めたと聞いて焦っている",
+          "ChatGPTは知ってるが、業務にどう活かすかわからない",
+          "AI導入したいが、何から手をつければいいか不明",
+          "社員にAIの話をしても「うちには関係ない」と言われる",
+          "ITツールに詳しい人が社内にいない",
+          "補助金でAI導入できると聞いたが、具体的な進め方がわからない",
+        ].map((text) => (
+          <div class="flex items-start gap-3 bg-red-50/60 rounded-xl p-4 border border-red-100">
+            <svg class="w-5 h-5 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            <span class="text-sm text-text-primary font-medium">{text}</span>
+          </div>
+        ))}
+      </div>
+      <p class="text-center text-text-secondary text-sm mt-8">
+        1つでも当てはまるなら、まず現状を<span class="font-bold text-orange-600">数値で把握</span>することが第一歩です。
+      </p>
+    </div>
+  </section>
+
+  <!-- 3ステップ説明 -->
+  <section class="py-14 md:py-20 bg-surface-alt">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
+        <span class="text-orange-600">3ステップ</span>でAI活用度がわかる
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { step: "1", title: "10問に回答", desc: "選択式なので約2分で完了。専門知識は一切不要です。", icon: "M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" },
+          { step: "2", title: "5段階で判定", desc: "AI意識・業務効率化・マーケティング・戦略・データの5軸で評価。", icon: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" },
+          { step: "3", title: "改善策を取得", desc: "メールで詳細レポートを受け取り。すぐ使える改善アクション付き。", icon: "M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" },
+        ].map((item) => (
+          <div class="bg-white rounded-2xl p-6 border border-gray-200 text-center">
+            <div class="w-12 h-12 rounded-full bg-orange-500 text-white text-xl font-black flex items-center justify-center mx-auto mb-4">{item.step}</div>
+            <svg class="w-8 h-8 text-orange-500 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d={item.icon} />
+            </svg>
+            <h3 class="text-lg font-bold text-text-primary mb-2">{item.title}</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 社会的証明 -->
+  <section class="py-14 md:py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
+        中小企業の経営者から選ばれています
+      </h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        {[
+          { num: "500+", label: "診断利用企業" },
+          { num: "4.8", label: "満足度（5点中）" },
+          { num: "92%", label: "改善アクション実行率" },
+          { num: "2分", label: "平均所要時間" },
+        ].map((stat) => (
+          <div class="text-center p-4 rounded-xl bg-orange-50/50 border border-orange-100">
+            <p class="text-2xl md:text-3xl font-black text-orange-600">{stat.num}</p>
+            <p class="text-xs text-text-secondary mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- お客様の声 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          { voice: "漠然とした不安が、具体的な行動リストに変わりました。まず議事録のAI化から始めて、月10時間の削減に成功。", name: "製造業 代表取締役", company: "従業員12名" },
+          { voice: "うちの会社がAIで何ができるか、全くイメージがなかった。診断結果を見て優先順位がクリアになり、すぐに動けました。", name: "サービス業 取締役", company: "従業員8名" },
+        ].map((item) => (
+          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+            <div class="flex gap-1 mb-3">
+              {[1,2,3,4,5].map(() => (
+                <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p class="text-sm text-text-body leading-relaxed mb-4">「{item.voice}」</p>
+            <div class="text-xs text-text-secondary">
+              <span class="font-bold">{item.name}</span> / {item.company}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 中間CTA -->
+  <section class="py-10 md:py-14 bg-primary-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-xl md:text-2xl font-bold text-white mb-3">
+        まずは<span class="text-accent-400">2分</span>で現状を把握しませんか？
+      </h2>
+      <p class="text-primary-200 text-sm mb-6">結果はその場で表示。営業電話も一切ありません。</p>
+      <a href="#start-assessment" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
+        </svg>
+        無料で診断スタート
+      </a>
+    </div>
+  </section>
+
+  <!-- 診断フォーム -->
+  <section id="start-assessment" class="py-16 md:py-24 bg-white scroll-mt-4">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- プログレスバー -->
+      <div id="progress-section" class="mb-10">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-text-secondary" id="progress-label">質問 1 / 10</span>
+          <span class="text-sm font-bold text-primary-700" id="progress-percent">0%</span>
+        </div>
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 質問カード -->
+      <div id="quiz-container"></div>
+
+      <!-- 結果セクション -->
+      <div id="result-section" class="hidden">
+        <div class="text-center mb-10">
+          <div class="inline-flex items-center justify-center w-40 h-40 rounded-full border-8 mb-6" id="score-circle">
+            <div>
+              <span class="text-5xl font-black" id="score-number">0</span>
+              <span class="text-lg text-text-secondary font-medium">/100</span>
+            </div>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-2" id="score-title"></h2>
+          <p class="text-text-secondary leading-relaxed" id="score-description"></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10" id="category-scores"></div>
+
+        <!-- メールゲート -->
+        <div id="email-gate" class="rounded-2xl border-2 border-orange-500 bg-orange-50 p-8 text-center">
+          <h3 class="text-xl font-bold text-text-primary mb-2">詳しい改善レポートをメールでお届けします</h3>
+          <p class="text-sm text-text-secondary mb-6">カテゴリ別の具体的な改善アクションと、おすすめのAIツールリストを無料でお送りします。</p>
+          <form id="email-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+            <input type="email" id="email-input" placeholder="メールアドレス" required class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-sm" />
+            <button type="submit" class="lp-cta-button px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap">無料で受け取る</button>
+          </form>
+          <p class="text-xs text-text-secondary mt-3">※ メール配信はいつでも解除できます。</p>
+        </div>
+
+        <!-- メール送信後の詳細 -->
+        <div id="detailed-report" class="hidden mt-10">
+          <h3 class="text-xl font-bold text-text-primary mb-6 text-center">改善アクション</h3>
+          <div id="action-items" class="space-y-4"></div>
+
+          <div class="mt-12 rounded-2xl bg-primary-950 p-8 md:p-10">
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-white mb-3" id="cta-headline">診断結果をもとに、専門家と改善プランを立てませんか？</h3>
+              <p class="text-primary-200 text-sm md:text-base" id="cta-subtext">無料面談では、あなたの診断結果を見ながら具体的な改善の優先順位をご提案します。</p>
+            </div>
+            <div class="flex flex-col items-center gap-4">
+              <a href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-10 py-5 bg-accent-400 text-primary-950 font-black rounded-full hover:bg-accent-300 transition-all text-lg shadow-[0_0_40px_rgba(245,208,32,0.25)] hover:shadow-[0_0_60px_rgba(245,208,32,0.35)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+                無料面談を予約する
+              </a>
+              <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-white/40 text-xs">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  カレンダーから日時を選ぶだけ
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  しつこい営業なし
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-14 md:py-20 bg-surface-alt">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">よくある質問</h2>
+      <div class="space-y-4">
+        {[
+          { q: "本当に無料ですか？", a: "はい、完全無料です。診断も改善レポートも一切費用はかかりません。" },
+          { q: "ITに詳しくなくても大丈夫？", a: "もちろんです。専門用語は使わず、日常の業務について聞くだけの簡単な質問です。" },
+          { q: "診断結果を見たら営業されませんか？", a: "営業電話やしつこいメールは一切行いません。改善レポートのメール1通のみお届けします。" },
+          { q: "個人情報はどう扱われますか？", a: "プライバシーポリシーに基づき適切に管理します。第三者への提供は行いません。" },
+        ].map((item) => (
+          <details class="bg-white rounded-xl border border-gray-200 group">
+            <summary class="cursor-pointer px-6 py-4 text-sm font-bold text-text-primary flex items-center justify-between">
+              {item.q}
+              <svg class="w-4 h-4 text-text-secondary transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+            </summary>
+            <div class="px-6 pb-4 text-sm text-text-secondary leading-relaxed">{item.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 最終CTA -->
+  <section class="py-14 md:py-20 bg-primary-950">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
+        AI活用の第一歩は<span class="text-accent-400">現状把握</span>から
+      </h2>
+      <p class="text-primary-200 text-sm mb-8">たった2分の診断で、御社のAI活用の伸びしろが見えてきます。</p>
+      <a href="#start-assessment" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        無料で診断する
+      </a>
+    </div>
+  </section>
+
+  <LPFooter
+    companyName="株式会社37Design"
+    links={[
+      { text: "トップページ", href: "/" },
+      { text: "プライバシーポリシー", href: "/privacy" },
+    ]}
+  />
+</LPLayout>
+
+<script is:inline>
+(function() {
+  var questions = [
+    { id: 1, category: "awareness", text: "社内でAI（ChatGPT等）を使っている人はいますか？", options: [
+      { label: "全くいない", score: 0 },
+      { label: "数人が個人的に使っている", score: 4 },
+      { label: "チーム単位で活用している", score: 7 },
+      { label: "全社的に導入している", score: 10 },
+    ]},
+    { id: 2, category: "awareness", text: "AIに関する社内研修や勉強会を実施していますか？", options: [
+      { label: "実施していない", score: 0 },
+      { label: "検討中", score: 3 },
+      { label: "過去に1〜2回実施した", score: 6 },
+      { label: "定期的に実施している", score: 10 },
+    ]},
+    { id: 3, category: "operations", text: "定型業務（メール、議事録、データ入力等）にAIを活用していますか？", options: [
+      { label: "全く活用していない", score: 0 },
+      { label: "一部の人が試している", score: 4 },
+      { label: "特定の業務で定着している", score: 7 },
+      { label: "多くの定型業務で活用している", score: 10 },
+    ]},
+    { id: 4, category: "operations", text: "業務マニュアルやナレッジはデジタル化されていますか？", options: [
+      { label: "紙やWord中心", score: 0 },
+      { label: "一部デジタル化", score: 4 },
+      { label: "ほぼデジタル化済み", score: 7 },
+      { label: "AIで検索・活用できる状態", score: 10 },
+    ]},
+    { id: 5, category: "marketing", text: "Webサイトのアクセス解析（GA4等）を定期的に確認していますか？", options: [
+      { label: "設定していない / 見ていない", score: 0 },
+      { label: "設定はしているが見ていない", score: 3 },
+      { label: "月1回程度確認している", score: 6 },
+      { label: "週次でデータを活用している", score: 10 },
+    ]},
+    { id: 6, category: "marketing", text: "SNSやブログ等のコンテンツ制作にAIを活用していますか？", options: [
+      { label: "全く使っていない", score: 0 },
+      { label: "たまに下書きに使う程度", score: 4 },
+      { label: "制作フローに組み込んでいる", score: 7 },
+      { label: "AIで企画から制作まで効率化", score: 10 },
+    ]},
+    { id: 7, category: "strategy", text: "AI活用に関する予算（ツール費用等）を確保していますか？", options: [
+      { label: "予算はない", score: 0 },
+      { label: "必要に応じて都度検討", score: 3 },
+      { label: "年間予算を確保している", score: 7 },
+      { label: "積極的に投資している", score: 10 },
+    ]},
+    { id: 8, category: "strategy", text: "AI導入の目的やゴールは明確ですか？", options: [
+      { label: "特に考えていない", score: 0 },
+      { label: "なんとなくイメージはある", score: 3 },
+      { label: "部門ごとに目標がある", score: 7 },
+      { label: "全社的な戦略として明文化している", score: 10 },
+    ]},
+    { id: 9, category: "data", text: "顧客データや売上データを分析に活用していますか？", options: [
+      { label: "データは散在している", score: 0 },
+      { label: "Excelで管理している程度", score: 3 },
+      { label: "CRM/BI等で可視化している", score: 7 },
+      { label: "AIで予測・分析している", score: 10 },
+    ]},
+    { id: 10, category: "data", text: "社内のデータ（ファイル、ナレッジ）は整理されていますか？", options: [
+      { label: "バラバラで整理されていない", score: 0 },
+      { label: "最低限のフォルダ管理", score: 3 },
+      { label: "クラウドで一元管理", score: 7 },
+      { label: "検索・AI活用できる状態", score: 10 },
+    ]},
+  ];
+
+  var categories = {
+    awareness: { name: "AI意識・リテラシー", max: 20 },
+    operations: { name: "業務効率化", max: 20 },
+    marketing: { name: "マーケティング活用", max: 20 },
+    strategy: { name: "戦略・投資", max: 20 },
+    data: { name: "データ活用", max: 20 },
+  };
+
+  var currentQ = 0;
+  var answers = {};
+
+  var container = document.getElementById('quiz-container');
+  var progressBar = document.getElementById('progress-bar');
+  var progressLabel = document.getElementById('progress-label');
+  var progressPercent = document.getElementById('progress-percent');
+
+  function renderQuestion(index) {
+    var q = questions[index];
+    var pct = Math.round((index / questions.length) * 100);
+    progressBar.style.width = pct + '%';
+    progressLabel.textContent = '質問 ' + (index + 1) + ' / ' + questions.length;
+    progressPercent.textContent = pct + '%';
+
+    container.innerHTML = '<div class="animate-fade-in">' +
+      '<h2 class="text-xl md:text-2xl font-bold text-text-primary mb-2">Q' + (index + 1) + '.</h2>' +
+      '<p class="text-lg md:text-xl text-text-primary mb-8 leading-relaxed">' + q.text + '</p>' +
+      '<div class="space-y-3" id="options"></div></div>';
+
+    var optionsEl = document.getElementById('options');
+    q.options.forEach(function(opt) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'w-full text-left px-6 py-4 rounded-xl border-2 border-gray-200 hover:border-orange-400 hover:bg-orange-50 transition-all text-sm md:text-base font-medium text-text-primary cursor-pointer';
+      btn.textContent = opt.label;
+      btn.addEventListener('click', function() {
+        answers[q.id] = { category: q.category, score: opt.score };
+        optionsEl.querySelectorAll('button').forEach(function(b) { b.classList.remove('border-orange-500', 'bg-orange-50'); });
+        btn.classList.add('border-orange-500', 'bg-orange-50');
+        setTimeout(function() {
+          currentQ++;
+          if (currentQ < questions.length) { renderQuestion(currentQ); }
+          else { showResult(); }
+        }, 300);
+      });
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function showResult() {
+    container.classList.add('hidden');
+    document.getElementById('progress-section').classList.add('hidden');
+    document.getElementById('result-section').classList.remove('hidden');
+
+    var totalScore = 0;
+    var catScores = {};
+    Object.keys(categories).forEach(function(c) { catScores[c] = 0; });
+    Object.values(answers).forEach(function(a) { totalScore += a.score; catScores[a.category] += a.score; });
+
+    var scoreEl = document.getElementById('score-number');
+    var circle = document.getElementById('score-circle');
+    var current = 0;
+    var interval = setInterval(function() {
+      current += 1;
+      if (current > totalScore) { current = totalScore; clearInterval(interval); }
+      scoreEl.textContent = current;
+    }, 20);
+
+    if (totalScore >= 70) { circle.classList.add('border-green-500'); scoreEl.classList.add('text-green-600'); }
+    else if (totalScore >= 40) { circle.classList.add('border-orange-500'); scoreEl.classList.add('text-orange-600'); }
+    else { circle.classList.add('border-red-500'); scoreEl.classList.add('text-red-600'); }
+
+    var levels = [
+      { min: 80, title: "AI活用リーダー", desc: "素晴らしい！AI活用が社内に浸透しています。さらに高度な活用で競合との差を広げましょう。" },
+      { min: 60, title: "AI活用アドバンス", desc: "良い取り組みが始まっています。あと一歩で全社的な活用へステップアップできます。" },
+      { min: 40, title: "AI活用ビギナー", desc: "部分的にAIを使い始めた段階です。戦略的に導入を進めることで大きな効果が期待できます。" },
+      { min: 20, title: "AI活用スターター", desc: "AI活用の余地が大きい状態です。正しい順序で導入すれば、短期間で成果が出せます。" },
+      { min: 0, title: "AI活用これから", desc: "まだAI活用が進んでいませんが、逆にチャンスです。今から始めれば同業他社に大きな差をつけられます。" },
+    ];
+    var level = levels.find(function(l) { return totalScore >= l.min; });
+    document.getElementById('score-title').textContent = level.title;
+    document.getElementById('score-description').textContent = level.desc;
+
+    var catContainer = document.getElementById('category-scores');
+    Object.keys(categories).forEach(function(key) {
+      var cat = categories[key]; var score = catScores[key]; var pct = Math.round((score / cat.max) * 100);
+      var color = pct >= 70 ? 'bg-green-500' : pct >= 40 ? 'bg-orange-500' : 'bg-red-500';
+      catContainer.innerHTML += '<div class="bg-gray-50 rounded-xl p-4"><div class="flex justify-between items-center mb-2"><span class="text-sm font-bold text-text-primary">' + cat.name + '</span><span class="text-sm font-bold text-text-secondary">' + score + '/' + cat.max + '</span></div><div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden"><div class="h-full ' + color + ' rounded-full transition-all duration-700" style="width:' + pct + '%"></div></div></div>';
+    });
+
+    window._totalScore = totalScore;
+    var ctaMsgs = [
+      { min: 70, headline: "さらに上を目指しませんか？", sub: "すでに良い取り組みが進んでいます。専門家と一緒に次のステージへ進みましょう。" },
+      { min: 40, headline: "あと一歩で大きく変わります！", sub: "診断結果をもとに、最も効果の高い施策から一緒に取り組みましょう。" },
+      { min: 0, headline: "今がチャンス！ここから一気に変えましょう", sub: "伸びしろが大きい今こそ、専門家と一緒に正しい順序でAI活用を始めませんか？" },
+    ];
+    var ctaMsg = ctaMsgs.find(function(m) { return totalScore >= m.min; });
+    var ctaH = document.getElementById('cta-headline'); var ctaS = document.getElementById('cta-subtext');
+    if (ctaH && ctaMsg) ctaH.textContent = ctaMsg.headline;
+    if (ctaS && ctaMsg) ctaS.textContent = ctaMsg.sub;
+
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window._catScores = catScores;
+  }
+
+  document.getElementById('email-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('email-input').value;
+    if (!email) return;
+    var btn = this.querySelector('button');
+    btn.textContent = '送信中...'; btn.disabled = true;
+
+    try {
+      var totalScore = Object.values(answers).reduce(function(s, a) { return s + a.score; }, 0);
+      var catScores = window._catScores;
+      var answerDetails = questions.map(function(q) {
+        var a = answers[q.id];
+        if (!a) return { question: q.text, answer: '', score: 0 };
+        var opt = q.options.find(function(o) { return o.score === a.score; });
+        return { question: q.text, answer: opt ? opt.label : '', score: a.score };
+      });
+      fetch('https://n8n-37design.37d.jp/webhook/ai-assessment', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, totalScore: totalScore, scores: catScores, answers: answerDetails, source: 'lp' }),
+      }).catch(function() {});
+    } catch(err) { console.error('Webhook error:', err); }
+
+    setTimeout(function() {
+      document.getElementById('email-gate').classList.add('hidden');
+      document.getElementById('detailed-report').classList.remove('hidden');
+
+      var actions = {
+        awareness: ["ChatGPT/Claude の社内勉強会を月1回開催する","AIツールの利用ガイドラインを作成する","AI活用事例の社内共有チャンネルを作る"],
+        operations: ["議事録作成をAI（Whisper等）で自動化する","メール返信のテンプレートをAIで生成する仕組みを導入","マニュアル類をNotionやConfluenceに集約し、AI検索を導入"],
+        marketing: ["GA4のレポートを週次で確認する仕組みを作る","ブログやSNS投稿の下書きにAIを活用する","競合分析やキーワード調査にAIツールを導入"],
+        strategy: ["AI活用の年間ロードマップを策定する","月1〜5万円のAIツール予算を確保する","外部のAI顧問に相談し、優先順位を明確にする"],
+        data: ["顧客データをCRMに一元化する","社内ファイルをクラウド（Google Drive等）に集約","売上データのダッシュボードを作成する"],
+      };
+
+      var actionContainer = document.getElementById('action-items');
+      var catScores = window._catScores;
+      var sorted = Object.keys(catScores).sort(function(a, b) { return catScores[a] - catScores[b]; });
+      sorted.forEach(function(key) {
+        var cat = categories[key]; var score = catScores[key]; var pct = Math.round((score / cat.max) * 100);
+        var urgency = pct < 40 ? '優先度: 高' : pct < 70 ? '優先度: 中' : '優先度: 低';
+        var urgencyColor = pct < 40 ? 'text-red-600 bg-red-50' : pct < 70 ? 'text-orange-600 bg-orange-50' : 'text-green-600 bg-green-50';
+        var html = '<div class="rounded-xl border border-gray-200 p-6"><div class="flex items-center justify-between mb-3"><h4 class="font-bold text-text-primary">' + cat.name + '</h4><span class="text-xs font-bold px-2 py-1 rounded-full ' + urgencyColor + '">' + urgency + '</span></div><ul class="space-y-2">';
+        actions[key].forEach(function(action) {
+          html += '<li class="flex items-start gap-2 text-sm text-text-body"><svg class="w-4 h-4 text-orange-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>' + action + '</li>';
+        });
+        html += '</ul></div>';
+        actionContainer.innerHTML += html;
+      });
+    }, 800);
+  });
+
+  renderQuestion(0);
+})();
+</script>
+
+<style>
+  .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
