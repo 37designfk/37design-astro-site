@@ -10,7 +10,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   noIndex={true}
 >
   <!-- Hero: 課題訴求 + CTA -->
-  <section data-marketing class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+  <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 hero-gradient"></div>
     <ParticleCanvas />
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 md:py-24">
@@ -54,7 +54,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- 課題共感セクション -->
-  <section data-marketing class="py-14 md:py-20 bg-white">
+  <section class="py-14 md:py-20 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
         こんな悩み、ありませんか？
@@ -83,7 +83,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- 3ステップ説明 -->
-  <section data-marketing class="py-14 md:py-20 bg-surface-alt">
+  <section class="py-14 md:py-20 bg-surface-alt">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
         <span class="text-orange-600">3ステップ</span>でAI活用度がわかる
@@ -108,7 +108,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- 社会的証明 -->
-  <section data-marketing class="py-14 md:py-20 bg-white">
+  <section class="py-14 md:py-20 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">
         中小企業の経営者から選ばれています
@@ -153,7 +153,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- 中間CTA -->
-  <section data-marketing class="py-10 md:py-14 bg-primary-950">
+  <section class="py-10 md:py-14 bg-primary-950">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 class="text-xl md:text-2xl font-bold text-white mb-3">
         まずは<span class="text-accent-400">2分</span>で現状を把握しませんか？
@@ -247,7 +247,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- FAQ -->
-  <section data-marketing class="py-14 md:py-20 bg-surface-alt">
+  <section class="py-14 md:py-20 bg-surface-alt">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">よくある質問</h2>
       <div class="space-y-4">
@@ -270,7 +270,7 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   </section>
 
   <!-- 最終CTA -->
-  <section data-marketing class="py-14 md:py-20 bg-primary-950">
+  <section class="py-14 md:py-20 bg-primary-950">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
         AI活用の第一歩は<span class="text-accent-400">現状把握</span>から
@@ -523,17 +523,3 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
-<script is:inline>
-(function() {
-  var hidden = false;
-  document.querySelectorAll('a[href="#start-assessment"]').forEach(function(link) {
-    link.addEventListener('click', function() {
-      if (hidden) return;
-      hidden = true;
-      document.querySelectorAll('[data-marketing]').forEach(function(el) {
-        el.style.display = 'none';
-      });
-    });
-  });
-})();
-</script>
