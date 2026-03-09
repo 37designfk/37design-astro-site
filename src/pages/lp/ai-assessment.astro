@@ -217,26 +217,64 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
           <h3 class="text-xl font-bold text-text-primary mb-6 text-center">改善アクション</h3>
           <div id="action-items" class="space-y-4"></div>
 
+          <!-- 面談予約CTA + 特典 -->
           <div class="mt-12 rounded-2xl bg-primary-950 p-8 md:p-10">
-            <div class="text-center mb-6">
+            <div class="text-center mb-4">
+              <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/20 border border-red-400/30 mb-4">
+                <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                <span class="text-red-300 text-xs font-bold">今月の無料面談枠 残り<span id="remaining-slots">3</span>名</span>
+              </div>
               <h3 class="text-2xl font-bold text-white mb-3" id="cta-headline">診断結果をもとに、専門家と改善プランを立てませんか？</h3>
               <p class="text-primary-200 text-sm md:text-base" id="cta-subtext">無料面談では、あなたの診断結果を見ながら具体的な改善の優先順位をご提案します。</p>
             </div>
+
+            <!-- 特典 -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 mb-6">
+              <p class="text-accent-400 text-xs font-bold tracking-wider uppercase mb-3 text-center">面談ご予約で3つの特典をプレゼント</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-full bg-accent-400 text-primary-950 text-xs font-black flex items-center justify-center shrink-0 mt-0.5">1</span>
+                  <div>
+                    <p class="text-white text-sm font-bold">御社専用 AI導入ロードマップ</p>
+                    <p class="text-primary-300 text-xs">診断結果をもとに、3ヶ月・6ヶ月・1年の導入計画を作成</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-full bg-accent-400 text-primary-950 text-xs font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
+                  <div>
+                    <p class="text-white text-sm font-bold">すぐ使える ChatGPT プロンプト集 50選</p>
+                    <p class="text-primary-300 text-xs">業種別にカスタマイズされた実践プロンプトPDF</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="w-6 h-6 rounded-full bg-accent-400 text-primary-950 text-xs font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
+                  <div>
+                    <p class="text-white text-sm font-bold">AI補助金・助成金 活用ガイド 2026年版</p>
+                    <p class="text-primary-300 text-xs">最大450万円の補助金を活用するための申請ポイント解説</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="flex flex-col items-center gap-4">
               <a href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-10 py-5 bg-accent-400 text-primary-950 font-black rounded-full hover:bg-accent-300 transition-all text-lg shadow-[0_0_40px_rgba(245,208,32,0.25)] hover:shadow-[0_0_60px_rgba(245,208,32,0.35)]">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                 </svg>
-                無料面談を予約する
+                特典つき無料面談を予約する
               </a>
               <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-white/40 text-xs">
                 <span class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                  カレンダーから日時を選ぶだけ
+                  30分・オンライン完結
                 </span>
                 <span class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   しつこい営業なし
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  特典は面談後すぐお届け
                 </span>
               </div>
             </div>
@@ -275,7 +313,8 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
       <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
         AI活用の第一歩は<span class="text-accent-400">現状把握</span>から
       </h2>
-      <p class="text-primary-200 text-sm mb-8">たった2分の診断で、御社のAI活用の伸びしろが見えてきます。</p>
+      <p class="text-primary-200 text-sm mb-4">たった2分の診断で、御社のAI活用の伸びしろが見えてきます。</p>
+      <p class="text-accent-400/80 text-xs font-bold mb-6">面談ご予約で「AI導入ロードマップ」「ChatGPTプロンプト集50選」「補助金ガイド」を無料プレゼント</p>
       <a href="#start-assessment" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -284,6 +323,14 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
       </a>
     </div>
   </section>
+
+  <!-- スティッキーCTA（スマホ） -->
+  <div id="sticky-cta" class="fixed bottom-0 left-0 right-0 z-50 bg-primary-950/95 backdrop-blur-sm border-t border-white/10 p-3 translate-y-full transition-transform duration-300 md:hidden">
+    <a href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 w-full py-3.5 bg-accent-400 text-primary-950 font-black rounded-full text-sm">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg>
+      特典つき無料面談を予約（残り枠わずか）
+    </a>
+  </div>
 
   <LPFooter
     companyName="株式会社37Design"
@@ -522,4 +569,20 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
   .animate-fade-in { animation: fadeIn 0.3s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
+
+<script is:inline>
+(function() {
+  // スティッキーCTA: スクロール300px以降で表示
+  var sticky = document.getElementById('sticky-cta');
+  if (sticky) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        sticky.classList.remove('translate-y-full');
+      } else {
+        sticky.classList.add('translate-y-full');
+      }
+    }, { passive: true });
+  }
+})();
+</script>
 
