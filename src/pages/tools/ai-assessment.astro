@@ -347,24 +347,29 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     btn.disabled = true;
 
     // n8n webhook → Mautic連携
-    var totalScore = Object.values(answers).reduce(function(s, a) { return s + a.score; }, 0);
-    var catScores = window._catScores;
-    var answerDetails = questions.map(function(q) {
-      var a = answers[q.id];
-      var opt = q.options.find(function(o) { return o.score === a.score; });
-      return { question: q.text, answer: opt ? opt.label : '', score: a.score };
-    });
+    try {
+      var totalScore = Object.values(answers).reduce(function(s, a) { return s + a.score; }, 0);
+      var catScores = window._catScores;
+      var answerDetails = questions.map(function(q) {
+        var a = answers[q.id];
+        if (!a) return { question: q.text, answer: '', score: 0 };
+        var opt = q.options.find(function(o) { return o.score === a.score; });
+        return { question: q.text, answer: opt ? opt.label : '', score: a.score };
+      });
 
-    fetch('https://n8n-37design.37d.jp/webhook/ai-assessment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        totalScore: totalScore,
-        scores: catScores,
-        answers: answerDetails,
-      }),
-    }).catch(function() {});
+      fetch('https://n8n-37design.37d.jp/webhook/ai-assessment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          totalScore: totalScore,
+          scores: catScores,
+          answers: answerDetails,
+        }),
+      }).catch(function() {});
+    } catch(err) {
+      console.error('Webhook error:', err);
+    }
 
     // UIを進める
     setTimeout(function() {

@@ -499,20 +499,24 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     btn.disabled = true;
 
     // n8n webhook → Mautic連携
-    var rd = window._roiData || {};
-    fetch('https://n8n-37design.37d.jp/webhook/roi-calculator', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        industry: rd.industry,
-        employees: rd.employees,
-        tasks: rd.tasks,
-        totalSavedHours: rd.totalSavedHours,
-        totalSavedCost: rd.totalSavedCost,
-        annualSavedCost: rd.annualSavedCost,
-      }),
-    }).catch(function() {});
+    try {
+      var rd = window._roiData || {};
+      fetch('https://n8n-37design.37d.jp/webhook/roi-calculator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          industry: rd.industry,
+          employees: rd.employees,
+          tasks: rd.tasks,
+          totalSavedHours: rd.totalSavedHours,
+          totalSavedCost: rd.totalSavedCost,
+          annualSavedCost: rd.annualSavedCost,
+        }),
+      }).catch(function() {});
+    } catch(err) {
+      console.error('Webhook error:', err);
+    }
 
     setTimeout(function() {
       document.getElementById('email-gate').classList.add('hidden');
