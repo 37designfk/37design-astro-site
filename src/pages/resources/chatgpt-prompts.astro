@@ -30,7 +30,7 @@ import LPLayout from '../../layouts/LPLayout.astro';
       <h2 class="text-sm font-bold text-blue-800 mb-2">使い方</h2>
       <ol class="text-sm text-blue-700 space-y-1 list-decimal list-inside">
         <li>使いたいプロンプトをコピー</li>
-        <li>ChatGPT（最新版推奨）に貼り付け</li>
+        <li>ChatGPT（GPT-4推奨）に貼り付け</li>
         <li>【 】内を自社の情報に書き換えて送信</li>
         <li>出力を確認して、必要に応じて「もっと具体的に」「箇条書きで」など追加指示</li>
       </ol>
@@ -221,32 +221,6 @@ import LPLayout from '../../layouts/LPLayout.astro';
       </div>
     </section>
 
-    <!-- CTA: 中間 -->
-    <div class="grid md:grid-cols-2 gap-4 mb-10 print:hidden">
-      <a href="/tools/ai-assessment/" class="cta-box group">
-        <div class="cta-icon bg-blue-500">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
-        </div>
-        <div class="flex-1">
-          <p class="text-xs font-bold text-blue-600 mb-1">無料診断ツール</p>
-          <p class="text-base font-black text-text-primary group-hover:text-blue-600 transition-colors">AI活用度を診断する</p>
-          <p class="text-xs text-text-secondary mt-1">10問の質問に答えるだけで、御社のAI活用レベルと改善ポイントがわかります</p>
-        </div>
-        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-      </a>
-      <a href="/tools/roi-calculator/" class="cta-box group">
-        <div class="cta-icon bg-emerald-500">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-        </div>
-        <div class="flex-1">
-          <p class="text-xs font-bold text-emerald-600 mb-1">無料シミュレーター</p>
-          <p class="text-base font-black text-text-primary group-hover:text-emerald-600 transition-colors">コスト削減額を試算する</p>
-          <p class="text-xs text-text-secondary mt-1">業種と従業員数を入力するだけで、AI導入による年間コスト削減額を概算できます</p>
-        </div>
-        <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-      </a>
-    </div>
-
     <!-- カテゴリ6: 人事・採用 -->
     <section class="mb-10 print:mb-6 break-inside-avoid-page">
       <div class="flex items-center gap-3 mb-6">
@@ -392,35 +366,6 @@ import LPLayout from '../../layouts/LPLayout.astro';
       </div>
     </section>
 
-    <!-- CTA: フッター前 -->
-    <div class="mt-16 mb-12 print:hidden">
-      <p class="text-center text-sm font-bold text-text-secondary mb-6">プロンプトだけでは解決しない課題も、37Designにご相談ください</p>
-      <div class="grid md:grid-cols-2 gap-4">
-        <a href="/tools/ai-assessment/" class="cta-box group">
-          <div class="cta-icon bg-blue-500">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
-          </div>
-          <div class="flex-1">
-            <p class="text-xs font-bold text-blue-600 mb-1">無料診断ツール</p>
-            <p class="text-base font-black text-text-primary group-hover:text-blue-600 transition-colors">AI活用度を診断する</p>
-            <p class="text-xs text-text-secondary mt-1">10問の質問に答えるだけで、御社のAI活用レベルと改善ポイントがわかります</p>
-          </div>
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-        </a>
-        <a href="/tools/roi-calculator/" class="cta-box group">
-          <div class="cta-icon bg-emerald-500">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-          </div>
-          <div class="flex-1">
-            <p class="text-xs font-bold text-emerald-600 mb-1">無料シミュレーター</p>
-            <p class="text-base font-black text-text-primary group-hover:text-emerald-600 transition-colors">コスト削減額を試算する</p>
-            <p class="text-xs text-text-secondary mt-1">業種と従業員数を入力するだけで、AI導入による年間コスト削減額を概算できます</p>
-          </div>
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-        </a>
-      </div>
-    </div>
-
     <!-- フッター -->
     <div class="mt-16 pt-8 border-t border-gray-200 text-center print:mt-8">
       <p class="text-sm font-bold text-text-primary mb-2">株式会社37Design</p>
@@ -455,33 +400,6 @@ import LPLayout from '../../layouts/LPLayout.astro';
     color: #374151;
     white-space: pre-wrap;
     font-family: 'Noto Sans JP', sans-serif;
-  }
-
-  .cta-box {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    border-radius: 0.75rem;
-    border: 2px solid #e5e7eb;
-    background: white;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .cta-box:hover {
-    border-color: #c7d2fe;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
-  }
-  .cta-icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
   }
 
   @media print {
