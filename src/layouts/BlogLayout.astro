@@ -62,11 +62,32 @@ const articleData = {
 <Layout
   title={`${title} | 株式会社37Design ブログ`}
   description={description}
-  image={image}
+  image={image ? new URL(image, 'https://37design.co.jp').href : undefined}
 >
   <Header />
 
   <StructuredData type="Article" data={articleData} />
+  <StructuredData type="BreadcrumbList" data={{
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'ホーム',
+        item: 'https://37design.co.jp/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'ブログ',
+        item: 'https://37design.co.jp/blog/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: title,
+      },
+    ],
+  }} />
 
   <main>
     <article class="py-12 md:py-16 bg-surface">

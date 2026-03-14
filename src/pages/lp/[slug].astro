@@ -1,12 +1,18 @@
 ---
+import { getCollection } from 'astro:content';
 import LPLayout from '../../layouts/LPLayout.astro';
 
-export function getStaticPaths() {
-  return [];
+export async function getStaticPaths() {
+  const lpEntries = await getCollection('lp');
+  return lpEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
 }
 
-const { slug } = Astro.params;
+const { entry } = Astro.props;
+const { Content } = await entry.render();
 ---
-<LPLayout title="" description="">
-  <!-- LP content will be rendered here by the generation workflow -->
+<LPLayout title={entry.data.title} description={entry.data.description} noIndex={entry.data.noIndex}>
+  <Content />
 </LPLayout>
