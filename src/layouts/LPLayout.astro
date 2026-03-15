@@ -6,9 +6,10 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  dashboardSlug?: string;
 }
 
-const { title, description, image = "https://37design.co.jp/images/ogp.png" } = Astro.props;
+const { title, description, image = "https://37design.co.jp/images/ogp.png", dashboardSlug } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -39,16 +40,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" href="/favicon.png" type="image/png" />
     <title>{title}</title>
 
-    <!-- GA4 - deferred for performance -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3NZGR1VGR8');
-      (function(){var s=document.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-3NZGR1VGR8';s.async=true;
-      if('requestIdleCallback' in window){requestIdleCallback(function(){document.head.appendChild(s)},{timeout:3000})}
-      else{setTimeout(function(){document.head.appendChild(s)},2000)}})();
-    </script>
+    <!-- LP Dashboard: GA4 + Clarity + 計測タグ一括配信 -->
+    {dashboardSlug && <script src={`https://dashboard.37d.jp/api/tag/${dashboardSlug}`} defer></script>}
 
     <!-- JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -69,13 +62,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
       }
     })} />
-    <!-- Clarity - deferred for performance -->
-    <script type="text/javascript" is:inline>
+    <!-- Clarity/GA4はLP DashboardのdashboardSlugが指定されていればtag.jsから配信 -->
+    {!dashboardSlug && <script type="text/javascript" is:inline>{`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NZGR1VGR8');
+      (function(){var s=document.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-3NZGR1VGR8';s.async=true;document.head.appendChild(s)})();
       window.clarity=window.clarity||function(){(window.clarity.q=window.clarity.q||[]).push(arguments)};
-      (function(){function loadClarity(){var t=document.createElement('script');t.async=1;t.src='https://www.clarity.ms/tag/voqlg18k81';document.head.appendChild(t)}
-      if('requestIdleCallback' in window){requestIdleCallback(loadClarity,{timeout:4000})}
-      else{setTimeout(loadClarity,3000)}})();
-    </script>
+      (function(){var t=document.createElement('script');t.async=1;t.src='https://www.clarity.ms/tag/voqlg18k81';document.head.appendChild(t)})();
+    `}</script>}
   </head>
   <body class="bg-surface text-text-body font-sans antialiased overflow-x-hidden">
     <slot />
