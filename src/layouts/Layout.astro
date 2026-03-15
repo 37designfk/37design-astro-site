@@ -39,7 +39,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:creator" content="@37designfk" />
     <meta name="twitter:site" content="@37designfk" />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="preconnect" href="https://plausible.37d.jp" crossorigin />
     <title>{title}</title>
     <!-- Google Analytics (GA4) - deferred for performance -->
     <script is:inline>
@@ -128,21 +127,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <body class="bg-surface text-text-body font-sans antialiased overflow-x-hidden">
     <slot />
     <script>
-      import { init } from "@plausible-analytics/tracker";
-
-      // Defer Plausible to avoid connection error affecting Lighthouse score
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => init({
-          domain: "37design.co.jp",
-          endpoint: "https://plausible.37d.jp/api/event",
-        }), { timeout: 4000 });
-      } else {
-        setTimeout(() => init({
-          domain: "37design.co.jp",
-          endpoint: "https://plausible.37d.jp/api/event",
-        }), 3000);
-      }
-
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
