@@ -86,10 +86,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script>
       import { init } from "@plausible-analytics/tracker";
 
-      init({
-        domain: "37design.co.jp",
-        endpoint: "https://plausible.37d.jp/api/event",
-      });
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => init({
+          domain: "37design.co.jp",
+          endpoint: "https://plausible.37d.jp/api/event",
+        }), { timeout: 4000 });
+      } else {
+        setTimeout(() => init({
+          domain: "37design.co.jp",
+          endpoint: "https://plausible.37d.jp/api/event",
+        }), 3000);
+      }
 
       const observer = new IntersectionObserver(
         (entries) => {
