@@ -162,6 +162,6 @@ UiPathやWinActorなどのRPAツールは、特に既存のシステムを活か
 
 ### 関連記事
 
-- [AIを活用したマーケティング自動化の最前線](/blog/ai-marketing-automation)
-- [中小企業のDX推進ガイド｜失敗しない進め方](/blog/dx-guide-for-sme)
-- [n8nで始めるワークフロー自動化入門](/blog/n8n-workflow-automation)
+- [AIを活用したマーケティング自動化の最前線](/blog/ai-marketing-strategy-for-sme)
+- [中小企業のDX推進ガイド｜失敗しない進め方](/blog/dx-promotion-guide)
+- [n8nで始めるワークフロー自動化入門](/blog/sme-ai-agent-automation-2026)

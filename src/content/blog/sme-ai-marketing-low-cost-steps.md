@@ -225,6 +225,6 @@ BtoC・EC系の中小企業であれば、**Google P-MAX + Meta Advantage+** の
 ---
 
 **関連記事**
-- [AIを使ったコンテンツマーケティングの始め方](/blog/ai-content-marketing-start)
-- [中小企業のSEO対策：費用をかけずに検索順位を上げる方法](/blog/sme-seo-low-cost)
-- [n8nで実現するマーケティング自動化の全体像](/blog/n8n-marketing-automation)
+- [AIを使ったコンテンツマーケティングの始め方](/blog/ai-marketing-strategy-for-sme)
+- [中小企業のSEO対策：費用をかけずに検索順位を上げる方法](/blog/sme-ai-website-seo-automation-2026)
+- [n8nで実現するマーケティング自動化の全体像](/blog/sme-ai-agent-automation-2026)

@@ -226,5 +226,5 @@ AI顧問とコンサルタントの違いをまとめると、次のようにな
 
 **関連記事**
 - [AI顧問サービスとは？中小企業向けに導入チェックリストで解説](/blog/ai-advisor-sme-introduction-checklist)
-- [マーケティング自動化で売上を伸ばす5つのステップ](/blog/marketing-automation-5-steps)
-- [SEOコンテンツをAIで量産する方法｜37Design流の実践ガイド](/blog/seo-content-ai-production-guide)
+- [マーケティング自動化で売上を伸ばす5つのステップ](/blog/ai-marketing-strategy-for-sme)
+- [SEOコンテンツをAIで量産する方法｜37Design流の実践ガイド](/blog/sme-ai-website-seo-automation-2026)

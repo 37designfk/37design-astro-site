@@ -169,5 +169,5 @@ AIセールスは、人手不足・属人化・フォローアップ漏れとい
 
 > **関連記事**
 > - [AI顧問とは？中小企業がAI活用で成果を出すための伴走支援](/blog/ai-advisor-for-sme)
-> - [マーケティングオートメーションで顧客獲得を仕組み化する方法](/blog/marketing-automation-guide)
-> - [中小企業のDX推進｜AI導入で業務効率化を実現する手順](/blog/dx-ai-introduction-sme)
+> - [マーケティングオートメーションで顧客獲得を仕組み化する方法](/blog/ai-marketing-strategy-for-sme)
+> - [中小企業のDX推進｜AI導入で業務効率化を実現する手順](/blog/dx-promotion-guide)

@@ -219,6 +219,6 @@ AI顧問の活用は、中小企業にとって大きなレバレッジになり
 ---
 
 関連記事
-- [AIを活用した中小企業のマーケティング自動化入門](/blog/ai-marketing-automation-sme)
-- [n8nで実現するマーケティングOSの全体設計](/blog/n8n-marketing-os-design)
-- [生成AIコンテンツ制作の品質管理チェックリスト](/blog/ai-content-quality-checklist)
+- [AIを活用した中小企業のマーケティング自動化入門](/blog/ai-marketing-strategy-for-sme)
+- [n8nで実現するマーケティングOSの全体設計](/blog/sme-ai-agent-automation-2026)
+- [生成AIコンテンツ制作の品質管理チェックリスト](/blog/sme-ai-tools-comparison-2026)
