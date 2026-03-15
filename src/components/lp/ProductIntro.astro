@@ -25,6 +25,9 @@ const { title, description, features, image } = Astro.props;
               alt={title}
               class="w-full h-auto"
               loading="lazy"
+              decoding="async"
+              width="600"
+              height="400"
             />
             <div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl"></div>
           </div>
