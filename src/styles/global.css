@@ -36,7 +36,7 @@
   --color-border: #e2e6ee;
 
   /* Font */
-  --font-sans: "Noto Sans JP", "メイリオ", Meiryo, sans-serif;
+  --font-sans: "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "游ゴシック体", "Yu Gothic", YuGothic, "メイリオ", Meiryo, system-ui, sans-serif;
 }
 
 /* ========================================

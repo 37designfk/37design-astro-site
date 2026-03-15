@@ -46,14 +46,17 @@ import ParticleCanvas from "../components/ParticleCanvas.astro";
           <!-- Photo -->
           <div class="lg:w-80 shrink-0">
             <div class="aspect-[3/4] rounded-2xl overflow-hidden border-4 border-white shadow-xl">
-              <img
-                src="/images/ceo-photo.jpg"
-                alt="代表取締役 古田 健"
-                class="w-full h-full object-cover"
-                decoding="async"
-                width="1240"
-                height="1656"
-              />
+              <picture>
+                <source srcset="/images/ceo-photo.webp" type="image/webp" />
+                <img
+                  src="/images/ceo-photo.jpg"
+                  alt="代表取締役 古田 健"
+                  class="w-full h-full object-cover"
+                  decoding="async"
+                  width="620"
+                  height="828"
+                />
+              </picture>
             </div>
             <div class="text-center mt-6">
               <p class="text-xl font-bold text-text-primary mb-1">古田 健</p>
@@ -120,14 +123,17 @@ import ParticleCanvas from "../components/ParticleCanvas.astro";
                 <p class="text-sm text-text-secondary mb-1">株式会社37Design</p>
                 <p class="text-base font-bold text-text-primary">代表取締役</p>
               </div>
-              <img
-                src="/images/ceo-signature.png"
-                alt="代表取締役 古田 健 サイン"
-                class="h-12 w-auto"
-                decoding="async"
-                width="1366"
-                height="328"
-              />
+              <picture>
+                <source srcset="/images/ceo-signature-sm.webp" type="image/webp" />
+                <img
+                  src="/images/ceo-signature.png"
+                  alt="代表取締役 古田 健 サイン"
+                  class="h-12 w-auto"
+                  decoding="async"
+                  width="400"
+                  height="97"
+                />
+              </picture>
             </div>
           </div>
         </div>
