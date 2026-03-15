@@ -1,0 +1,130 @@
+backend:
+  name: github
+  repo: 37designfk/37design-astro-site
+  branch: main
+  base_url: https://37design.co.jp
+  auth_endpoint: /oauth/auth
+
+locale: ja
+
+media_folder: public/images
+public_folder: /images
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: blog
+    label: "ブログ記事"
+    label_singular: "記事"
+    folder: src/content/blog
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    format: yaml-frontmatter
+    sortable_fields: ["publishDate", "title", "category"]
+    view_filters:
+      - label: "AI"
+        field: category
+        pattern: "AI"
+      - label: "業務自動化"
+        field: category
+        pattern: "業務自動化"
+      - label: "マーケティング"
+        field: category
+        pattern: "マーケティング"
+    summary: "{{title}} [{{category}}] - {{publishDate}}"
+
+    fields:
+      - label: "タイトル"
+        name: title
+        widget: string
+        required: true
+
+      - label: "説明（meta description）"
+        name: description
+        widget: text
+        required: true
+        pattern: ['.{120,160}', '120〜160文字で入力してください']
+
+      - label: "公開日"
+        name: publishDate
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        required: true
+
+      - label: "著者"
+        name: author
+        widget: string
+        default: "古田 健"
+
+      - label: "カテゴリ"
+        name: category
+        widget: select
+        options:
+          - { label: "AI", value: "AI" }
+          - { label: "業務自動化", value: "業務自動化" }
+          - { label: "マーケティング", value: "マーケティング" }
+          - { label: "CRM", value: "CRM" }
+          - { label: "SEO", value: "SEO" }
+          - { label: "LP制作", value: "LP制作" }
+          - { label: "お知らせ", value: "お知らせ" }
+        required: true
+
+      - label: "タグ"
+        name: tags
+        widget: list
+        required: false
+        field: { label: "タグ", name: tag, widget: string }
+
+      - label: "アイキャッチ画像"
+        name: image
+        widget: image
+        required: false
+
+      - label: "狙うキーワード"
+        name: targetKeyword
+        widget: string
+        required: false
+
+      - label: "関連記事（スラッグ）"
+        name: relatedArticles
+        widget: list
+        required: false
+        field: { label: "スラッグ", name: slug, widget: string }
+
+      - label: "ターゲットLP"
+        name: targetLP
+        widget: string
+        required: false
+
+      - label: "構造化データ"
+        name: structuredDataType
+        widget: select
+        default: "Article"
+        options:
+          - { label: "記事", value: "Article" }
+          - { label: "ハウツー", value: "HowTo" }
+          - { label: "FAQ", value: "FAQPage" }
+
+      - label: "最終更新日"
+        name: lastModified
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        required: false
+
+      - label: "noindex"
+        name: noIndex
+        widget: boolean
+        default: false
+        required: false
+
+      - label: "本文"
+        name: body
+        widget: markdown
+        required: true
