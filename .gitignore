@@ -30,3 +30,18 @@ deploy.log
 
 # Claude Code internal files
 .claude/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Debug screenshots
+*.png
+!public/**/*.png
+!src/**/*.png
+
+# Daily Loop intermediate files
+.daily-loop-tasks.json
+.daily-loop-gen-result.json
+
+# PHP (Xserver legacy)
+public/api/
