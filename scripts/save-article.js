@@ -36,6 +36,20 @@ process.stdin.on('end', () => {
     process.exit(1);
   }
 
+  // Claude Code --output-format json のラッパー {"result":"...","subtype":"success"} をアンラップ
+  if (article.result && !article.body && typeof article.result === 'string') {
+    try {
+      const inner = JSON.parse(article.result);
+      if (inner.title || inner.body) article = inner;
+    } catch {
+      // resultが文字列だがJSONでない場合、中からJSONを抽出
+      const m = article.result.match(/\{[\s\S]*\}/);
+      if (m) {
+        try { const p = JSON.parse(m[0]); if (p.title || p.body) article = p; } catch {}
+      }
+    }
+  }
+
   const { title, description, category, targetKeyword, body } = article;
   const slug = article.slug || 'untitled-' + Date.now();
   const tags = Array.isArray(article.tags) ? article.tags : [];
