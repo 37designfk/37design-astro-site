@@ -366,6 +366,32 @@ import LPLayout from '../../layouts/LPLayout.astro';
       </div>
     </section>
 
+    <!-- note有料版CTA -->
+    <div class="mt-16 mb-10 print:hidden">
+      <div class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#0a0f1e] to-[#1a2340] p-8 md:p-10 text-center">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(245,208,32,0.08),transparent_60%)]"></div>
+        <div class="relative">
+          <p class="text-xs font-bold text-[#f5d020] tracking-widest uppercase mb-3">Premium Content</p>
+          <h2 class="text-xl md:text-2xl font-black text-white mb-3">
+            さらに実践的なプロンプトを<br class="sm:hidden" />noteで公開中
+          </h2>
+          <p class="text-sm text-gray-300 max-w-lg mx-auto mb-6 leading-relaxed">
+            この50選をベースに、業種特化の応用パターンや実際の出力例つきの詳細解説版をnoteで公開しています。現場で「そのまま使える」レベルまで磨き込んだプロンプトをぜひご活用ください。
+          </p>
+          <a
+            href="https://note.com/37desing/n/ncfe694feb8ce"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#f5d020] hover:bg-[#e6c31c] text-[#0a0f1e] font-bold text-sm transition-colors duration-200 shadow-lg shadow-[#f5d020]/20"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 3v2H2v14h14v-2h2V5h2V3H14zM4 17V7h10v10H4zm16-12v14H8v2h14V5h-2z"/></svg>
+            noteで有料版を見る
+          </a>
+          <p class="mt-4 text-xs text-gray-500">note.com/37desing</p>
+        </div>
+      </div>
+    </div>
+
     <!-- フッター -->
     <div class="mt-16 pt-8 border-t border-gray-200 text-center print:mt-8">
       <p class="text-sm font-bold text-text-primary mb-2">株式会社37Design</p>
