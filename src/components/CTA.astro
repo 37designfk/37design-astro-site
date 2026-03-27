@@ -1,5 +1,14 @@
 ---
 import { newsItems } from "../data/news";
+
+const worries = [
+  "Webサイトはあるが、問い合わせがほとんど来ない",
+  "AIが話題だけど、自社でどう使えるか分からない",
+  "SNSやブログを始めたいが、何を発信すべきか迷う",
+  "社員の業務が属人化していて、引き継ぎに困る",
+  "広告を出しているが、費用対効果が見えない",
+  "ITツールが多すぎて、どれを選べばいいか分からない",
+];
 ---
 
 <!-- News Section -->
@@ -20,14 +29,32 @@ import { newsItems } from "../data/news";
   </div>
 </section>
 
-<!-- CTA Section -->
-<section id="contact" class="py-16 md:py-20 lg:py-24 bg-primary-800 relative overflow-hidden">
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-glow/5 rounded-full blur-[120px]"></div>
-    <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent-400/5 rounded-full blur-[100px]"></div>
+<!-- こんなお悩みありませんか？ -->
+<section class="py-12 md:py-16 bg-white">
+  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="text-center mb-8 animate-on-scroll">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary">
+        こんなお悩み、<span class="marker-highlight">ひとつでも</span>当てはまりませんか？
+      </h2>
+      <p class="text-sm text-text-secondary mt-2">1つでも当てはまれば、無料面談でお力になれます。</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-on-scroll">
+      {worries.map((w) => (
+        <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-alt border border-border">
+          <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <p class="text-sm text-text-body">{w}</p>
+        </div>
+      ))}
+    </div>
   </div>
+</section>
 
-  <div class="relative max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+<!-- CTA Section -->
+<section id="contact" class="py-16 md:py-20 lg:py-24 bg-primary-800 overflow-hidden">
+
+  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
     <div class="animate-on-scroll">
       <p class="text-accent-400 text-sm font-semibold tracking-[.2em] uppercase mb-3">Contact</p>
       <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
@@ -41,14 +68,32 @@ import { newsItems } from "../data/news";
         href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-3 px-10 py-5 bg-accent-400 text-primary-950 font-black rounded-full hover:bg-accent-300 transition-all text-lg shadow-[0_0_40px_rgba(245,208,32,0.25)] hover:shadow-[0_0_60px_rgba(245,208,32,0.35)]"
+        class="inline-flex items-center gap-3 px-10 py-5 bg-accent-400 text-primary-950 font-black rounded-full hover:bg-accent-300 transition-colors text-lg shadow-lg"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
         </svg>
         無料面談を予約する
       </a>
-      <p class="text-white/40 text-xs mt-3">カレンダーから日時を選ぶだけ・しつこい営業なし</p>
+
+      <!-- 予約フローの説明 -->
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/40 text-xs">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          カレンダーから日時を選ぶだけ
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          しつこい営業なし
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          面談だけでもOK
+        </span>
+      </div>
+      <p class="text-white/30 text-[11px] mt-2">
+        ※ 予約画面は弊社の予約管理システム（cal.37d.jp）に遷移します
+      </p>
     </div>
 
     <!-- Sub channels -->
