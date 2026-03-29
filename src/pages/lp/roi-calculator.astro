@@ -144,6 +144,29 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="py-14 md:py-20 bg-surface-alt">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">よくある質問</h2>
+      <div class="space-y-4">
+        {[
+          { q: "シミュレーション結果はどれくらい正確ですか？", a: "業種別の平均的なAI代替率をもとに算出しています。実際の削減効果は業務内容や導入するツールにより変動しますが、目安として十分参考になる数値です。" },
+          { q: "AI導入にはどれくらいの費用がかかりますか？", a: "ChatGPT等の月額ツール費用（1人あたり月2,000〜3,000円程度）が主なコストです。高額なシステム開発は不要で、既存の業務フローにAIツールを組み込む形が一般的です。" },
+          { q: "ITに詳しくない社員でもAIツールは使えますか？", a: "はい。最近のAIツールは直感的に使えるものが多く、特別なITスキルは不要です。導入初期のサポートも当社で行います。" },
+          { q: "結果を見たら営業されませんか？", a: "営業電話やしつこいメールは一切行いません。レポートのメール1通のみお届けします。" },
+        ].map((item) => (
+          <details class="bg-white rounded-xl border border-gray-200 group">
+            <summary class="cursor-pointer px-6 py-4 text-sm font-bold text-text-primary flex items-center justify-between">
+              {item.q}
+              <svg class="w-4 h-4 text-text-secondary transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+            </summary>
+            <div class="px-6 pb-4 text-sm text-text-secondary leading-relaxed">{item.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- シミュレーター本体 -->
   <section id="start-simulator" class="py-16 md:py-24 bg-white scroll-mt-4">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -348,43 +371,30 @@ import ParticleCanvas from '../../components/ParticleCanvas.astro';
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="py-14 md:py-20 bg-surface-alt">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-xl md:text-2xl font-bold text-text-primary text-center mb-10">よくある質問</h2>
-      <div class="space-y-4">
-        {[
-          { q: "シミュレーション結果はどれくらい正確ですか？", a: "業種別の平均的なAI代替率をもとに算出しています。実際の削減効果は業務内容や導入するツールにより変動しますが、目安として十分参考になる数値です。" },
-          { q: "AI導入にはどれくらいの費用がかかりますか？", a: "ChatGPT等の月額ツール費用（1人あたり月2,000〜3,000円程度）が主なコストです。高額なシステム開発は不要で、既存の業務フローにAIツールを組み込む形が一般的です。" },
-          { q: "ITに詳しくない社員でもAIツールは使えますか？", a: "はい。最近のAIツールは直感的に使えるものが多く、特別なITスキルは不要です。導入初期のサポートも当社で行います。" },
-          { q: "結果を見たら営業されませんか？", a: "営業電話やしつこいメールは一切行いません。レポートのメール1通のみお届けします。" },
-        ].map((item) => (
-          <details class="bg-white rounded-xl border border-gray-200 group">
-            <summary class="cursor-pointer px-6 py-4 text-sm font-bold text-text-primary flex items-center justify-between">
-              {item.q}
-              <svg class="w-4 h-4 text-text-secondary transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
-            </summary>
-            <div class="px-6 pb-4 text-sm text-text-secondary leading-relaxed">{item.a}</div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- 最終CTA -->
   <section class="py-14 md:py-20 bg-primary-950">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
-        ムダな時間を<span class="text-accent-400">お金に換算</span>してみませんか？
+        まずは<span class="text-accent-400">無料面談</span>で相談してみませんか？
       </h2>
-      <p class="text-primary-200 text-sm mb-4">約1分のシミュレーションで、AI導入の費用対効果が見えてきます。</p>
+      <p class="text-primary-200 text-sm mb-4">30分のオンライン面談で、御社に合ったAI活用の具体的な進め方をご提案します。</p>
       <p class="text-accent-400/80 text-xs font-bold mb-6">面談ご予約で「AI導入ロードマップ」「ChatGPTプロンプト集50選」「補助金ガイド」を無料プレゼント</p>
-      <a href="#start-simulator" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
+      <a href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 lp-cta-button px-10 py-5 rounded-full font-black text-lg hover:scale-[1.03] transition-all">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
         </svg>
-        無料でシミュレーションする
+        特典つき無料面談を予約する
       </a>
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-white/40 text-xs mt-4">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          30分・オンライン完結
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          しつこい営業なし
+        </span>
+      </div>
     </div>
   </section>
 
