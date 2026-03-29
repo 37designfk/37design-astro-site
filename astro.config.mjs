@@ -8,7 +8,11 @@ export default defineConfig({
   site: 'https://37design.co.jp',
   trailingSlash: 'always',
   integrations: [sitemap()],
+  compressHTML: true,
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      cssMinify: 'lightningcss',
+    },
   },
 });

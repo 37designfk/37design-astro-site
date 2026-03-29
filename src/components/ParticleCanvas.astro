@@ -1,13 +1,11 @@
 ---
-// Canvas-based starfield (warp) particle system for hero sections
-// Features: 3D→2D perspective projection, trails, mouse-driven vanishing point, glow effects
+// Lightweight canvas starfield for hero sections
 ---
 
 <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-[1]" aria-hidden="true"></canvas>
 
 <script is:inline>
 (function() {
-  // Defer particle init until browser is idle (improves FCP/LCP)
   var startFn = function() {
   var canvas = document.getElementById('particle-canvas');
   if (!canvas) return;
@@ -15,28 +13,18 @@
 
   var width, height, dpr;
   var particles = [];
-  var vanishingPoint = { x: 0, y: 0 };
-  var targetVP = { x: 0, y: 0 };
-  var mouseActive = false;
   var animId;
   var lastTime = 0;
 
-  // Reduce particles on mobile for better performance
   var isMobile = window.innerWidth < 768;
-  var CONFIG = {
-    count: isMobile ? 60 : 180,
-    maxZ: 1000,
-    speed: 0.3,        // z-units per millisecond
-    fov: 256,
-    colors: [
-      { r: 255, g: 220, b: 64 },   // accent gold
-      { r: 255, g: 255, b: 255 },   // white
-    ]
-  };
+  var COUNT = isMobile ? 30 : 80;
+  var MAX_Z = 1000;
+  var SPEED = 0.3;
+  var FOV = 256;
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.parentElement.getBoundingClientRect();
+    var rect = canvas.parentElement.getBoundingClientRect();
     width = rect.width;
     height = rect.height;
     canvas.width = width * dpr;
@@ -44,178 +32,81 @@
     canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (!mouseActive) {
-      vanishingPoint.x = width / 2;
-      vanishingPoint.y = height / 2;
-      targetVP.x = width / 2;
-      targetVP.y = height / 2;
-    }
   }
 
-  function resetParticle(p) {
-    const spread = Math.max(width, height);
-    p.x = (Math.random() - 0.5) * spread;
-    p.y = (Math.random() - 0.5) * spread;
-    p.z = CONFIG.maxZ + Math.random() * 200;
-    p.prevSx = null;
-    p.prevSy = null;
-  }
-
-  function createParticle() {
-    const spread = Math.max(width, height);
-    const p = {
+  function createParticle(randomZ) {
+    var spread = Math.max(width, height);
+    return {
       x: (Math.random() - 0.5) * spread,
       y: (Math.random() - 0.5) * spread,
-      z: Math.random() * CONFIG.maxZ + 1,
-      prevSx: null,
-      prevSy: null,
-      color: CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)],
+      z: randomZ ? Math.random() * MAX_Z + 1 : MAX_Z + Math.random() * 200,
+      a: Math.random() > 0.7 ? 'rgba(255,220,64,' : 'rgba(255,255,255,'
     };
-    return p;
   }
 
   function init() {
     resize();
     particles = [];
-    for (let i = 0; i < CONFIG.count; i++) {
-      particles.push(createParticle());
-    }
+    for (var i = 0; i < COUNT; i++) particles.push(createParticle(true));
   }
 
   function animate(time) {
-    const dt = lastTime ? Math.min(time - lastTime, 50) : 16.67;
+    var dt = lastTime ? Math.min(time - lastTime, 50) : 16.67;
     lastTime = time;
-
-    // Smooth vanishing point interpolation
-    vanishingPoint.x += (targetVP.x - vanishingPoint.x) * 0.08;
-    vanishingPoint.y += (targetVP.y - vanishingPoint.y) * 0.08;
-
-    const cx = vanishingPoint.x;
-    const cy = vanishingPoint.y;
-    const zStep = CONFIG.speed * dt;
+    var zStep = SPEED * dt;
+    var cx = width / 2;
+    var cy = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
-    for (const p of particles) {
-      // Project current position to screen
-      const k = CONFIG.fov / p.z;
-      const sx = cx + p.x * k;
-      const sy = cy + p.y * k;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var k = FOV / p.z;
+      var sx = cx + p.x * k;
+      var sy = cy + p.y * k;
+      var proximity = 1 - p.z / MAX_Z;
+      var size = Math.max(0.3, proximity * 2.5);
+      var alpha = Math.min(1, Math.max(0.05, proximity * 1.2));
 
-      // How close is this star (0=far, 1=near)
-      const proximity = 1 - p.z / CONFIG.maxZ;
-      const size = Math.max(0.3, proximity * 3);
-      const alpha = Math.min(1, Math.max(0.05, proximity * 1.5));
-
-      // Draw trail from previous frame position
-      if (p.prevSx !== null) {
-        const tdx = sx - p.prevSx;
-        const tdy = sy - p.prevSy;
-        const trailLen = Math.sqrt(tdx * tdx + tdy * tdy);
-
-        if (trailLen > 0.5) {
-          const grad = ctx.createLinearGradient(p.prevSx, p.prevSy, sx, sy);
-          grad.addColorStop(0, 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',0)');
-          grad.addColorStop(1, 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (alpha * 0.7) + ')');
-          ctx.beginPath();
-          ctx.moveTo(p.prevSx, p.prevSy);
-          ctx.lineTo(sx, sy);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = Math.max(0.3, size * 0.7);
-          ctx.stroke();
-        }
-      }
-
-      // Draw glow for close particles
-      if (size > 1) {
-        const glowRadius = size * 5;
-        const gradient = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowRadius);
-        gradient.addColorStop(0, 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (alpha * 0.35) + ')');
-        gradient.addColorStop(0.4, 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (alpha * 0.1) + ')');
-        gradient.addColorStop(1, 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',0)');
-        ctx.beginPath();
-        ctx.arc(sx, sy, glowRadius, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-      }
-
-      // Draw core dot
       ctx.beginPath();
-      ctx.arc(sx, sy, size, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + alpha + ')';
+      ctx.arc(sx, sy, size, 0, 6.283);
+      ctx.fillStyle = p.a + alpha + ')';
       ctx.fill();
 
-      // Store projected position for next frame trail
-      p.prevSx = sx;
-      p.prevSy = sy;
-
-      // Advance z (star flies toward camera)
       p.z -= zStep;
-
-      // Reset if past camera or way off screen
-      if (p.z <= 0.5 || sx < -100 || sx > width + 100 || sy < -100 || sy > height + 100) {
-        resetParticle(p);
+      if (p.z <= 0.5 || sx < -50 || sx > width + 50 || sy < -50 || sy > height + 50) {
+        var np = createParticle(false);
+        p.x = np.x; p.y = np.y; p.z = np.z;
       }
     }
 
     animId = requestAnimationFrame(animate);
   }
 
-  // Mouse tracking (relative to canvas parent)
-  const parent = canvas.parentElement;
-  parent.style.pointerEvents = 'auto';
-
-  parent.addEventListener('mousemove', function(e) {
-    const rect = parent.getBoundingClientRect();
-    targetVP.x = e.clientX - rect.left;
-    targetVP.y = e.clientY - rect.top;
-    mouseActive = true;
-  }, { passive: true });
-
-  parent.addEventListener('mouseleave', function() {
-    mouseActive = false;
-    targetVP.x = width / 2;
-    targetVP.y = height / 2;
-  }, { passive: true });
-
-  // Touch support — disabled to prevent double-scroll feel on mobile
-  // Mouse-only tracking avoids interference with native scroll
-
-  // Resize handler
   var resizeTimer;
   window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-      resize();
-    }, 200);
+    resizeTimer = setTimeout(resize, 200);
   }, { passive: true });
 
-  // Reduce motion preference
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    CONFIG.speed = 0.04;
-    CONFIG.count = 40;
-  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // Visibility API - pause when hidden
   document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-      cancelAnimationFrame(animId);
-      lastTime = 0;
-    } else {
-      lastTime = 0;
-      animId = requestAnimationFrame(animate);
-    }
+    if (document.hidden) { cancelAnimationFrame(animId); lastTime = 0; }
+    else { lastTime = 0; animId = requestAnimationFrame(animate); }
   });
+
+  var heroObs = new IntersectionObserver(function(entries) {
+    if (!entries[0].isIntersecting) { cancelAnimationFrame(animId); lastTime = 0; }
+    else { lastTime = 0; animId = requestAnimationFrame(animate); }
+  }, { threshold: 0 });
 
   init();
   animId = requestAnimationFrame(animate);
-  }; // end startFn
+  if (canvas.parentElement) heroObs.observe(canvas.parentElement);
+  };
 
-  // Defer to idle or fallback to setTimeout
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(startFn, { timeout: 2000 });
-  } else {
-    setTimeout(startFn, 1500);
-  }
+  if ('requestIdleCallback' in window) requestIdleCallback(startFn, { timeout: 2000 });
+  else setTimeout(startFn, 1500);
 })();
 </script>

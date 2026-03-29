@@ -39,17 +39,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:creator" content="@37designfk" />
     <meta name="twitter:site" content="@37designfk" />
     <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="//www.clarity.ms" />
     <title>{title}</title>
-    <!-- Google Analytics (GA4) - deferred for performance -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3NZGR1VGR8');
-      (function(){var s=document.createElement('script');s.src='https://www.googletagmanager.com/gtag/js?id=G-3NZGR1VGR8';s.async=true;
-      if('requestIdleCallback' in window){requestIdleCallback(function(){document.head.appendChild(s)},{timeout:3000})}
-      else{setTimeout(function(){document.head.appendChild(s)},2000)}})();
-    </script>
+    <style is:inline>
+      body{margin:0;background:#fff;font-family:"ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","游ゴシック体","Yu Gothic",YuGothic,"メイリオ",Meiryo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+      header{position:fixed;top:0;left:0;right:0;z-index:50;background:#0a0f1e;height:4rem}
+      .hero-gradient-home{background-color:#0a0f1e;background-image:radial-gradient(120% 80% at 80% 12%,rgba(59,130,246,.16),transparent 62%),radial-gradient(90% 70% at 20% 85%,rgba(255,220,64,.1),transparent 68%),linear-gradient(160deg,#0a0f1e 0%,#121c33 55%,#1a2844 100%)}
+    </style>
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -116,13 +113,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
       ]
     })} />
-    <!-- Clarity - deferred for performance -->
-    <script type="text/javascript" is:inline>
-      window.clarity=window.clarity||function(){(window.clarity.q=window.clarity.q||[]).push(arguments)};
-      (function(){function loadClarity(){var t=document.createElement('script');t.async=1;t.src='https://www.clarity.ms/tag/voqlg18k81';document.head.appendChild(t)}
-      if('requestIdleCallback' in window){requestIdleCallback(loadClarity,{timeout:4000})}
-      else{setTimeout(loadClarity,3000)}})();
-    </script>
   </head>
   <body class="bg-surface text-text-body font-sans antialiased overflow-x-hidden">
     <slot />
@@ -140,6 +130,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       );
       document.querySelectorAll(".animate-on-scroll").forEach((el) => {
         observer.observe(el);
+      });
+    </script>
+    <!-- Analytics: load after page is fully rendered -->
+    <script is:inline>
+      addEventListener('load',function(){
+        window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+        gtag('js',new Date());gtag('config','G-3NZGR1VGR8');
+        var g=document.createElement('script');g.src='https://www.googletagmanager.com/gtag/js?id=G-3NZGR1VGR8';g.async=true;document.head.appendChild(g);
+        window.clarity=window.clarity||function(){(window.clarity.q=window.clarity.q||[]).push(arguments)};
+        var c=document.createElement('script');c.async=1;c.src='https://www.clarity.ms/tag/voqlg18k81';document.head.appendChild(c);
       });
     </script>
   </body>

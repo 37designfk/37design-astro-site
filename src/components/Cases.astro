@@ -1,6 +1,4 @@
 ---
-import WaveDivider from "./WaveDivider.astro";
-
 const cases = [
   {
     industry: "不動産業",
@@ -17,7 +15,6 @@ const cases = [
     gradient: "from-violet-600 to-purple-800",
     iconBg: "bg-violet-50",
     iconColor: "text-violet-600",
-    // Building icon
     icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />`,
   },
   {
@@ -35,7 +32,6 @@ const cases = [
     gradient: "from-cyan-500 to-blue-700",
     iconBg: "bg-cyan-50",
     iconColor: "text-cyan-600",
-    // Chat bubble icon
     icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />`,
   },
   {
@@ -53,9 +49,23 @@ const cases = [
     gradient: "from-rose-500 to-pink-700",
     iconBg: "bg-rose-50",
     iconColor: "text-rose-600",
-    // Rocket / page icon
     icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />`,
   },
+];
+
+const industries = [
+  "不動産", "士業", "飲食", "医療・クリニック", "美容・サロン",
+  "建設・工務店", "製造業", "小売・EC", "人材", "コンサル",
+  "教育・スクール", "介護・福祉", "IT・SaaS", "その他サービス業",
+];
+
+const industryStats = [
+  { label: "サービス業", count: "18社" },
+  { label: "不動産・建設", count: "9社" },
+  { label: "士業・コンサル", count: "8社" },
+  { label: "医療・美容", count: "7社" },
+  { label: "小売・EC・製造", count: "5社" },
+  { label: "その他", count: "3社+" },
 ];
 ---
 
@@ -66,6 +76,9 @@ const cases = [
       <h2 class="text-2xl md:text-3xl font-bold text-white">
         導入事例<span class="marker-highlight"> ── こう変わりました</span>
       </h2>
+      <p class="text-white/40 text-sm mt-3">
+        ※ お客様のご要望により社名はイニシャル表記としています
+      </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -123,6 +136,33 @@ const cases = [
         </div>
       ))}
     </div>
+
+    <!-- 業種別実績 -->
+    <div class="mt-12 md:mt-16 animate-on-scroll">
+      <h3 class="text-lg font-bold text-white text-center mb-6">
+        業種別の支援実績<span class="text-accent-400">（50社以上）</span>
+      </h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-4xl mx-auto">
+        {industryStats.map((s) => (
+          <div class="text-center p-3 rounded-xl bg-white/5 border border-white/10">
+            <p class="text-lg font-bold text-accent-400">{s.count}</p>
+            <p class="text-xs text-white/50 mt-0.5">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- 対応業種タグ -->
+    <div class="mt-8 animate-on-scroll">
+      <p class="text-sm text-white/40 text-center mb-3">対応している業種の一例</p>
+      <div class="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+        {industries.map((ind) => (
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/8 text-white/60 border border-white/10">
+            {ind}
+          </span>
+        ))}
+      </div>
+      <p class="text-xs text-white/30 text-center mt-3">上記以外の業種もお気軽にご相談ください</p>
+    </div>
   </div>
-  <WaveDivider color1="#f8f9fb" />
 </section>
