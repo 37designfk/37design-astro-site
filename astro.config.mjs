@@ -7,7 +7,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://37design.co.jp',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) =>
+      !page.includes('/dashboard') &&
+      !page.includes('/guide/api-keys'),
+  })],
   compressHTML: true,
   vite: {
     plugins: [tailwindcss()],

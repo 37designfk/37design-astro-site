@@ -67,14 +67,14 @@ const categoryLineColors: Record<string, string> = {
       <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
         <div class="flex flex-wrap gap-3">
           <a
-            href="/blog"
+            href="/blog/"
             class="px-4 py-2 rounded-full border-2 border-primary-600 bg-primary-600 text-white text-sm font-semibold"
           >
             すべて
           </a>
           {['AI', '業務自動化', 'マーケティング', 'CRM', 'お知らせ'].map((cat) => (
             <a
-              href={`/blog/category/${cat}`}
+              href={`/blog/category/${cat}/`}
               class={`px-4 py-2 rounded-full border border-border text-sm font-semibold text-text-secondary hover:bg-surface-alt transition-colors`}
             >
               {cat}
@@ -141,7 +141,7 @@ const categoryLineColors: Record<string, string> = {
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="/contact"
+            href="/contact/"
             class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
           >
             無料相談を申し込む

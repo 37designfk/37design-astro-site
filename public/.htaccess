@@ -1,0 +1,11 @@
+# 404エラーページ
+ErrorDocument 404 /404.html
+
+# trailing slashの強制（Astro trailingSlash: 'always' と一致させる）
+# ファイル拡張子がないURLでtrailing slashなしの場合、trailing slash付きにリダイレクト
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !/$
+RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]+$
+RewriteRule ^(.*)$ /$1/ [R=301,L]

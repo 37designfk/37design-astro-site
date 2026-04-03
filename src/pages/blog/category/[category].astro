@@ -96,7 +96,7 @@ const categoryLineColors: Record<string, string> = {
           <ol class="flex items-center gap-2 text-sm text-text-muted">
             <li><a href="/" class="hover:text-text-primary transition-colors">ホーム</a></li>
             <li>/</li>
-            <li><a href="/blog" class="hover:text-text-primary transition-colors">ブログ</a></li>
+            <li><a href="/blog/" class="hover:text-text-primary transition-colors">ブログ</a></li>
             <li>/</li>
             <li class="text-text-primary">{category}</li>
           </ol>
@@ -105,14 +105,14 @@ const categoryLineColors: Record<string, string> = {
         <!-- Category Filter -->
         <div class="flex flex-wrap gap-3">
           <a
-            href="/blog"
+            href="/blog/"
             class="px-4 py-2 rounded-full border border-border text-sm font-semibold text-text-secondary hover:bg-surface-alt transition-colors"
           >
             すべて
           </a>
           {['AI', '業務自動化', 'マーケティング', 'CRM', 'お知らせ'].map((cat) => (
             <a
-              href={`/blog/category/${cat}`}
+              href={`/blog/category/${cat}/`}
               class={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
                 cat === category
                   ? categoryColors[cat] + ' border'
@@ -168,7 +168,7 @@ const categoryLineColors: Record<string, string> = {
           <div class="text-center py-16">
             <p class="text-text-secondary text-lg mb-4">このカテゴリの記事はまだありません</p>
             <a
-              href="/blog"
+              href="/blog/"
               class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-700 transition-colors text-sm"
             >
               すべての記事を見る
@@ -195,7 +195,7 @@ const categoryLineColors: Record<string, string> = {
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="/contact"
+            href="/contact/"
             class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base"
           >
             無料相談を申し込む

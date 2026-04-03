@@ -3,12 +3,14 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
 }
 
 const {
   title = "株式会社37Design | あなたの会社を1週間でAI企業へ",
   description = "業務自動化・AI導入支援・営業管理最適化。属人化した業務をAIとテクノロジーで解決する、神戸のDXパートナー 株式会社37Design。",
   image = "https://37design.co.jp/images/ogp.png",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -22,6 +24,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="theme-color" content="#0a0f1e" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
