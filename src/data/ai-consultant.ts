@@ -65,7 +65,7 @@ export const caseStudies: CaseStudy[] = [
       { label: "文書作成時間", value: "60%削減", width: "60%" },
       { label: "月間余裕時間", value: "+15時間", width: "70%" },
     ],
-    quote: "「AIに詳しくない私でも、月2回の相談で着実にAI活用が進んだ」",
+    quote: "「AIに詳しくない私でも、月1回の相談で着実にAI活用が進んだ」",
     quoteAuthor: "士業事務所 所長様",
     planBadge: "ライトプラン導入",
   },
