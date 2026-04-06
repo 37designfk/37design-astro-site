@@ -5,17 +5,6 @@ publishDate: 2026-03-25
 author: "古田 健"
 category: "業務自動化"
 tags: ["AI契約書", "契約書自動化", "中小企業", "業務自動化", "DX推進", "リーガルテック"]
-targetKeyword: "中小企業 AI 契約書 自動化"
-structuredDataType: "Article"
----
-
----
-title: "中小企業のAI契約書自動化完全ガイド【2026年版】作成・チェック・管理を効率化"
-description: "中小企業がAIで契約書作成・リーガルチェック・管理を自動化する方法を解説。おすすめツール・導入コスト・実践ステップを37Design代表が紹介。法務コストを削減しながら契約リスクを低減するAI活用術。"
-publishDate: 2026-03-25
-author: "古田 健"
-category: "業務自動化"
-tags: ["AI契約書", "契約書自動化", "中小企業", "業務自動化", "DX推進", "リーガルテック"]
 image: "/images/blog/sme-ai-contract-automation-2026/hero.jpg"
 targetKeyword: "中小企業 AI 契約書 自動化"
 relatedArticles: ["sme-ai-document-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-workflow-automation-no-code-2026"]
