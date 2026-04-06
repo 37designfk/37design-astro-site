@@ -1,6 +1,91 @@
 ---
-import FAQSection from "./common/FAQSection.astro";
 import { faqGeneral as faqs } from "../data/faq-general";
 ---
 
-<FAQSection faqs={faqs} sectionId="faq" animate={true} />
+<section id="faq" class="faq-section">
+  <div class="faq-inner">
+    <p class="sec-tag">FAQ</p>
+    <h2 class="faq-title">よくあるご質問</h2>
+
+    <div class="faq-list">
+      {faqs.map((faq) => (
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span class="faq-q-label">Q</span>
+            <span class="faq-q-text">{faq.q}</span>
+            <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+          </summary>
+          <div class="faq-answer">
+            <span class="faq-a-label">A</span>
+            <p class="faq-a-text">{faq.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec-tag {
+    font-size: 10px; color: #cc8800; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .faq-section {
+    padding: 6rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .faq-inner { max-width: 720px; margin: 0 auto; }
+  .faq-title {
+    font-size: 24px; font-weight: 900; font-style: italic;
+    color: #111; margin-bottom: 3rem;
+  }
+  .faq-list {
+    display: flex; flex-direction: column;
+    gap: 1px; background: #e8e8e8;
+  }
+  .faq-item {
+    background: #fff;
+  }
+  .faq-question {
+    display: flex; align-items: center; gap: 12px;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer; list-style: none;
+    transition: background 0.2s;
+  }
+  .faq-question:hover { background: #fafafa; }
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-q-label {
+    width: 24px; height: 24px;
+    background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .faq-q-text {
+    flex: 1;
+    font-size: 14px; font-weight: 600; color: #111;
+  }
+  .faq-chevron {
+    flex-shrink: 0; color: rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+  details[open] .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer {
+    display: flex; gap: 12px;
+    padding: 0 1.5rem 1.25rem;
+    padding-left: calc(1.5rem + 36px);
+  }
+  .faq-a-label {
+    width: 24px; height: 24px;
+    background: #cc8800; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .faq-a-text {
+    font-size: 13px; color: rgba(0,0,0,0.6);
+    line-height: 1.9;
+  }
+</style>

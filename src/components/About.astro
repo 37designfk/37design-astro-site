@@ -1,178 +1,123 @@
 ---
-const values = [
-  { title: "Mission", text: "テクノロジーの力で、すべての企業にDXを。" },
-  { title: "Vision", text: "AI活用が当たり前の社会をつくる。" },
-  { title: "Value", text: "スピード・成果・伴走。" },
-];
 ---
 
-<section id="about" class="py-16 md:py-20 lg:py-24 bg-white">
-  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
-      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">About</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">会社概要</h2>
-    </div>
+<section id="about" class="about-section">
+  <div class="about-inner">
+    <p class="sec-tag">ABOUT</p>
+    <h2 class="about-title">会社概要</h2>
 
-    <!-- Representative Section -->
-    <div class="animate-on-scroll mb-16">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-        <!-- CEO Photo -->
-        <div class="md:col-span-1">
-          <div class="relative">
-            <!-- Accent background shape -->
-            <div class="absolute -top-3 -left-3 w-full h-full rounded-2xl bg-accent-400/20"></div>
-            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
-              <picture>
-                <source srcset="/images/ceo-photo.webp" type="image/webp" />
-                <img
-                  src="/images/ceo-photo.jpg"
-                  alt="株式会社37Design 代表取締役 古田 健"
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  width="620"
-                  height="828"
-                />
-              </picture>
-            </div>
-          </div>
-          <div class="mt-5 text-center">
-            <p class="text-xs text-text-muted tracking-wider uppercase mb-1">代表取締役</p>
-            <p class="text-lg font-bold text-text-primary">古田 健</p>
-          </div>
+    <div class="about-grid">
+      <div class="about-photo">
+        <picture>
+          <source srcset="/images/ceo-photo.webp" type="image/webp" />
+          <img
+            src="/images/ceo-photo.jpg"
+            alt="株式会社37Design 代表取締役 古田 健"
+            class="ceo-img"
+            loading="lazy"
+            decoding="async"
+            width="620"
+            height="828"
+          />
+        </picture>
+        <div class="photo-caption">
+          <p class="caption-role">代表取締役</p>
+          <p class="caption-name">古田 健</p>
         </div>
+      </div>
 
-        <!-- Message -->
-        <div class="md:col-span-2">
-          <h3 class="text-xl font-bold text-text-primary mb-4">
-            <span class="marker-highlight">代表挨拶</span>
-          </h3>
-          <p class="text-text-body leading-relaxed mb-4">
-            「もっとラクに、もっと賢く働ける社会を」——
-            私たちは、テクノロジーの力を最大限に活かし、中小企業のDX推進を支援しています。
-          </p>
-          <p class="text-text-body leading-relaxed mb-4">
-            AI・自動化・CRM導入を通じて、属人化した業務を仕組み化し、
-            お客様が本来の事業に集中できる環境を整えます。
-            導入して終わりではなく、<strong class="text-text-primary">成果が出るまで伴走する</strong>ことが私たちの強みです。
-          </p>
-          <p class="text-text-body leading-relaxed mb-6">
-            300サイト以上のWordPressサイト制作と運用管理実績を持ち、
-            Web制作からAI活用まで幅広く対応できるのが37Designの特徴です。
-            「何から始めればいいかわからない」という状態から一緒に走り出しましょう。
-          </p>
-
-          <!-- Credentials -->
-          <div class="flex flex-wrap gap-2">
-            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
-              AI活用アドバイザー
-            </span>
-            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
-              WordPress 300サイト以上
-            </span>
-            <span class="inline-flex items-center text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1.5 rounded-full">
-              DXコンサルティング
-            </span>
-          </div>
-        </div>
+      <div class="about-message">
+        <h3 class="message-title">代表挨拶</h3>
+        <p class="message-body">
+          「もっとラクに、もっと賢く働ける社会を」——
+          私たちは、テクノロジーの力を最大限に活かし、中小企業のDX推進を支援しています。
+        </p>
+        <p class="message-body">
+          AI・自動化・CRM導入を通じて、属人化した業務を仕組み化し、
+          お客様が本来の事業に集中できる環境を整えます。
+          導入して終わりではなく、<strong>成果が出るまで伴走する</strong>ことが私たちの強みです。
+        </p>
+        <p class="message-body">
+          300サイト以上のWordPressサイト制作と運用管理実績を持ち、
+          Web制作からAI活用まで幅広く対応できるのが37Designの特徴です。
+        </p>
       </div>
     </div>
 
-    <!-- サポート体制 -->
-    <div class="animate-on-scroll mb-16">
-      <div class="p-6 md:p-8 rounded-2xl bg-surface-alt border border-border">
-        <h3 class="text-lg font-bold text-text-primary mb-4 text-center">サポート体制</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-            </div>
-            <p class="text-sm font-bold text-text-primary mb-1">代表が直接対応</p>
-            <p class="text-xs text-text-secondary leading-relaxed">
-              面談・チャットすべて代表の古田が直接担当。下請けに丸投げしません。
-            </p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
-              </svg>
-            </div>
-            <p class="text-sm font-bold text-text-primary mb-1">AI×自動化で安定運用</p>
-            <p class="text-xs text-text-secondary leading-relaxed">
-              サイト分析・レポート生成はAIが自動化。人的ミスなく安定してサービスを提供します。
-            </p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
-              <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-              </svg>
-            </div>
-            <p class="text-sm font-bold text-text-primary mb-1">専門パートナー連携</p>
-            <p class="text-xs text-text-secondary leading-relaxed">
-              デザイン・動画・法務など、必要に応じて専門パートナーと連携し対応します。
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Company Info + MVV -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-      <!-- Company Info Table -->
-      <div class="animate-on-scroll">
-        <div class="border border-border rounded-2xl overflow-hidden">
-          <table class="w-full text-sm">
-            <tbody>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt w-28">会社名</th>
-                <td class="py-4 px-5 text-text-body">株式会社37Design</td>
-              </tr>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">所在地</th>
-                <td class="py-4 px-5 text-text-body">〒651-1223 兵庫県神戸市北区桂木2-35-C604</td>
-              </tr>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">電話番号</th>
-                <td class="py-4 px-5 text-text-body">
-                  <a href="tel:080-2412-2556" class="text-link hover:underline">080-2412-2556</a>
-                </td>
-              </tr>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">メール</th>
-                <td class="py-4 px-5 text-text-body">
-                  <a href="mailto:info@37design.co.jp" class="text-link hover:underline">info@37design.co.jp</a>
-                </td>
-              </tr>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">設立</th>
-                <td class="py-4 px-5 text-text-body">2012年6月1日</td>
-              </tr>
-              <tr class="border-b border-border">
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">事業内容</th>
-                <td class="py-4 px-5 text-text-body">Web AI顧問サービス / Webサイト改善 / AI導入支援 / マーケティング戦略</td>
-              </tr>
-              <tr>
-                <th class="py-4 px-5 text-left text-text-secondary font-medium bg-surface-alt">契約方法</th>
-                <td class="py-4 px-5 text-text-body">サービス利用契約書を締結（電子契約対応）</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Mission Vision Value -->
-      <div class="animate-on-scroll flex flex-col gap-5" style="animation-delay: 0.15s">
-        {values.map((v) => (
-          <div class="p-6 md:p-8 rounded-2xl bg-primary-950 text-white">
-            <p class="text-xs font-bold tracking-[.2em] text-accent-400 uppercase mb-2">{v.title}</p>
-            <p class="text-lg md:text-xl font-bold leading-snug">{v.text}</p>
-          </div>
-        ))}
-      </div>
+    <div class="info-table-wrap">
+      <table class="info-table">
+        <tbody>
+          <tr><th>会社名</th><td>株式会社37Design</td></tr>
+          <tr><th>所在地</th><td>〒651-1223 兵庫県神戸市北区桂木2-35-C604</td></tr>
+          <tr><th>電話番号</th><td><a href="tel:080-2412-2556">080-2412-2556</a></td></tr>
+          <tr><th>メール</th><td><a href="mailto:info@37design.co.jp">info@37design.co.jp</a></td></tr>
+          <tr><th>設立</th><td>2012年6月1日</td></tr>
+          <tr><th>事業内容</th><td>Web AI顧問サービス / Webサイト改善 / AI導入支援 / マーケティング戦略</td></tr>
+          <tr><th>契約方法</th><td>サービス利用契約書を締結（電子契約対応）</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
+
+<style>
+  .sec-tag {
+    font-size: 10px; color: #cc8800; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .about-section {
+    padding: 6rem 1.5rem; background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .about-inner { max-width: 960px; margin: 0 auto; }
+  .about-title {
+    font-size: 24px; font-weight: 900; font-style: italic;
+    color: #111; margin-bottom: 3rem;
+  }
+
+  .about-grid {
+    display: grid; grid-template-columns: 280px 1fr;
+    gap: 3rem; margin-bottom: 4rem; align-items: start;
+  }
+  .ceo-img {
+    width: 100%; height: auto; display: block;
+    aspect-ratio: 3/4; object-fit: cover;
+  }
+  .photo-caption { margin-top: 1rem; }
+  .caption-role {
+    font-size: 10px; letter-spacing: 3px; color: rgba(0,0,0,0.4);
+    text-transform: uppercase;
+  }
+  .caption-name { font-size: 16px; font-weight: 700; color: #111; margin-top: 2px; }
+
+  .message-title {
+    font-size: 18px; font-weight: 900; font-style: italic;
+    color: #111; margin-bottom: 1.5rem;
+  }
+  .message-body {
+    font-size: 14px; color: rgba(0,0,0,0.6); line-height: 2;
+    margin-bottom: 1rem;
+  }
+  .message-body strong { color: #111; }
+
+  .info-table-wrap { border: 1px solid #e8e8e8; }
+  .info-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .info-table th {
+    padding: 12px 16px; text-align: left; font-weight: 500;
+    color: rgba(0,0,0,0.5); background: #fafafa; width: 120px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .info-table td {
+    padding: 12px 16px; color: #111;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .info-table tr:last-child th,
+  .info-table tr:last-child td { border-bottom: none; }
+  .info-table a { color: #111; text-decoration: none; transition: color 0.2s; }
+  .info-table a:hover { color: #cc8800; }
+
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .ceo-img { max-width: 240px; }
+  }
+</style>

@@ -21,7 +21,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0f1e" />
+    <meta name="theme-color" content="#ffffff" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
@@ -46,9 +46,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="dns-prefetch" href="//www.clarity.ms" />
     <title>{title}</title>
     <style is:inline>
-      body{margin:0;background:#fff;font-family:"ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","游ゴシック体","Yu Gothic",YuGothic,"メイリオ",Meiryo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-      header{position:fixed;top:0;left:0;right:0;z-index:50;background:#0a0f1e;height:4rem}
-      .hero-gradient-home{background-color:#0a0f1e;background-image:radial-gradient(120% 80% at 80% 12%,rgba(59,130,246,.16),transparent 62%),radial-gradient(90% 70% at 20% 85%,rgba(255,220,64,.1),transparent 68%),linear-gradient(160deg,#0a0f1e 0%,#121c33 55%,#1a2844 100%)}
+      body{margin:0;background:#fff;color:#111;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;-webkit-font-smoothing:antialiased}
+      *{border-radius:0!important}
     </style>
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",

@@ -1,123 +1,87 @@
 ---
-import { newsItems } from "../data/news";
-
-const worries = [
-  "Webサイトはあるが、問い合わせがほとんど来ない",
-  "AIが話題だけど、自社でどう使えるか分からない",
-  "SNSやブログを始めたいが、何を発信すべきか迷う",
-  "社員の業務が属人化していて、引き継ぎに困る",
-  "広告を出しているが、費用対効果が見えない",
-  "ITツールが多すぎて、どれを選べばいいか分からない",
-];
 ---
 
-<!-- News Section -->
-<section id="news" class="py-16 md:py-20 lg:py-24 bg-surface-alt">
-  <div class="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
-    <div class="text-center mb-10 animate-on-scroll">
-      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">News</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">新着情報</h2>
-    </div>
-    <div class="animate-on-scroll">
-      {newsItems.map((item) => (
-        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 py-4 border-b border-border">
-          <time class="text-sm text-text-muted font-medium shrink-0">{item.date}</time>
-          <p class="text-text-body text-sm">{item.text}</p>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
+<section id="contact" class="cta-section">
+  <div class="cta-inner">
+    <p class="sec-tag">CONTACT</p>
+    <h2 class="cta-title">まずは無料面談から</h2>
+    <p class="cta-desc">「何から始めればいい？」でOKです。Web・AIのお悩みをお聞かせください。</p>
 
-<!-- こんなお悩みありませんか？ -->
-<section class="py-12 md:py-16 bg-white">
-  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-    <div class="text-center mb-8 animate-on-scroll">
-      <h2 class="text-xl md:text-2xl font-bold text-text-primary">
-        こんなお悩み、<span class="marker-highlight">ひとつでも</span>当てはまりませんか？
-      </h2>
-      <p class="text-sm text-text-secondary mt-2">1つでも当てはまれば、無料面談でお力になれます。</p>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-on-scroll">
-      {worries.map((w) => (
-        <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-alt border border-border">
-          <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
-          <p class="text-sm text-text-body">{w}</p>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-<!-- CTA Section -->
-<section id="contact" class="py-16 md:py-20 lg:py-24 bg-primary-800 overflow-hidden">
-
-  <div class="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-    <div class="animate-on-scroll">
-      <p class="text-accent-400 text-sm font-semibold tracking-[.2em] uppercase mb-3">Contact</p>
-      <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
-        まずは<span class="text-accent-400">無料面談</span>から
-      </h2>
-      <p class="text-white/50 text-sm md:text-base max-w-xl mx-auto mb-10">
-        「何から始めればいい？」でOKです。Web・AIのお悩みをお聞かせください。
-      </p>
-
-      <a
-        href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-3 px-10 py-5 bg-accent-400 text-primary-950 font-black rounded-full hover:bg-accent-300 transition-colors text-lg shadow-lg"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-        </svg>
-        無料面談を予約する
+    <div class="cta-actions">
+      <a href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87" target="_blank" rel="noopener noreferrer" class="btn-primary-lg">
+        <span>無料面談を予約する</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-
-      <!-- 予約フローの説明 -->
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/40 text-xs">
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          カレンダーから日時を選ぶだけ
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          しつこい営業なし
-        </span>
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          面談だけでもOK
-        </span>
-      </div>
-      <p class="text-white/30 text-[11px] mt-2">
-        ※ 予約画面は弊社の予約管理システム（cal.37d.jp）に遷移します
-      </p>
     </div>
 
-    <!-- Sub channels -->
-    <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 animate-on-scroll">
-      <a
-        href="https://jmp9xv65.autosns.app/line"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#06C755] text-white hover:bg-[#05b64d] transition-colors text-sm font-bold"
-      >
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-        </svg>
-        LINEで相談
+    <div class="cta-meta">
+      <span>カレンダーから日時を選ぶだけ</span>
+      <span>しつこい営業なし</span>
+      <span>面談だけでもOK</span>
+    </div>
+
+    <div class="cta-sub">
+      <a href="https://jmp9xv65.autosns.app/line" target="_blank" rel="noopener noreferrer" class="sub-link">
+        <svg class="line-icon" fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        <span>LINEで相談</span>
       </a>
-      <a
-        href="tel:080-2412-2556"
-        class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 text-white hover:bg-white/15 transition-colors border border-white/10 text-sm font-bold"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-        </svg>
-        080-2412-2556
+      <a href="tel:080-2412-2556" class="sub-link">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg>
+        <span>080-2412-2556</span>
       </a>
     </div>
   </div>
 </section>
+
+<style>
+  .sec-tag {
+    font-size: 10px; color: #cc8800; letter-spacing: 4px;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .cta-section {
+    padding: 6rem 1.5rem;
+    background: #111;
+    color: #fff;
+  }
+  .cta-inner {
+    max-width: 640px; margin: 0 auto; text-align: center;
+  }
+  .cta-title {
+    font-size: clamp(24px, 4vw, 36px); font-weight: 900; font-style: italic;
+    color: #fff; margin-bottom: 1rem;
+  }
+  .cta-desc {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    line-height: 1.8; margin-bottom: 3rem;
+  }
+
+  .cta-actions { margin-bottom: 1.5rem; }
+  .btn-primary-lg {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #cc8800; color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none;
+    padding: 14px 32px; transition: background 0.2s;
+  }
+  .btn-primary-lg:hover { background: #e09900; }
+
+  .cta-meta {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 1.5rem; margin-bottom: 3rem;
+    font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 1px;
+  }
+
+  .cta-sub {
+    display: flex; justify-content: center; gap: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 2rem;
+  }
+  .sub-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.5); text-decoration: none;
+    font-size: 12px; letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+  .sub-link:hover { color: #fff; }
+  .line-icon { color: #06C755; }
+</style>

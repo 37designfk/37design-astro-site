@@ -1,32 +1,16 @@
 ---
-const features = [
-  {
-    icon: "M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418",
-    title: "Webサイト改善",
-    description: "SEO対策、アクセス解析、UI/UX改善。データに基づいた施策で集客力を強化します。",
-  },
-  {
-    icon: "M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z",
-    title: "AI導入支援",
-    description: "ChatGPT・Claude・Dify・n8n等から最適なツールを選定。プロンプト設計からワークフロー自動化まで。",
-  },
-  {
-    icon: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z",
-    title: "マーケティング戦略",
-    description: "SNS運用、コンテンツ戦略、広告運用。デジタル施策全般を一緒に考え、実行します。",
-  },
-  {
-    icon: "M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155",
-    title: "定期オンライン面談",
-    description: "月1回・各30〜60分のGoogle Meet面談。課題の整理から施策の優先順位づけまで伴走します。",
-  },
+const services = [
+  { name: "WEB IMPROVEMENT", title: "Webサイト改善", models: "SEO対策 / アクセス解析 / UI/UX改善 / データ分析" },
+  { name: "AI INTEGRATION", title: "AI導入支援", models: "ChatGPT / Claude / Dify / n8n / 自動化設計" },
+  { name: "MARKETING", title: "マーケティング戦略", models: "SNS運用 / コンテンツ / 広告運用 / CRM" },
+  { name: "ADVISORY", title: "定期オンライン面談", models: "Google Meet / チャット相談 / 月次レポート" },
 ];
 
 const deliverables = [
-  { icon: "M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z", label: "月次レポート", desc: "アクセス解析・改善結果をまとめた報告書" },
-  { icon: "M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z", label: "チャット相談 無制限", desc: "LINE・メールで随時相談OK（原則24h以内返信）" },
-  { icon: "M15.75 10.5l4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z", label: "オンライン面談 月1回", desc: "Google Meet 各30〜60分・画面共有OK" },
-  { icon: "M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z", label: "改善施策リスト", desc: "優先順位をつけたTo-Doを毎月更新" },
+  { label: "月次レポート", desc: "アクセス解析・改善結果をまとめた報告書" },
+  { label: "チャット相談 無制限", desc: "LINE・メールで随時相談OK" },
+  { label: "面談 月1回〜", desc: "Google Meet 画面共有OK" },
+  { label: "改善施策リスト", desc: "優先順位つきTo-Doを毎月更新" },
 ];
 
 const comparisons = [
@@ -44,135 +28,98 @@ const initCosts = [
   { label: "改善ロードマップ作成", desc: "3ヶ月先までの具体的な施策計画" },
   { label: "初期環境構築", desc: "分析ツール設定・AI環境のセットアップ" },
 ];
-
 ---
 
-<section id="services" class="relative py-16 md:py-20 lg:py-24 bg-surface-alt">
-  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-    <div class="text-center mb-12 md:mb-16 animate-on-scroll">
-      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Service</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">
-        Web・AIの専門家が、<span class="marker-highlight">月額2万円〜</span>で伴走
-      </h2>
-      <p class="mt-4 text-sm md:text-base text-text-secondary max-w-2xl mx-auto leading-relaxed">
-        「AIを導入したいけど、何から始めればいいか分からない」「Webサイトの改善を相談できる相手がいない」…そんな課題を、オンライン完結の顧問サービスで解決します。
-      </p>
-    </div>
+<section id="services" class="svc-section">
+  <div class="svc-inner">
 
-    <!-- Main Service Card -->
-    <div class="animate-on-scroll max-w-4xl mx-auto">
-      <div class="block group relative rounded-2xl overflow-hidden bg-gradient-to-r from-amber-500 to-orange-600 p-[2px]">
-        <div class="relative rounded-[14px] bg-white px-6 py-8 md:px-10 md:py-10">
-          <div class="flex flex-col md:flex-row items-center gap-6 md:gap-10">
-            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shrink-0">
-              <svg class="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-              </svg>
-            </div>
-
-            <div class="flex-1 text-center md:text-left">
-              <p class="text-xs font-semibold text-amber-600 tracking-wider uppercase mb-2">Web AI Advisory</p>
-              <h3 class="text-2xl md:text-3xl font-bold text-text-primary mb-3">Web AI顧問</h3>
-              <p class="text-sm md:text-base text-text-secondary leading-relaxed">
-                外部コンサルの<strong class="text-text-primary">1/10以下のコスト</strong>で、Web戦略からAI活用まで何でも相談できる。初期費用10万円＋月額2万円〜で、御社専属のWeb・AI参謀がつきます。いつでも解約可能。
-              </p>
-            </div>
-
-            <div class="text-center shrink-0">
-              <p class="text-sm text-text-muted">月額</p>
-              <p class="text-4xl md:text-5xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">20,000<span class="text-lg">円〜</span></p>
-              <p class="text-[11px] text-text-muted mt-1">初期費用 100,000円（税別）</p>
-              <p class="text-[10px] text-text-muted">月2回 40,000円 / 月4回 80,000円</p>
-              <p class="text-[10px] text-text-muted">契約期間の縛りなし</p>
-              <p class="text-[9px] text-text-muted/60 mt-1">※今後価格改定を予定しています</p>
-            </div>
-          </div>
-        </div>
+    <div class="svc-header">
+      <div class="svc-header-text">
+        <p class="sec-tag">SERVICE</p>
+        <h2 class="svc-title">Web・AIの専門家が<span>月額2万円〜で伴走</span></h2>
+      </div>
+      <div class="svc-header-body">
+        <p>「AIを導入したいけど、何から始めればいいか分からない」「Webサイトの改善を相談できる相手がいない」...そんな課題を、オンライン完結の顧問サービスで解決します。</p>
       </div>
     </div>
 
-    <!-- What's included -->
-    <div class="mt-12 md:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-4xl mx-auto">
-      {features.map((feature, i) => (
-        <div
-          class="animate-on-scroll text-center p-5 rounded-xl bg-white border border-border"
-          style={`animation-delay: ${i * 0.1}s`}
-        >
-          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mx-auto mb-3">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d={feature.icon} />
-            </svg>
-          </div>
-          <h4 class="text-sm font-bold text-text-primary mb-1.5">{feature.title}</h4>
-          <p class="text-xs text-text-secondary leading-relaxed">{feature.description}</p>
+    <div class="svc-grid">
+      {services.map((s) => (
+        <div class="svc-card">
+          <p class="svc-card-name">{s.name}</p>
+          <p class="svc-card-title">{s.title}</p>
+          <p class="svc-card-models">{s.models}</p>
         </div>
       ))}
     </div>
 
-    <!-- 毎月届くもの -->
-    <div class="mt-12 md:mt-16 max-w-4xl mx-auto animate-on-scroll">
-      <h3 class="text-lg md:text-xl font-bold text-text-primary text-center mb-6">
-        毎月届くもの
-      </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="price-card">
+      <p class="sec-tag">PRICING</p>
+      <h3 class="price-card-title">Web AI顧問</h3>
+      <p class="price-card-desc">外部コンサルの1/10以下のコストで、Web戦略からAI活用まで何でも相談できる。いつでも解約可能。</p>
+      <div class="price-nums">
+        <div class="price-main">
+          <p class="price-label">MONTHLY</p>
+          <p class="price-value">20,000<span>円〜</span></p>
+        </div>
+        <div class="price-details">
+          <p>初期費用 100,000円（税別）</p>
+          <p>月2回 40,000円 / 月4回 80,000円</p>
+          <p>契約期間の縛りなし</p>
+          <p class="price-note">※今後価格改定を予定しています</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dlv-section">
+      <p class="sec-tag">DELIVERABLES</p>
+      <h3 class="section-h3">毎月届くもの</h3>
+      <div class="dlv-grid">
         {deliverables.map((d) => (
-          <div class="flex items-start gap-3 p-4 rounded-xl bg-white border border-border">
-            <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-              <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d={d.icon} />
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm font-bold text-text-primary">{d.label}</p>
-              <p class="text-xs text-text-secondary mt-0.5">{d.desc}</p>
-            </div>
+          <div class="dlv-card">
+            <p class="dlv-card-label">{d.label}</p>
+            <p class="dlv-card-desc">{d.desc}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- 初期費用の内訳 -->
-    <div class="mt-12 md:mt-16 max-w-3xl mx-auto animate-on-scroll">
-      <h3 class="text-lg md:text-xl font-bold text-text-primary text-center mb-6">
-        初期費用10万円に含まれるもの
-      </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div class="init-section">
+      <p class="sec-tag">INITIAL SETUP</p>
+      <h3 class="section-h3">初期費用10万円に含まれるもの</h3>
+      <div class="init-grid">
         {initCosts.map((c, i) => (
-          <div class="flex items-start gap-3 p-4 rounded-xl bg-white border border-border">
-            <div class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</div>
+          <div class="init-card">
+            <span class="init-num">{i + 1}</span>
             <div>
-              <p class="text-sm font-bold text-text-primary">{c.label}</p>
-              <p class="text-xs text-text-secondary mt-0.5">{c.desc}</p>
+              <p class="init-card-label">{c.label}</p>
+              <p class="init-card-desc">{c.desc}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- 他社比較表 -->
-    <div class="mt-12 md:mt-16 max-w-3xl mx-auto animate-on-scroll">
-      <h3 class="text-lg md:text-xl font-bold text-text-primary text-center mb-6">
-        他の選択肢との比較
-      </h3>
-      <div class="overflow-x-auto rounded-xl border border-border">
-        <table class="w-full text-sm">
+    <div class="comp-section">
+      <p class="sec-tag">COMPARISON</p>
+      <h3 class="section-h3">他の選択肢との比較</h3>
+      <div class="comp-table-wrap">
+        <table class="comp-table">
           <thead>
-            <tr class="bg-primary-950 text-white">
-              <th class="py-3 px-4 text-left font-medium"></th>
-              <th class="py-3 px-4 text-center font-bold">
-                <span class="text-accent-400">Web AI顧問</span>
-              </th>
-              <th class="py-3 px-4 text-center font-medium">外部コンサル</th>
-              <th class="py-3 px-4 text-center font-medium">フリーランス</th>
+            <tr>
+              <th></th>
+              <th class="comp-us">Web AI顧問</th>
+              <th>外部コンサル</th>
+              <th>フリーランス</th>
             </tr>
           </thead>
-          <tbody class="bg-white">
-            {comparisons.map((row, i) => (
-              <tr class={i < comparisons.length - 1 ? "border-b border-border" : ""}>
-                <td class="py-3 px-4 font-medium text-text-secondary">{row.item}</td>
-                <td class="py-3 px-4 text-center font-bold text-amber-600">{row.us}</td>
-                <td class="py-3 px-4 text-center text-text-muted">{row.them}</td>
-                <td class="py-3 px-4 text-center text-text-muted">{row.freelance}</td>
+          <tbody>
+            {comparisons.map((row) => (
+              <tr>
+                <td class="comp-item">{row.item}</td>
+                <td class="comp-us-val">{row.us}</td>
+                <td class="comp-other">{row.them}</td>
+                <td class="comp-other">{row.freelance}</td>
               </tr>
             ))}
           </tbody>
@@ -180,23 +127,157 @@ const initCosts = [
       </div>
     </div>
 
-    <!-- CTA -->
-    <div class="mt-10 text-center animate-on-scroll">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="/lp/ai-assessment/" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold px-7 py-3.5 rounded-full hover:shadow-lg transition-shadow">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-          </svg>
-          <span>AI活用度を診断する</span>
-        </a>
-        <a href="/lp/roi-calculator/" class="inline-flex items-center gap-2 border-2 border-amber-500 text-amber-600 font-bold px-7 py-3.5 rounded-full hover:bg-amber-50 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <span>コスト削減額を試算する</span>
-        </a>
-      </div>
-      <p class="text-xs text-text-muted mt-3">どちらも約2分・登録不要で完了します。</p>
+    <div class="svc-cta">
+      <a href="/lp/ai-assessment/" class="btn-primary">
+        <span>AI活用度を診断する</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="/lp/roi-calculator/" class="btn-outline">コスト試算</a>
     </div>
+
   </div>
 </section>
+
+<style>
+  .sec-tag {
+    font-size: 10px;
+    color: #cc8800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-h3 {
+    font-size: 20px;
+    font-weight: 900;
+    font-style: italic;
+    color: #111;
+    margin-bottom: 1.5rem;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #111; color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none; padding: 13px 28px;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: #cc8800; }
+  .btn-outline {
+    display: inline-flex; align-items: center;
+    border: 1px solid rgba(0,0,0,0.4); color: rgba(0,0,0,0.5);
+    font-size: 11px; font-weight: 500; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none; padding: 13px 28px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: #111; color: #111; }
+
+  .svc-section {
+    padding: 6rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .svc-inner { max-width: 960px; margin: 0 auto; }
+
+  .svc-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: start; margin-bottom: 4rem;
+  }
+  .svc-title {
+    font-size: clamp(22px, 3vw, 28px); font-weight: 900; font-style: italic;
+    color: #111; line-height: 1.4;
+  }
+  .svc-title span {
+    display: block; font-size: clamp(14px, 2vw, 18px); font-weight: 300;
+    font-style: normal; color: rgba(0,0,0,0.45); letter-spacing: 2px; margin-top: 0.25rem;
+  }
+  .svc-header-body p { font-size: 13px; color: rgba(0,0,0,0.6); line-height: 2; }
+
+  .svc-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1px; background: #e8e8e8; margin-bottom: 4rem;
+  }
+  .svc-card { padding: 1.5rem; background: #fff; transition: background 0.2s; }
+  .svc-card:hover { background: #fafafa; }
+  .svc-card-name {
+    font-size: 10px; letter-spacing: 3px; color: rgba(0,0,0,0.4);
+    text-transform: uppercase; margin-bottom: 0.5rem; transition: color 0.2s;
+  }
+  .svc-card:hover .svc-card-name { color: #cc8800; }
+  .svc-card-title { font-size: 15px; color: #111; font-weight: 600; margin-bottom: 0.5rem; }
+  .svc-card-models { font-size: 11px; color: rgba(0,0,0,0.45); line-height: 1.6; }
+
+  .price-card {
+    border: 1px solid #e8e8e8; padding: 4rem 3rem; margin-bottom: 4rem; background: #fff;
+  }
+  .price-card-title {
+    font-size: clamp(20px, 3vw, 26px); font-weight: 900; font-style: italic;
+    color: #111; margin-bottom: 0.75rem;
+  }
+  .price-card-desc {
+    font-size: 13px; color: rgba(0,0,0,0.55); line-height: 1.8;
+    margin-bottom: 2rem; max-width: 500px;
+  }
+  .price-nums { display: flex; align-items: flex-end; gap: 3rem; }
+  .price-label {
+    font-size: 9px; letter-spacing: 4px; color: rgba(0,0,0,0.4);
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .price-value {
+    font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 900; font-style: italic;
+    color: #cc8800; line-height: 1;
+  }
+  .price-value span { font-size: 14px; font-style: normal; font-weight: 500; }
+  .price-details { font-size: 11px; color: rgba(0,0,0,0.4); line-height: 1.8; }
+  .price-note { font-size: 10px; color: rgba(0,0,0,0.25); margin-top: 4px; }
+
+  .dlv-section { margin-bottom: 4rem; }
+  .dlv-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e8e8e8;
+  }
+  .dlv-card { background: #fff; padding: 1.25rem; }
+  .dlv-card-label { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .dlv-card-desc { font-size: 11px; color: rgba(0,0,0,0.45); line-height: 1.5; }
+
+  .init-section { margin-bottom: 4rem; }
+  .init-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #e8e8e8; }
+  .init-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 1.25rem; background: #fff;
+  }
+  .init-num {
+    width: 24px; height: 24px; background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .init-card-label { font-size: 14px; font-weight: 600; color: #111; }
+  .init-card-desc { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+
+  .comp-section { margin-bottom: 4rem; }
+  .comp-table-wrap { border: 1px solid #e8e8e8; overflow-x: auto; }
+  .comp-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+  .comp-table th {
+    padding: 14px 16px; font-size: 10px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    background: #111; color: rgba(255,255,255,0.6); text-align: center;
+  }
+  .comp-table th:first-child { text-align: left; }
+  .comp-us { color: #cc8800 !important; }
+  .comp-table td { padding: 12px 16px; border-bottom: 1px solid #e8e8e8; }
+  .comp-item { font-weight: 500; color: rgba(0,0,0,0.6); }
+  .comp-us-val { text-align: center; font-weight: 700; color: #cc8800; }
+  .comp-other { text-align: center; color: rgba(0,0,0,0.3); }
+
+  .svc-cta {
+    text-align: center; display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: center; gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .svc-header { grid-template-columns: 1fr; gap: 1.5rem; }
+    .svc-grid { grid-template-columns: 1fr; }
+    .price-card { padding: 3rem 1.5rem; }
+    .price-nums { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .dlv-grid { grid-template-columns: repeat(2, 1fr); }
+    .init-grid { grid-template-columns: 1fr; }
+  }
+</style>

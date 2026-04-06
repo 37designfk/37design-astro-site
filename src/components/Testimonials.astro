@@ -4,54 +4,73 @@ const testimonials = [
     quote: "何から手をつけていいか分からなかったWeb改善が、月1回の面談で着実に進むようになりました。",
     name: "G社 代表取締役",
     industry: "飲食業（従業員12名）",
-    avatar: "G",
-    color: "from-amber-500 to-orange-600",
   },
   {
     quote: "AIツールの選定から使い方まで教えてもらえるので、自社で試行錯誤する時間がゼロになった。",
     name: "H社 営業部長",
     industry: "人材紹介（従業員20名）",
-    avatar: "H",
-    color: "from-blue-500 to-indigo-600",
   },
   {
     quote: "月2万円でこの内容は正直驚き。外部コンサルに頼んでいた頃の1/10以下のコストです。",
     name: "I社 代表取締役",
     industry: "士業事務所（従業員6名）",
-    avatar: "I",
-    color: "from-emerald-500 to-teal-600",
   },
 ];
 ---
 
-<section class="py-16 md:py-20 bg-white">
-  <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
-    <div class="text-center mb-10 animate-on-scroll">
-      <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Voice</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary">お客様の声</h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {testimonials.map((t, i) => (
-        <div
-          class="animate-on-scroll relative p-6 rounded-xl bg-surface-alt border border-border"
-          style={`animation-delay: ${i * 0.1}s`}
-        >
-          <svg class="w-8 h-8 text-accent-400/30 mb-3" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-          </svg>
-          <p class="text-sm text-text-body leading-relaxed mb-4">{t.quote}</p>
-          <div class="flex items-center gap-3">
-            <div class={`w-8 h-8 rounded-full bg-gradient-to-br ${t.color} text-white flex items-center justify-center text-xs font-bold`}>
-              {t.avatar}
-            </div>
-            <div>
-              <p class="text-xs font-bold text-text-primary">{t.name}</p>
-              <p class="text-[11px] text-text-muted">{t.industry}</p>
-            </div>
+<section class="voice-section">
+  <div class="voice-inner">
+    <p class="sec-tag">VOICE</p>
+    <h2 class="voice-title">お客様の声</h2>
+    <div class="voice-grid">
+      {testimonials.map((t) => (
+        <div class="voice-card">
+          <p class="voice-quote">{t.quote}</p>
+          <div class="voice-meta">
+            <p class="voice-name">{t.name}</p>
+            <p class="voice-industry">{t.industry}</p>
           </div>
         </div>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .sec-tag {
+    font-size: 10px;
+    color: #cc8800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .voice-section {
+    padding: 6rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .voice-inner { max-width: 960px; margin: 0 auto; }
+  .voice-title {
+    font-size: 24px; font-weight: 900; font-style: italic;
+    color: #111; margin-bottom: 3rem;
+  }
+  .voice-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: #e8e8e8;
+  }
+  .voice-card {
+    background: #fff; padding: 2rem;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .voice-quote {
+    font-size: 14px; color: #111; line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+  .voice-meta { border-top: 1px solid #e8e8e8; padding-top: 1rem; }
+  .voice-name { font-size: 12px; font-weight: 600; color: #111; }
+  .voice-industry { font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 2px; }
+
+  @media (max-width: 768px) {
+    .voice-grid { grid-template-columns: 1fr; }
+  }
+</style>

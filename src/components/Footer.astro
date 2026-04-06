@@ -4,11 +4,10 @@ const navLinks = [
   { label: "会社概要", href: "/company/" },
   { label: "代表挨拶", href: "/greeting/" },
   { label: "採用情報", href: "/recruit/" },
-  { label: "お知らせ", href: "/news/" },
   { label: "ブログ", href: "/blog/" },
+  { label: "ニュースレター", href: "/newsletter/" },
   { label: "AI活用度診断", href: "/lp/ai-assessment/" },
   { label: "コスト削減シミュレーター", href: "/lp/roi-calculator/" },
-  { label: "ニュースレター", href: "/newsletter/" },
 ];
 
 const socialLinks = [
@@ -18,77 +17,116 @@ const socialLinks = [
 ];
 ---
 
-<footer class="bg-primary-950 text-white">
-  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-      <!-- Brand -->
-      <div>
-        <a href="/" class="inline-block mb-4">
-          <img src="/images/logo-gold.svg" alt="株式会社37Design" class="h-7 w-auto" width="128" height="17" />
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <svg viewBox="0 0 127.6 17" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="37Design" style="height:14px;width:auto;"><g fill="#111"><path d="M44.9,3.3h-9.6v1h8.8l-8.7,10.2h1.4l8.6-10.2c0.2-0.2,0.2-0.3,0.2-0.5C45.6,3.6,45.4,3.3,44.9,3.3z"/><path d="M17,3.9L17,3.9L17,3.9l-6.3-3l-6.3,3l-1.5,6.8l4.3,5.4h0l0,0l0,0h6.9l4.3-5.4L17,3.9L17,3.9z M5,4.4l5.7-2.7 l5.5,2.7l-12.6,6L5,4.4z M7.2,15l-3.3-4.1l10.7-5.1L7.2,15z M17.8,10.5l-3.9,4.9h-6l8.6-10.8L17.8,10.5z"/><path d="M31.3,8.7c1.2-0.2,2.1-1,2.1-2.5c0-1.9-1.3-2.8-3.4-2.8h-7.3v1h6.9c1.7,0,2.7,0.6,2.7,2c0,1.4-0.8,2-2.4,2 h-4.7v1h4.8c1.6,0,2.5,0.7,2.5,2.1c0,1.3-1.1,2.1-2.9,2.1h-7v1h7.5c2.2,0,3.4-1.4,3.4-3.1C33.6,9.8,32.7,8.9,31.3,8.7z"/><path d="M53.5,3.3h-6.3v11.2h6.3c3,0,5.2-2.5,5.2-5.7C58.7,5.6,56.5,3.3,53.5,3.3z M53.5,13.5h-5.2V4.4h5.2 c2.4,0,4.2,1.9,4.2,4.5C57.7,11.5,55.9,13.5,53.5,13.5z"/><polygon points="61.7,4.4 70.3,4.4 70.3,3.3 60.7,3.3 60.7,14.5 70.3,14.5 70.3,13.5 61.7,13.5"/><rect x="85.9" y="3.3" width="1" height="11.2"/><path d="M113,3.3V13l-9.1-9.6c-0.2-0.2-0.3-0.3-0.5-0.3c-0.4,0-0.6,0.3-0.6,0.7v10.7h1V4.8l9.1,9.6 c0.2,0.2,0.4,0.3,0.5,0.3c0.3,0,0.6-0.2,0.6-0.6V3.3H113z"/><path d="M94,9.3h5.7v4.2h-5.5c-2.4,0-4.2-2-4.2-4.6c0-2.7,1.8-4.5,4.2-4.5h5.9v-1h-5.9c-3,0-5.3,2.2-5.3,5.5 c0,3.3,2.2,5.7,5.3,5.7h6.5V8.3H94V9.3z"/><rect x="63.2" y="8.3" width="6.7" height="1"/><path d="M80.6,8.3h-5.3c-1.3,0-2.1-0.8-2.1-2c0-1.2,0.7-2,2.1-2h8v-1h-8c-2,0-3.1,1.3-3.1,3c0,1.7,1.2,3,3.1,3h5.3 c1.4,0,2.2,0.7,2.2,2.1c0,1.2-0.7,2.1-2.2,2.1h-8.3v1h8.3c2.1,0,3.2-1.3,3.2-3.1C83.8,9.3,82.7,8.3,80.6,8.3z"/></g></svg>
         </a>
-        <p class="text-white/60 text-sm leading-relaxed">
-          Web・AIのことは、プロに聞こう。<br />
-          月額2万円〜の顧問サービス。
-        </p>
+        <p class="footer-tagline">Web・AIのことは、プロに聞こう。</p>
+        <div class="footer-social">
+          {socialLinks.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d={s.icon} /></svg>
+            </a>
+          ))}
+        </div>
       </div>
 
-      <!-- Navigation -->
-      <div>
-        <h3 class="font-semibold text-xs uppercase tracking-[.15em] text-white/60 mb-4">Menu</h3>
-        <nav class="flex flex-col gap-2">
+      <div class="footer-nav">
+        <p class="footer-nav-title">MENU</p>
+        <nav class="footer-links">
           {navLinks.map((link) => (
-            <a href={link.href} class="text-sm text-white/70 hover:text-white transition-colors">
-              {link.label}
-            </a>
+            <a href={link.href}>{link.label}</a>
           ))}
         </nav>
       </div>
 
-      <!-- Social & Contact -->
-      <div>
-        <h3 class="font-semibold text-xs uppercase tracking-[.15em] text-white/60 mb-4">Connect</h3>
-        <div class="flex flex-col gap-3 text-sm text-white/70">
-          <a href="tel:080-2412-2556" class="hover:text-white transition-colors">
-            TEL: 080-2412-2556
-          </a>
-          <a href="mailto:info@37design.co.jp" class="hover:text-white transition-colors">
-            info@37design.co.jp
-          </a>
-          <div class="flex items-center gap-4 mt-2">
-            {socialLinks.map((s) => (
-              <a
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="w-9 h-9 rounded-full bg-white/10 hover:bg-accent-400 flex items-center justify-center text-white hover:text-primary-950 transition-all"
-                aria-label={s.label}
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d={s.icon} /></svg>
-              </a>
-            ))}
-          </div>
+      <div class="footer-contact">
+        <p class="footer-nav-title">CONNECT</p>
+        <div class="footer-contact-links">
+          <a href="tel:080-2412-2556">TEL: 080-2412-2556</a>
+          <a href="mailto:info@37design.co.jp">info@37design.co.jp</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Copyright -->
-  <div class="border-t border-white/10">
-    <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p class="text-xs text-white/60">
-        &copy; 2012-2026 株式会社37Design. All rights reserved.
-      </p>
-      <div class="flex items-center gap-4">
-        <a href="/privacy/" class="text-xs text-white/60 hover:text-white/70 transition-colors">
-          プライバシーポリシー
-        </a>
-        <a href="/tokushoho/" class="text-xs text-white/60 hover:text-white/70 transition-colors">
-          特定商取引法表記
-        </a>
-        <a href="/newsletter/" class="text-xs text-white/60 hover:text-white/70 transition-colors">
-          ニュースレター
-        </a>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <p class="footer-copy">&copy; 2012-2026 株式会社37Design</p>
+      <div class="footer-legal">
+        <a href="/privacy/">プライバシーポリシー</a>
+        <a href="/tokushoho/">特定商取引法表記</a>
       </div>
     </div>
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+  }
+  .footer-inner {
+    max-width: 960px; margin: 0 auto; padding: 4rem 1.5rem 3rem;
+  }
+  .footer-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 3rem;
+  }
+  .footer-brand { max-width: 260px; }
+  .footer-logo { display: inline-block; margin-bottom: 1rem; }
+  .footer-tagline {
+    font-size: 12px; color: rgba(0,0,0,0.5); line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .footer-social { display: flex; gap: 12px; }
+  .footer-social a {
+    color: rgba(0,0,0,0.3); transition: color 0.2s;
+  }
+  .footer-social a:hover { color: #111; }
+
+  .footer-nav-title {
+    font-size: 10px; letter-spacing: 3px; color: rgba(0,0,0,0.4);
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .footer-links {
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .footer-links a {
+    font-size: 12px; color: rgba(0,0,0,0.5); text-decoration: none;
+    letter-spacing: 1px; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: #111; }
+
+  .footer-contact-links {
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .footer-contact-links a {
+    font-size: 12px; color: rgba(0,0,0,0.5); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-contact-links a:hover { color: #111; }
+
+  .footer-bottom {
+    border-top: 1px solid #e8e8e8;
+  }
+  .footer-bottom-inner {
+    max-width: 960px; margin: 0 auto; padding: 1.25rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-size: 10px; color: rgba(0,0,0,0.3); }
+  .footer-legal { display: flex; gap: 1.5rem; }
+  .footer-legal a {
+    font-size: 10px; color: rgba(0,0,0,0.3); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-legal a:hover { color: #111; }
+
+  @media (max-width: 768px) {
+    .footer-top { flex-direction: column; gap: 2rem; }
+    .footer-bottom-inner { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
