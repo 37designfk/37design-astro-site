@@ -7,6 +7,7 @@ category: "AI"
 tags: ["AI電話自動応答", "中小企業", "業務自動化", "DX推進", "生産性向上", "人手不足対策", "音声AI"]
 targetKeyword: "中小企業 AI電話自動応答"
 structuredDataType: "Article"
+relatedArticles: ["sme-ai-chatbot-customer-support-guide", "business-automation-guide", "sme-ai-labor-shortage-automation"]
 ---
 
 こんにちは、37Design代表の古田です。
