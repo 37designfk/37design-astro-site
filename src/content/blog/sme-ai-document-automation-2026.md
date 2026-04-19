@@ -129,7 +129,7 @@ AI導入コストと費用対効果の詳細な計算方法は、[AI導入コス
 
 自動化ツールは「使いやすい環境」に組み込まれて初めて定着します。既存の業務フローを見直し、AIが生成した書類を確認・承認する担当者と役割を明確にしておくことが重要です。
 
-業務全体の自動化を体系的に進めたい方は、[業務自動化ガイド](/blog/business-automation-guide/)もあわせてご覧ください。
+業務全体の自動化を体系的に進めたい方は、[業務自動化ガイド](/blog/sme-ai-workflow-automation-no-code-2026/)もあわせてご覧ください。
 
 <div style="background:#f0f7ff;border-left:4px solid #2563eb;padding:1.5rem;margin:2rem 0;border-radius:4px">
 <strong>どこから手をつければよいか迷っていませんか？</strong><br>

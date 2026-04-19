@@ -50,7 +50,7 @@ structuredDataType: "Article"
 
 これらがすべて、コードを書かずに設定できます。技術的な壁が取り除かれたことで、「現場の課題を一番よく知っている人」が直接自動化を設計できる時代になりました。
 
-[業務自動化の基本から応用まで詳しく知りたい方はこちら](/blog/business-automation-guide/)
+[業務自動化の基本から応用まで詳しく知りたい方はこちら](/blog/sme-ai-workflow-automation-no-code-2026/)
 
 ## 中小企業が今すぐ始められるノーコードAI自動化の実例
 
@@ -60,7 +60,7 @@ structuredDataType: "Article"
 
 ノーコードで設定できるAIチャットボットは、FAQ応答だけでなく、商品提案や予約受付まで対応可能です。導入後は「夜間の問い合わせ対応が不要になった」「返信時間が平均2日から即時に短縮された」という声が多く寄せられます。
 
-[AIチャットボットで顧客対応を自動化する具体的な方法はこちら](/blog/sme-ai-chatbot-customer-support-guide/)
+[AIチャットボットで顧客対応を自動化する具体的な方法はこちら](/blog/sme-line-business-automation-2026/)
 
 ### 経理・請求業務の自動化
 
@@ -114,7 +114,7 @@ structuredDataType: "Article"
 
 無料プランや1ヶ月のトライアルを活用し、実際に時間削減効果を計測します。「導入前は週5時間かかっていた作業が、自動化後は週30分の確認作業だけになった」という具体的な数値を記録することが大切です。
 
-[AI導入のROI計算方法と費用対効果シミュレーションはこちら](/blog/ai-automation-roi-calculation-guide/)
+[AI導入のROI計算方法と費用対効果シミュレーションはこちら](/blog/sme-ai-implementation-cost-guide-2026/)
 
 **Step 3: 成功体験を水平展開する**
 
