@@ -167,7 +167,7 @@ AIエージェントはデータを読み書きして動作します。入力デ
 
 ### 業務自動化・営業自動化の専門ノウハウ
 
-AIエージェントを活用した業務自動化の詳細については[業務自動化ガイド](/blog/business-automation-guide/)を、営業プロセスへのAI活用については[AI営業自動化](/blog/ai-sales-automation-for-sme/)もご覧ください。
+AIエージェントを活用した業務自動化の詳細については[業務自動化ガイド](/blog/sme-ai-workflow-automation-no-code-2026/)を、営業プロセスへのAI活用については[AI営業自動化](/blog/ai-sales-automation-for-sme/)もご覧ください。
 
 ---
 

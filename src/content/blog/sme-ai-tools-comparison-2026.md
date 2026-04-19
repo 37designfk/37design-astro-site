@@ -81,7 +81,7 @@ structuredDataType: "Article"
 | Canva AI | デザイン・SNS投稿作成 | 約1,500円/人 | 豊富なテンプレートとブランドキットで統一感を維持 |
 | Notion AI | 社内情報管理・議事録 | 約1,500円/人 | ドキュメント管理とAIアシスタントが一体化 |
 
-中小企業のマーケティング領域でのAI活用戦略については、[中小企業のためのAIマーケティング戦略](/blog/ai-marketing-strategy-for-sme/)もあわせてご覧ください。
+中小企業のマーケティング領域でのAI活用戦略については、[中小企業のためのAIマーケティング戦略](/blog/sme-ai-marketing-low-cost-steps/)もあわせてご覧ください。
 
 ### データ分析・経営判断支援ツール
 

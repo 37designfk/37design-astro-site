@@ -97,7 +97,7 @@ AI顧問への投資ROIは次の式で測定します。
 ROI = (AI化で削減できたコスト + 増加した売上) ÷ 顧問費用 × 100
 ```
 
-削減コストは「削減時間 × 時給換算」で算出します。たとえば月40時間の作業がAI化で削減でき、担当者の時給換算が3,000円であれば、月12万円のコスト削減効果とみなせます。ROIの詳しい計算手順は[AI自動化の投資対効果計算ガイド](/blog/ai-automation-roi-calculation-guide/)を参考にしてください。
+削減コストは「削減時間 × 時給換算」で算出します。たとえば月40時間の作業がAI化で削減でき、担当者の時給換算が3,000円であれば、月12万円のコスト削減効果とみなせます。ROIの詳しい計算手順は[AI自動化の投資対効果計算ガイド](/blog/sme-ai-implementation-cost-guide-2026/)を参考にしてください。
 
 なお、AI顧問の費用相場はサービス形態によって大きく異なります。[AI顧問の費用比較2026年版](/blog/ai-advisor-fee-comparison-2026/)で最新の相場感を把握しておくと、見積もり評価がしやすくなります。
 
@@ -250,6 +250,6 @@ AI顧問の活用は、中小企業にとって大きなレバレッジになり
 </section>
 
 あわせて読みたい：
-- [AIを活用した中小企業のマーケティング自動化入門](/blog/ai-marketing-strategy-for-sme/)
-- [n8nで実現するマーケティングOSの全体設計](/blog/sme-ai-agent-automation-2026/)
+- [AIを活用した中小企業のマーケティング自動化入門](/blog/sme-ai-marketing-low-cost-steps/)
+- [n8nで実現するマーケティングOSの全体設計](/blog/sme-ai-agent-tools-comparison-2026/)
 - [生成AIコンテンツ制作の品質管理チェックリスト](/blog/sme-ai-tools-comparison-2026/)
