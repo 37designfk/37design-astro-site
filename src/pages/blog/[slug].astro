@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import StructuredData from "../../components/common/StructuredData.astro";
+import PersonSchema from "../../components/common/PersonSchema.astro";
 import "../../styles/global.css";
 
 export async function getStaticPaths() {
@@ -38,6 +39,36 @@ const categoryColors: Record<string, string> = {
   image={ogImage}
 >
   <Header />
+
+  <PersonSchema />
+
+  <StructuredData type="Article" data={{
+    headline: post.data.title,
+    description: post.data.description,
+    image: ogImage,
+    datePublished: post.data.publishDate.toISOString(),
+    dateModified: (post.data.lastModified ?? post.data.publishDate).toISOString(),
+    author: {
+      '@type': 'Person',
+      '@id': 'https://37design.co.jp/greeting/#person-furuta-ken',
+      name: post.data.author,
+      url: 'https://37design.co.jp/greeting/',
+    },
+    publisher: {
+      '@type': 'Organization',
+      '@id': 'https://37design.co.jp/#organization',
+      name: '株式会社37Design',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://37design.co.jp/images/logo-gold.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': new URL(Astro.url.pathname, 'https://37design.co.jp').href,
+    },
+    ...(post.data.targetKeyword ? { keywords: post.data.targetKeyword } : {}),
+  }} />
 
   <StructuredData type="BreadcrumbList" data={{
     itemListElement: [

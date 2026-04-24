@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import PersonSchema from "../components/common/PersonSchema.astro";
 import "../styles/global.css";
 import ParticleCanvas from "../components/ParticleCanvas.astro";
 ---
@@ -10,6 +11,7 @@ import ParticleCanvas from "../components/ParticleCanvas.astro";
   title="代表挨拶 | 株式会社37Design"
   description="株式会社37Design代表取締役 古田 健からのご挨拶。2012年の設立から10年以上、Web制作・広告運用を手掛け、2023年にAI開発と自動化分野へ本格転換。技術で人を幸せにする企業を目指します。"
 >
+  <PersonSchema />
   <Header />
 
   <main>

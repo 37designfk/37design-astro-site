@@ -1,0 +1,40 @@
+---
+// 古田 健の Person 構造化データ（共通エンティティ）
+// E-E-A-T評価に必要な著者エンティティを全ページで一貫させる単一の出典
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://37design.co.jp/greeting/#person-furuta-ken",
+  "name": "古田 健",
+  "alternateName": ["ふるた けん", "Ken Furuta"],
+  "url": "https://37design.co.jp/greeting/",
+  "image": "https://37design.co.jp/images/ceo-photo.jpg",
+  "jobTitle": "代表取締役・AI顧問",
+  "description": "株式会社37Design 代表取締役。2012年設立後、Web制作・広告運用を経て、2023年からAI開発・自動化分野へ本格転換。14本の自社プロダクトを開発・運用しながら、中小企業向けに月額2万円〜のAI顧問サービスを提供。",
+  "knowsAbout": [
+    "AI顧問",
+    "AI導入支援",
+    "中小企業DX",
+    "業務自動化",
+    "ノーコード自動化",
+    "n8n",
+    "Claude Code",
+    "Webマーケティング",
+    "SEO"
+  ],
+  "worksFor": {
+    "@type": "Organization",
+    "@id": "https://37design.co.jp/#organization",
+    "name": "株式会社37Design",
+    "url": "https://37design.co.jp/",
+    "logo": "https://37design.co.jp/images/logo-gold.svg"
+  },
+  "sameAs": [
+    "https://twitter.com/37designfk",
+    "https://x.com/37designfk",
+    "https://note.com/37desing"
+  ]
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
