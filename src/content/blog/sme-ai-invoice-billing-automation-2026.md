@@ -6,6 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["請求書自動化", "AI活用", "中小企業", "経理効率化", "業務自動化", "インボイス制度", "キャッシュフロー管理"]
 targetKeyword: "中小企業 AI 請求書 自動化"
+relatedArticles: ["sme-ai-estimate-proposal-automation-2026", "sme-ai-contract-automation-2026", "sme-ai-document-automation-2026", "sme-ai-expense-management-automation-2026", "sme-ai-cost-reduction-case-2026", "sme-ai-workflow-automation-no-code-2026"]
 structuredDataType: "Article"
 ---
 

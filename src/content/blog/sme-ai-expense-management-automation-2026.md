@@ -6,6 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["経費精算自動化", "AI活用", "中小企業", "経理効率化", "業務自動化", "インボイス制度", "コスト削減"]
 targetKeyword: "中小企業 AI 経費精算 自動化"
+relatedArticles: ["sme-ai-invoice-billing-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-contract-automation-2026", "sme-ai-document-automation-2026", "sme-ai-workflow-automation-no-code-2026"]
 structuredDataType: "Article"
 ---
 

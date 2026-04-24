@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI活用", "書類作成", "業務自動化", "中小企業", "DX推進", "見積書", "契約書", "提案書"]
 targetKeyword: "中小企業 AI 書類作成 自動化"
-relatedArticles: ["sme-ai-contract-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-email-automation-2026"]
+relatedArticles: ["sme-ai-invoice-billing-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-contract-automation-2026", "sme-ai-expense-management-automation-2026", "sme-ai-email-automation-2026"]
 targetLP: "/lp/ai-automation"
 structuredDataType: "Article"
 ---
