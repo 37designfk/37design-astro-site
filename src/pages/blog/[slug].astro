@@ -39,6 +39,32 @@ const categoryColors: Record<string, string> = {
 >
   <Header />
 
+  <StructuredData type="Article" data={{
+    headline: post.data.title,
+    description: post.data.description,
+    image: ogImage,
+    datePublished: post.data.publishDate.toISOString(),
+    dateModified: (post.data.lastModified ?? post.data.publishDate).toISOString(),
+    author: {
+      '@type': 'Person',
+      name: post.data.author,
+      url: 'https://37design.co.jp/greeting',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: '株式会社37Design',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://37design.co.jp/images/logo-gold.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': new URL(Astro.url.pathname, 'https://37design.co.jp').href,
+    },
+    ...(post.data.targetKeyword ? { keywords: post.data.targetKeyword } : {}),
+  }} />
+
   <StructuredData type="BreadcrumbList" data={{
     itemListElement: [
       {
@@ -60,6 +86,19 @@ const categoryColors: Record<string, string> = {
       },
     ],
   }} />
+
+  {post.data.faqs && post.data.faqs.length > 0 && (
+    <StructuredData type="FAQPage" data={{
+      mainEntity: post.data.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    }} />
+  )}
 
   <main>
     <!-- Article Header -->

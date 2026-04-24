@@ -16,6 +16,10 @@ const blog = defineCollection({
     structuredDataType: z.enum(['Article', 'HowTo', 'FAQPage']).default('Article'),
     lastModified: z.date().optional(),
     noIndex: z.boolean().default(false),
+    faqs: z.array(z.object({
+      question: z.string(),
+      answer: z.string(),
+    })).optional(),
   }),
 });
 
