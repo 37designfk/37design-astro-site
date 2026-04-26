@@ -7,7 +7,7 @@ category: "業務自動化"
 tags: ["AI契約書", "契約書自動化", "中小企業", "業務自動化", "DX推進", "リーガルテック"]
 image: "/images/blog/sme-ai-contract-automation-2026/hero.jpg"
 targetKeyword: "中小企業 AI 契約書 自動化"
-relatedArticles: ["sme-ai-document-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-workflow-automation-no-code-2026"]
+relatedArticles: ["sme-ai-invoice-billing-automation-2026", "sme-ai-estimate-proposal-automation-2026", "sme-ai-document-automation-2026", "sme-ai-expense-management-automation-2026", "sme-ai-workflow-automation-no-code-2026"]
 targetLP: "/lp/ai-automation"
 structuredDataType: "Article"
 ---

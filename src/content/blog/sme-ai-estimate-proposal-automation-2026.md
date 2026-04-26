@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI自動化", "見積書", "提案書", "中小企業", "営業効率化", "ChatGPT", "業務自動化"]
 targetKeyword: "中小企業 AI 見積書 提案書 自動化"
-relatedArticles: ["ai-sales-automation-for-sme", "sme-ai-workflow-automation-no-code-2026", "sme-ai-cost-reduction-case-2026", "sme-ai-document-automation-2026"]
+relatedArticles: ["sme-ai-invoice-billing-automation-2026", "sme-ai-contract-automation-2026", "sme-ai-document-automation-2026", "sme-ai-expense-management-automation-2026", "ai-sales-automation-for-sme", "sme-ai-workflow-automation-no-code-2026"]
 structuredDataType: "Article"
 ---
 
