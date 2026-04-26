@@ -80,6 +80,32 @@ if [ "$SLUG_COUNT" -ge "$MAX_ARTICLES" ]; then
 fi
 
 # ============================================
+# E-E-A-T リフレッシュキュー（既存記事の系統的リライト）
+# 2026-04-25 のEEAT_POLICY導入以前に書かれた記事を全本リライトするための仕組み。
+# 全記事が一巡したら自動で通常モードに戻る。
+# ============================================
+EEAT_DONE_FILE="$SITE_DIR/.eeat-rewrite-done.json"
+if [ ! -f "$EEAT_DONE_FILE" ]; then
+  echo "[]" > "$EEAT_DONE_FILE"
+fi
+EEAT_DONE_COUNT=$(python3 -c "import json; print(len(json.load(open('$EEAT_DONE_FILE'))))" 2>/dev/null || echo "0")
+EEAT_PENDING_SLUGS=$(SLUG_LIST="$SLUG_LIST" EEAT_DONE_FILE="$EEAT_DONE_FILE" LOCKED_SLUGS="$LOCKED_SLUGS" python3 -c "
+import json, os
+done = set(json.load(open(os.environ['EEAT_DONE_FILE'])))
+locked = set(s.strip() for s in os.environ.get('LOCKED_SLUGS','').split(',') if s.strip())
+all_slugs = [s.strip() for s in os.environ.get('SLUG_LIST','').split(',') if s.strip()]
+pending = [s for s in all_slugs if s not in done and s not in locked]
+print(','.join(pending[:10]))
+" 2>/dev/null)
+
+EEAT_REFRESH_ACTIVE="false"
+if [ -n "$EEAT_PENDING_SLUGS" ] && [ "$EEAT_DONE_COUNT" -lt "$SLUG_COUNT" ]; then
+  EEAT_REFRESH_ACTIVE="true"
+  REWRITE_ONLY="true"
+  log "E-E-A-T リフレッシュ進行中: ${EEAT_DONE_COUNT}/${SLUG_COUNT} 本完了。残り対象（最大10本）: ${EEAT_PENDING_SLUGS}"
+fi
+
+# ============================================
 # カニバリ検知: GSCで同一キーワードに複数記事
 # ============================================
 CANNIBALIZATION=$(ANALYTICS_FILE="$ANALYTICS_FILE" python3 -c "
@@ -130,13 +156,27 @@ fi
 log "Claude分析中（2タスク選定）..."
 
 if [ "$REWRITE_ONLY" = "true" ]; then
-  TASK_INSTRUCTION="rewrite（リライト）を2つ選んでください。新規記事は禁止です。
+  if [ "$EEAT_REFRESH_ACTIVE" = "true" ]; then
+    TASK_INSTRUCTION="**E-E-A-T リフレッシュモード**: 既存記事を E-E-A-T 強化（具体事例・一次経験・著者性）で系統的にリライトしてください。
+
+【今回の対象スラッグ（このリストの中から2つ選ぶ）】
+${EEAT_PENDING_SLUGS}
+
+【選定基準（優先順）】
+1. GSC で Imp 100以上 の記事（影響範囲が大きい）→ 早く E-E-A-T 強化したい
+2. AI顧問LP/料金/補助金など高ステークキーワードの記事 → 集約方針的に重要
+3. 公開日が古い記事 → 古い文体が残ってる可能性
+
+選んだ2つはどちらも rewrite。新規記事禁止。"
+  else
+    TASK_INSTRUCTION="rewrite（リライト）を2つ選んでください。新規記事は禁止です。
 ロック中のスラッグは選ばないこと。ロック外でリライト対象がなければ1つだけでも構いません。
 
 【最優先で選ぶべき記事】
 GSC で「Imp 100以上 かつ CTR 1.0%未満 かつ 順位5-15位」の記事をまずチェック。
 1ページ目下端〜2ページ目で表示されているのにクリックされない＝title/descriptionが弱い。
 次に「Imp 50以上 かつ 順位16-30位」の記事（順位押し上げ余地あり）。"
+  fi
   TASK_FORMAT='"rewrite"'
 else
   TASK_INSTRUCTION="以下の2タスクを選んでください:
@@ -495,6 +535,32 @@ json.dump(locks, open(f, 'w'), indent=2)
 " 2>/dev/null
   log "ロック設定: ${SLUG} (${LOCK_DAYS}日間)"
 
+  # --- E-E-A-T 進捗マーク（rewriteのみ） ---
+  if [ "$ACTION" = "rewrite" ]; then
+    EEAT_DONE_FILE="$EEAT_DONE_FILE" SLUG="$SLUG" python3 -c "
+import json, os
+f = os.environ['EEAT_DONE_FILE']
+try: done = json.load(open(f))
+except: done = []
+slug = os.environ['SLUG']
+if slug not in done:
+  done.append(slug)
+  json.dump(done, open(f, 'w'), ensure_ascii=False, indent=2)
+" 2>/dev/null
+    log "E-E-A-T 進捗マーク: ${SLUG}"
+  fi
+
+  # --- 高ステーク検知（AI顧問LP/料金/補助金関連） ---
+  HIGH_STAKES="false"
+  case "$KEYWORD$SLUG" in
+    *AI顧問*|*ai-advisor*|*料金*|*費用*|*補助金*|*subsidy*|*fee*|*cost*)
+      HIGH_STAKES="true" ;;
+  esac
+  if [ "$HIGH_STAKES" = "true" ]; then
+    log "🚩 高ステーク記事を検知: ${SLUG} (${KEYWORD}) → 公開後の人間レビュー推奨"
+    notify "🚩 高ステーク記事 ${ACTION}: ${SLUG}\nキーワード: ${KEYWORD}\n本番URL: https://37design.co.jp/blog/${SLUG}/\n→ 古田さん、内容レビューお願いします" 15844367
+  fi
+
   SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
   SUMMARY="${SUMMARY}${ACTION}: ${SLUG} (${KEYWORD})\n"
 
@@ -514,7 +580,18 @@ if [ "$SUCCESS_COUNT" -eq 0 ]; then
   exit 0
 fi
 
-git add -A src/content/blog/ .article-lock.json
+# E-E-A-T リフレッシュ完了判定
+if [ "$EEAT_REFRESH_ACTIVE" = "true" ]; then
+  EEAT_DONE_AFTER=$(python3 -c "import json; print(len(json.load(open('$EEAT_DONE_FILE'))))" 2>/dev/null || echo "0")
+  if [ "$EEAT_DONE_AFTER" -ge "$SLUG_COUNT" ]; then
+    log "🎉 E-E-A-T リフレッシュ完了: 全${SLUG_COUNT}本のリライト完了"
+    notify "🎉 E-E-A-T リフレッシュ完了！全${SLUG_COUNT}本のE-E-A-T強化リライトが完了しました。次回から通常モード（rewrite + new_article）に戻ります。" 3066993
+  else
+    log "E-E-A-T リフレッシュ進捗: ${EEAT_DONE_AFTER}/${SLUG_COUNT} 完了"
+  fi
+fi
+
+git add -A src/content/blog/ .article-lock.json .eeat-rewrite-done.json
 git commit -m "daily: ${SUCCESS_COUNT}タスク完了 (${TODAY})" -q 2>/dev/null || true
 
 log "ビルド中..."
