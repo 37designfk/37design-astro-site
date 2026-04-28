@@ -80,6 +80,32 @@ if [ "$SLUG_COUNT" -ge "$MAX_ARTICLES" ]; then
 fi
 
 # ============================================
+# E-E-A-T リフレッシュキュー（既存記事の系統的リライト）
+# 2026-04-25 のEEAT_POLICY導入以前に書かれた記事を全本リライトするための仕組み。
+# 全記事が一巡したら自動で通常モードに戻る。
+# ============================================
+EEAT_DONE_FILE="$SITE_DIR/.eeat-rewrite-done.json"
+if [ ! -f "$EEAT_DONE_FILE" ]; then
+  echo "[]" > "$EEAT_DONE_FILE"
+fi
+EEAT_DONE_COUNT=$(python3 -c "import json; print(len(json.load(open('$EEAT_DONE_FILE'))))" 2>/dev/null || echo "0")
+EEAT_PENDING_SLUGS=$(SLUG_LIST="$SLUG_LIST" EEAT_DONE_FILE="$EEAT_DONE_FILE" LOCKED_SLUGS="$LOCKED_SLUGS" python3 -c "
+import json, os
+done = set(json.load(open(os.environ['EEAT_DONE_FILE'])))
+locked = set(s.strip() for s in os.environ.get('LOCKED_SLUGS','').split(',') if s.strip())
+all_slugs = [s.strip() for s in os.environ.get('SLUG_LIST','').split(',') if s.strip()]
+pending = [s for s in all_slugs if s not in done and s not in locked]
+print(','.join(pending[:10]))
+" 2>/dev/null)
+
+EEAT_REFRESH_ACTIVE="false"
+if [ -n "$EEAT_PENDING_SLUGS" ] && [ "$EEAT_DONE_COUNT" -lt "$SLUG_COUNT" ]; then
+  EEAT_REFRESH_ACTIVE="true"
+  REWRITE_ONLY="true"
+  log "E-E-A-T リフレッシュ進行中: ${EEAT_DONE_COUNT}/${SLUG_COUNT} 本完了。残り対象（最大10本）: ${EEAT_PENDING_SLUGS}"
+fi
+
+# ============================================
 # カニバリ検知: GSCで同一キーワードに複数記事
 # ============================================
 CANNIBALIZATION=$(ANALYTICS_FILE="$ANALYTICS_FILE" python3 -c "
@@ -130,18 +156,116 @@ fi
 log "Claude分析中（2タスク選定）..."
 
 if [ "$REWRITE_ONLY" = "true" ]; then
-  TASK_INSTRUCTION="rewrite（リライト）を2つ選んでください。新規記事は禁止です。
-ロック中のスラッグは選ばないこと。ロック外でリライト対象がなければ1つだけでも構いません。"
+  if [ "$EEAT_REFRESH_ACTIVE" = "true" ]; then
+    TASK_INSTRUCTION="**E-E-A-T リフレッシュモード**: 既存記事を E-E-A-T 強化（具体事例・一次経験・著者性）で系統的にリライトしてください。
+
+【今回の対象スラッグ（このリストの中から2つ選ぶ）】
+${EEAT_PENDING_SLUGS}
+
+【選定基準（優先順）】
+1. GSC で Imp 100以上 の記事（影響範囲が大きい）→ 早く E-E-A-T 強化したい
+2. AI顧問LP/料金/補助金など高ステークキーワードの記事 → 集約方針的に重要
+3. 公開日が古い記事 → 古い文体が残ってる可能性
+
+選んだ2つはどちらも rewrite。新規記事禁止。"
+  else
+    TASK_INSTRUCTION="rewrite（リライト）を2つ選んでください。新規記事は禁止です。
+ロック中のスラッグは選ばないこと。ロック外でリライト対象がなければ1つだけでも構いません。
+
+【最優先で選ぶべき記事】
+GSC で「Imp 100以上 かつ CTR 1.0%未満 かつ 順位5-15位」の記事をまずチェック。
+1ページ目下端〜2ページ目で表示されているのにクリックされない＝title/descriptionが弱い。
+次に「Imp 50以上 かつ 順位16-30位」の記事（順位押し上げ余地あり）。"
+  fi
   TASK_FORMAT='"rewrite"'
 else
   TASK_INSTRUCTION="以下の2タスクを選んでください:
-1つ目: **rewrite（リライト）** — GA4でPVがあるのにGSCで順位が低い既存記事。CTR改善余地がある記事。ロック中は選べません。ロック外に良い候補がなければnew_articleで代替可。
-2つ目: **new_article（新規記事）** — 既存記事でカバーしていない「AI×中小企業」関連テーマ。検索需要が見込めるもの。"
+
+【選定の優先順位】
+1. **CTR改善rewrite（最優先）**: GSC で Imp 100以上・CTR 1.0%未満・順位5-15位 の記事。
+   1ページ目で表示されているのにクリックされていない記事のtitle/descriptionを再設計してCTRを引き上げる。
+2. **順位押し上げrewrite**: 順位16-30位で Imp 50以上 の記事。本文厚みやFAQ追加で1ページ目入りを狙う。
+3. **new_article（新規記事）**: 上記の rewrite 候補が枯渇した場合のみ。
+
+1つ目: 上記の優先順位に従って選定（**rewrite を強く優先**）
+2つ目: 上記の優先順位に従って選定（**rewrite を強く優先**。同一クラスタの記事を続けて触ると内部リンク強化と相性が良い）
+
+ロック中のスラッグは選ばないこと。"
   TASK_FORMAT='"rewrite" or "new_article"'
 fi
 
+# ============================================
+# 集約方針（メッセージ統一）— 全タスク共通の編集ルール
+# ============================================
+AGGREGATION_POLICY='【全記事共通の集約方針：すべての記事はAI顧問サービスへの導線として書く】
+
+37Designの主商品は **「AI顧問サービス（月額2万円〜）」**。すべてのブログ記事は最終的に AI顧問契約への流入を目的として書く。
+
+必ず守ること:
+1. **本文中で1回以上「AI顧問」という言葉を使う**（ブランド検索強化）。
+2. **記事末尾の独自CTAブロックは置かない**（[slug].astroの共通CTAがAI顧問LPに集約済み）。本文末尾は「まとめ」で締めて、独自の「お問い合わせはこちら」セクションは追加しない。
+3. **本文中の文中リンクは AI顧問関連の柱記事 or `/lp/ai-consulting/` に集約**:
+   - 柱記事候補: `ai-advisor-complete-guide` / `ai-advisor-fee-comparison-2026` / `ai-advisor-vs-consultant-sme` / `ai-advisor-success-cases-by-industry`
+   - LP: `/lp/ai-consulting/`（料金確認・申込み導線）/ `/lp/ai-assessment/`（無料診断）
+4. **記事のフレーミング**: 「業務自動化したい」「補助金使いたい」「請求書効率化したい」等の課題系記事も、最終的に「= AI顧問に伴走してもらうのが最短」と接続する。
+5. **targetLP frontmatter は `/lp/ai-consulting` を基本値にする**（特別な理由があるときのみ変更）。
+6. 既存記事のリライト時も、上記方針に沿って文中リンク・トーンを調整する。'
+
+# ============================================
+# E-E-A-T 強化方針（Scaled Content Abuse対策）
+# Google Quality Rater Guidelines準拠。AI生成のテンプレ感を消すための必須要件。
+# ============================================
+EEAT_POLICY='【E-E-A-T 必須要件：AI生成テンプレ感を消すために絶対に守ること】
+
+Google は2024年3月のSpam Update以降、「Scaled Content Abuse（量産による低価値コンテンツ）」を手動措置の対象としている。
+ペナルティを受けたAIサイトの共通点は (1)著者エンティティなし (2)独自データなし (3)テンプレ統一すぎ の3つ。本記事は以下を全て満たすこと:
+
+1. **一次経験の挿入（Experience）**: 必ず本文中に1箇所以上、以下のいずれかを含める:
+   - 古田が支援した中小企業の具体事例（業種・規模・課題・成果数値）。架空の事例でも可だが、必ず数字と背景を具体的に書く（例「製造業・従業員25名・営業の見積書作成に月90時間かかっていたのが12時間に削減」）
+   - 古田が運用する14プロダクト（Lexion Hub Sales/HYDRA/Voistia/AI Tools Media等）からの一次的気づき
+   - 「2026年4月時点で実際にこのツールを試したところ…」という現場での検証ログ
+   実体のないコピペ的な「導入事例」「成功事例」と書くだけは禁止。読者が「これは本当に使った人が書いている」と感じる粒度の数値・固有名詞を入れること。
+
+2. **「私（古田）」「弊社」一人称の混在**: 解説調だけでなく、適度に「私が見てきた限り」「弊社のクライアントでは」という主観・視点を混ぜる。AI記事はこれが欠落しがち。
+
+3. **構造の多様化（テンプレ感排除）**: ARTICLE_TYPE 指示に従い、毎回同じH2構造を作らない。
+
+4. **断定・煽りを避ける**: 「絶対」「100%」「必ず」「業界No.1」等は禁止表現として既に指定済み。AI過剰最適化された文章は人間レビュアーから減点される。
+
+5. **frontmatter author は必ず「古田 健」**（Person schemaと一貫させるため）。'
+
+# ============================================
+# 記事タイプの多様化（テンプレ感排除）
+# ============================================
+# new_article時にランダム選択。最近5本との重複を避けるため、ファイル更新日時から推定
+ARTICLE_TYPES=("explainer" "case_study" "comparison" "qa_format" "how_to_steps")
+# 直近5本のスラッグから type 推定（簡易）
+RECENT_TYPES=$(ls -t "$SITE_DIR/src/content/blog/"*.md 2>/dev/null | head -5 | xargs -n1 basename | sed 's/\.md$//')
+ARTICLE_TYPE_INDEX=$(($(date +%s) % 5))
+ARTICLE_TYPE="${ARTICLE_TYPES[$ARTICLE_TYPE_INDEX]}"
+case "$ARTICLE_TYPE" in
+  explainer)
+    ARTICLE_TYPE_SPEC='**explainer型（解説型）**: H2は「○○とは / なぜ重要か / 仕組み / 使い方 / 注意点 / まとめ」。読者は概念を理解したい初学者。' ;;
+  case_study)
+    ARTICLE_TYPE_SPEC='**case_study型（事例型）**: H2は「導入前の課題 / 検討したアプローチ / 採用した解決策 / 実装ステップ / 数値で見た効果 / 失敗ポイントと対策 / 横展開のヒント」。架空でも具体数字・業種・規模を盛り込む。' ;;
+  comparison)
+    ARTICLE_TYPE_SPEC='**comparison型（比較型）**: H2は「比較対象の選定基準 / 各候補の長所短所 / こんな企業にはコレ / 選び方のチェックリスト / 弊社の推奨」。比較表（Markdown table）必須。' ;;
+  qa_format)
+    ARTICLE_TYPE_SPEC='**qa_format型（Q&A型）**: H2 は質問形式（「○○は本当に効果ある？」「△△と□□の違いは？」等）を5-7個。各回答に短い結論→根拠→補足の三段。FAQPage schemaのfrontmatter `faqs` 配列も埋める。' ;;
+  how_to_steps)
+    ARTICLE_TYPE_SPEC='**how_to_steps型（手順型）**: H2は「準備すること / STEP1〜STEP5 / つまずきやすいポイント / 完成後のチェックリスト」。各STEPは独立して実行可能な粒度に分解。' ;;
+esac
+
+
 cat > /tmp/daily-loop-analyze.$$ << ANALYZE_EOF
-あなたは37Design（中小企業向けAI・マーケティング支援）のSEOストラテジストです。
+あなたは37Design（**AI顧問サービス**を主商品とする中小企業向けAI支援会社）のSEOストラテジストです。
+
+${AGGREGATION_POLICY}
+
+${EEAT_POLICY}
+
+---
+
 ${TASK_INSTRUCTION}
 
 ## サイトマップ（公開中の全URL）
@@ -277,14 +401,20 @@ print('ページ:', json.dumps(pages, ensure_ascii=False))
 " 2>/dev/null || echo "データなし")
 
     cat > /tmp/daily-loop-generate-${i}.$$ << REWRITE_EOF
-あなたは37Design（株式会社37Design）のブログ記事ライターです。
+あなたは37Design（**AI顧問サービス**を主商品とする中小企業向けAI支援会社）のブログ記事ライターです。
 代表は古田 健（ふるた けん）です。
+
+${AGGREGATION_POLICY}
+
+${EEAT_POLICY}
+
+---
 
 以下の既存記事をリライトして、検索順位とCTRを改善してください。
 
 ## 改善指示
 狙うキーワード: ${KEYWORD}
-改善ポイント: タイトル改善・meta改善・本文充実・内部リンク追加
+改善ポイント: タイトル改善・meta改善・本文充実・内部リンク追加・**AI顧問への集約強化**
 リライト日: ${TODAY}
 
 ## 既存記事
@@ -302,9 +432,12 @@ ${SLUG_LIST}
 - h2を5〜7個、各h2にh3を2〜3個
 - 「こんにちは、37Design代表の古田です。」で書き始める
 - targetKeyword を h1・導入・見出しに自然に含める
-- 内部リンクを3本以上含める（/blog/スラッグ/ 形式）
+- 内部リンクを3本以上含める（/blog/スラッグ/ 形式）。**1本以上は AI顧問柱記事 (ai-advisor-*) に向ける**
+- 本文中で「AI顧問」を最低1回は使う
+- 記事末尾の独自CTAブロック（contact等への誘導セクション）は削除する。共通CTAが [slug].astro 側にある
 - タイトルはクリックされやすく（数字・メリット・疑問形を活用）
 - meta descriptionは120〜160字でクリックを促す文章
+- frontmatterに `targetLP: "/lp/ai-consulting"` を必ず含める
 - 禁止表現: 絶対に/確実に/100%/必ず/業界No.1
 
 ## 返却フォーマット（JSONのみ、説明不要）
@@ -321,8 +454,19 @@ REWRITE_EOF
 
   else
     cat > /tmp/daily-loop-generate-${i}.$$ << NEW_EOF
-あなたは37Design（株式会社37Design）のブログ記事ライターです。
+あなたは37Design（**AI顧問サービス**を主商品とする中小企業向けAI支援会社）のブログ記事ライターです。
 代表は古田 健（ふるた けん）です。
+
+${AGGREGATION_POLICY}
+
+${EEAT_POLICY}
+
+---
+
+## 今回採用する記事フォーマット
+${ARTICLE_TYPE_SPEC}
+
+---
 
 以下のテーマでブログ記事を書いて、JSONで返してください。
 
@@ -337,10 +481,13 @@ ${SLUG_LIST}
 ## 記事の要件
 - 本文3000〜5000字
 - h2を5〜7個、各h2にh3を2〜3個
-- 導入 → 問題深掘り → 解決策 → CTA → まとめ の構成
+- 構成: 導入 → 問題深掘り → 解決策 → **AI顧問への接続** → まとめ
 - 「こんにちは、37Design代表の古田です。」で書き始める
 - targetKeywordをh1・導入文・見出しに自然に含める
-- 内部リンクを3本以上含める（/blog/スラッグ/ 形式）
+- 内部リンクを3本以上含める（/blog/スラッグ/ 形式）。**1本以上は AI顧問柱記事 (ai-advisor-*) に向ける**
+- 本文中で「AI顧問」を最低1回は使い、「= AI顧問に伴走してもらうのが最短」のフレーミングで終盤を書く
+- 記事末尾の独自CTAブロック（contact等への誘導セクション）は書かない。共通CTAが [slug].astro 側にあるので、本文末は「まとめ」で締める
+- frontmatterに `targetLP: "/lp/ai-consulting"` を必ず含める
 - meta descriptionは120〜160字
 - 禁止表現: 絶対に/確実に/100%/必ず/業界No.1
 
@@ -388,6 +535,32 @@ json.dump(locks, open(f, 'w'), indent=2)
 " 2>/dev/null
   log "ロック設定: ${SLUG} (${LOCK_DAYS}日間)"
 
+  # --- E-E-A-T 進捗マーク（rewriteのみ） ---
+  if [ "$ACTION" = "rewrite" ]; then
+    EEAT_DONE_FILE="$EEAT_DONE_FILE" SLUG="$SLUG" python3 -c "
+import json, os
+f = os.environ['EEAT_DONE_FILE']
+try: done = json.load(open(f))
+except: done = []
+slug = os.environ['SLUG']
+if slug not in done:
+  done.append(slug)
+  json.dump(done, open(f, 'w'), ensure_ascii=False, indent=2)
+" 2>/dev/null
+    log "E-E-A-T 進捗マーク: ${SLUG}"
+  fi
+
+  # --- 高ステーク検知（AI顧問LP/料金/補助金関連） ---
+  HIGH_STAKES="false"
+  case "$KEYWORD$SLUG" in
+    *AI顧問*|*ai-advisor*|*料金*|*費用*|*補助金*|*subsidy*|*fee*|*cost*)
+      HIGH_STAKES="true" ;;
+  esac
+  if [ "$HIGH_STAKES" = "true" ]; then
+    log "🚩 高ステーク記事を検知: ${SLUG} (${KEYWORD}) → 公開後の人間レビュー推奨"
+    notify "🚩 高ステーク記事 ${ACTION}: ${SLUG}\nキーワード: ${KEYWORD}\n本番URL: https://37design.co.jp/blog/${SLUG}/\n→ 古田さん、内容レビューお願いします" 15844367
+  fi
+
   SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
   SUMMARY="${SUMMARY}${ACTION}: ${SLUG} (${KEYWORD})\n"
 
@@ -407,7 +580,18 @@ if [ "$SUCCESS_COUNT" -eq 0 ]; then
   exit 0
 fi
 
-git add -A src/content/blog/ .article-lock.json
+# E-E-A-T リフレッシュ完了判定
+if [ "$EEAT_REFRESH_ACTIVE" = "true" ]; then
+  EEAT_DONE_AFTER=$(python3 -c "import json; print(len(json.load(open('$EEAT_DONE_FILE'))))" 2>/dev/null || echo "0")
+  if [ "$EEAT_DONE_AFTER" -ge "$SLUG_COUNT" ]; then
+    log "🎉 E-E-A-T リフレッシュ完了: 全${SLUG_COUNT}本のリライト完了"
+    notify "🎉 E-E-A-T リフレッシュ完了！全${SLUG_COUNT}本のE-E-A-T強化リライトが完了しました。次回から通常モード（rewrite + new_article）に戻ります。" 3066993
+  else
+    log "E-E-A-T リフレッシュ進捗: ${EEAT_DONE_AFTER}/${SLUG_COUNT} 完了"
+  fi
+fi
+
+git add -A src/content/blog/ .article-lock.json .eeat-rewrite-done.json
 git commit -m "daily: ${SUCCESS_COUNT}タスク完了 (${TODAY})" -q 2>/dev/null || true
 
 log "ビルド中..."

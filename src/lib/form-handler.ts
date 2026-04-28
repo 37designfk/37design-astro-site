@@ -15,6 +15,41 @@ export interface FormHandlerOptions {
   resetFormOnSuccess?: boolean;
   autoHideSuccess?: boolean;
   onSuccess?: () => void;
+  /**
+   * GA4 へ送るコンバージョンイベント名。
+   * 既定は `generate_lead`（GA4標準推奨イベント）。
+   * 空文字や false 相当を渡すと送信しない。
+   */
+  conversionEventName?: string | false;
+  /** GA4 イベントの method パラメータ。同一イベント名で経路別に集計するため。 */
+  conversionMethod?: string;
+}
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+function dispatchConversion(name: string, method: string): void {
+  try {
+    if (typeof window === "undefined") return;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", name, {
+        method,
+        page_path: window.location.pathname,
+      });
+    } else if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: name,
+        method,
+        page_path: window.location.pathname,
+      });
+    }
+  } catch {
+    // analytics は本機能の主目的ではないので失敗しても続行
+  }
 }
 
 const MIN_FILL_TIME_MS = 4_000;
@@ -139,6 +174,12 @@ export function initFormHandler(opts: FormHandlerOptions): void {
               behavior: "smooth",
               block: "nearest",
             });
+          }
+          if (opts.conversionEventName !== false) {
+            dispatchConversion(
+              opts.conversionEventName || "generate_lead",
+              opts.conversionMethod || "form",
+            );
           }
           if (opts.onSuccess) opts.onSuccess();
           if (autoHide) {
