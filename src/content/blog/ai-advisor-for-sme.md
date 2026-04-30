@@ -7,7 +7,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI顧問", "中小企業", "AI導入", "DX推進", "業務自動化", "AI活用", "マーケティング自動化", "AIエージェント"]
 targetKeyword: "AI顧問 中小企業"
-relatedArticles: ["ai-advisor-vs-consultant-sme", "ai-advisor-fee-comparison-2026", "sme-ai-adoption-success-failure-patterns-2026", "ai-advisor-success-cases-by-industry"]
+relatedArticles: ["ai-advisor-complete-guide", "ai-advisor-vs-consultant-sme", "ai-advisor-fee-comparison-2026", "sme-ai-adoption-success-failure-patterns-2026", "ai-advisor-success-cases-by-industry"]
 targetLP: "/lp/ai-advisor"
 structuredDataType: "Article"
 ---
@@ -21,6 +21,8 @@ AI顧問の定義・費用相場・選び方・導入効果を体系的に解説
 ---
 
 ## AI顧問とは？中小企業における役割と必要性
+
+> 月額2万円〜のAI顧問の費用相場・選び方を網羅した完全ガイドは「[AI顧問とは？月額2万円〜の費用相場と失敗しない選び方【中小企業向け2026年版】](/blog/ai-advisor-complete-guide/)」をご覧ください。
 
 ### AI顧問の定義と業務範囲
 

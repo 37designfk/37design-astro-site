@@ -6,6 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI顧問", "費用相場", "料金比較", "中小企業", "DX", "AI活用", "IT導入補助金"]
 targetKeyword: "AI顧問 費用 中小企業"
+relatedArticles: ["ai-advisor-complete-guide", "ai-advisor-for-sme", "ai-advisor-small-company-guide"]
 structuredDataType: "Article"
 ---
 
@@ -111,7 +112,7 @@ structuredDataType: "Article"
 
 ### 中小企業に向くAI顧問の3つの特徴
 
-「小回りが利く対応」「業種別の知見」「担当者の一貫性」——この3点が中小企業専門型AI顧問の強みです。AI顧問の基本的な役割については[AI顧問とは？中小企業向け完全ガイド](/blog/ai-advisor-for-sme/)で詳しく解説しています。
+「小回りが利く対応」「業種別の知見」「担当者の一貫性」——この3点が中小企業専門型AI顧問の強みです。費用相場・選び方・導入ステップまでをワンストップで把握したい方は[AI顧問とは？月額2万円〜の費用相場と失敗しない選び方【完全ガイド】](/blog/ai-advisor-complete-guide/)をご覧ください。
 
 ---
 
