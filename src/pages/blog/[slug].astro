@@ -21,8 +21,19 @@ const { Content } = await post.render();
 
 // 関連記事の解決: frontmatter優先 → 不足は同カテゴリ最新でフォールバック
 const allPosts = await getCollection('blog', (p) => !p.data.noIndex);
-const explicitRelated = (post.data.relatedArticles ?? [])
-  .map((slug) => allPosts.find((p) => p.slug === slug))
+const postBySlug = new Map(allPosts.map((p) => [p.slug, p]));
+
+// 不正な relatedArticles slug をビルドで検出
+const declaredRelated = post.data.relatedArticles ?? [];
+const missingRelated = declaredRelated.filter((slug) => !postBySlug.has(slug));
+if (missingRelated.length > 0) {
+  throw new Error(
+    `[blog/${post.slug}] relatedArticles に存在しない slug があります: ${missingRelated.join(', ')}`
+  );
+}
+
+const explicitRelated = declaredRelated
+  .map((slug) => postBySlug.get(slug))
   .filter((p): p is (typeof allPosts)[number] => Boolean(p));
 
 const RELATED_COUNT = 3;
@@ -69,6 +80,8 @@ const categoryColors: Record<string, string> = {
   title={`${post.data.title} | 株式会社37Design`}
   description={post.data.description}
   image={ogImage}
+  noindex={post.data.noIndex}
+  ogType="article"
 >
   <Header />
 

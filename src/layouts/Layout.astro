@@ -4,6 +4,7 @@ interface Props {
   description?: string;
   image?: string;
   noindex?: boolean;
+  ogType?: 'website' | 'article';
 }
 
 const {
@@ -11,6 +12,7 @@ const {
   description = "業務自動化・AI導入支援・営業管理最適化。属人化した業務をAIとテクノロジーで解決する、神戸のDXパートナー 株式会社37Design。",
   image = "https://37design.co.jp/images/ogp.png",
   noindex = false,
+  ogType = 'website',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -28,7 +30,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:image" content={image} />

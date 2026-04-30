@@ -7,9 +7,10 @@ interface Props {
   description: string;
   image?: string;
   dashboardSlug?: string;
+  noIndex?: boolean;
 }
 
-const { title, description, image = "https://37design.co.jp/images/ogp.png", dashboardSlug } = Astro.props;
+const { title, description, image = "https://37design.co.jp/images/ogp.png", dashboardSlug, noIndex = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -21,6 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="theme-color" content="#0a0f1e" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
