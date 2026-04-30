@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["DX推進", "中小企業", "業務自動化", "AI活用", "デジタル化", "補助金"]
 targetKeyword: "中小企業 DX推進 進め方"
-relatedArticles: ["business-automation-guide", "ai-introduction-guide", "sme-ai-tools-comparison-2026"]
+relatedArticles: ["sme-ai-workflow-automation-no-code-2026", "ai-introduction-guide", "sme-ai-tools-comparison-2026"]
 targetLP: "/lp/ai-consulting"
 structuredDataType: "Article"
 ---

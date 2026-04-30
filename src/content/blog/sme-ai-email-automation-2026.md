@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI自動化", "メール自動化", "中小企業DX", "業務効率化", "営業自動化"]
 targetKeyword: "中小企業 AI メール自動化"
-relatedArticles: ["ai-sales-automation-for-sme", "sme-ai-customer-followup-automation-2026", "sme-chatgpt-business-guide", "marketing-automation-sme"]
+relatedArticles: ["ai-sales-automation-for-sme", "sme-ai-crm-customer-management-2026", "sme-chatgpt-business-guide", "marketing-automation-sme"]
 structuredDataType: "Article"
 ---
 

@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI導入", "中小企業", "成功事例", "失敗事例", "AI活用", "経営戦略"]
 targetKeyword: "中小企業 AI導入 成功 失敗"
-relatedArticles: ["ai-introduction-guide", "ai-automation-roi-calculation-guide", "sme-ai-implementation-cost-guide-2026"]
+relatedArticles: ["ai-introduction-guide", "sme-ai-implementation-cost-guide-2026", "sme-ai-implementation-cost-guide-2026"]
 structuredDataType: "Article"
 ---
 

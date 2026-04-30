@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["ホームページ制作", "費用相場", "Web制作", "中小企業", "AI活用", "コーポレートサイト"]
 targetKeyword: "ホームページ制作費用 相場"
-relatedArticles: ["ai-introduction-guide", "business-automation-guide", "ai-advisor-for-sme", "sme-ai-tools-comparison-2026", "ai-sales-automation-for-sme"]
+relatedArticles: ["ai-introduction-guide", "sme-ai-workflow-automation-no-code-2026", "ai-advisor-for-sme", "sme-ai-tools-comparison-2026", "ai-sales-automation-for-sme"]
 structuredDataType: "Article"
 ---
 

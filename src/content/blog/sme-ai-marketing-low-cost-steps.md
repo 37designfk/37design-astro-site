@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AIマーケティング", "中小企業", "低コスト", "マーケティング自動化", "コスト削減", "ChatGPT"]
 targetKeyword: "中小企業 AI マーケティング 低コスト"
-relatedArticles: ["sme-ai-cost-reduction-case-2026", "ai-automation-roi-calculation-guide", "sme-ai-subsidy-guide-2026"]
+relatedArticles: ["sme-ai-implementation-cost-guide-2026", "sme-ai-subsidy-guide-2026"]
 targetLP: "/lp/ai-marketing"
 structuredDataType: "Article"
 ---

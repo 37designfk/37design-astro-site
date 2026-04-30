@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI導入", "中小企業", "失敗事例", "DX推進", "業務効率化", "AI活用", "2026"]
 targetKeyword: "中小企業 AI導入 失敗"
-relatedArticles: ["ai-introduction-guide", "sme-ai-implementation-cost-guide-2026", "sme-ai-employee-training-guide-2026"]
+relatedArticles: ["ai-introduction-guide", "sme-ai-implementation-cost-guide-2026", "sme-ai-talent-training-guide-2026"]
 targetLP: "/lp/ai-assessment"
 structuredDataType: "Article"
 ---

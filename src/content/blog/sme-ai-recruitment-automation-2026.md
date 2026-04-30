@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["採用", "HR", "AI自動化", "中小企業", "人手不足", "DX"]
 targetKeyword: "中小企業 採用 AI 自動化"
-relatedArticles: ["ai-advisor-for-sme", "business-automation-guide", "ai-sales-automation-for-sme"]
+relatedArticles: ["ai-advisor-for-sme", "sme-ai-workflow-automation-no-code-2026", "ai-sales-automation-for-sme"]
 structuredDataType: "Article"
 ---
 

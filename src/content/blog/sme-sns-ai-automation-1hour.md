@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["SNS運用", "AI自動化", "中小企業", "業務効率化", "マーケティング自動化"]
 targetKeyword: "中小企業 SNS AI自動化"
-relatedArticles: ["ai-marketing-strategy-for-sme", "sme-ai-workflow-automation-no-code-2026", "sme-ai-tools-comparison-2026"]
+relatedArticles: ["marketing-automation-sme", "sme-ai-workflow-automation-no-code-2026", "sme-ai-tools-comparison-2026"]
 targetLP: "/lp/ai-consulting"
 structuredDataType: "Article"
 ---

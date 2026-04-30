@@ -7,7 +7,7 @@ category: "AI"
 tags: ["LINE", "業務自動化", "中小企業", "チャットボット", "DX", "顧客対応", "予約自動化"]
 targetKeyword: "中小企業 LINE 業務自動化"
 structuredDataType: "Article"
-relatedArticles: ["sme-ai-chatbot-customer-support-guide", "business-automation-guide", "ai-sales-automation-for-sme"]
+relatedArticles: ["sme-ai-workflow-automation-no-code-2026", "ai-sales-automation-for-sme"]
 ---
 
 こんにちは、37Design代表の古田です。
