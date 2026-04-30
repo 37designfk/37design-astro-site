@@ -7,7 +7,7 @@ category: "業務自動化"
 tags: ["AIセールス", "営業自動化", "AI活用", "中小企業", "業務効率化", "CRM"]
 targetKeyword: "AIセールス"
 structuredDataType: "Article"
-relatedArticles: ["sme-ai-customer-followup-automation-2026", "ai-marketing-strategy-for-sme", "crm-success-story"]
+relatedArticles: ["sme-ai-crm-customer-management-2026", "marketing-automation-sme"]
 targetLP: "/lp/ai-assessment"
 ---
 

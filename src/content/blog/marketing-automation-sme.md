@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["マーケティングオートメーション", "中小企業", "MA導入", "デジタルマーケティング", "業務自動化", "リードナーチャリング"]
 targetKeyword: "中小企業 マーケティングオートメーション 導入"
-relatedArticles: ["ai-sales-automation-for-sme", "business-automation-guide", "sme-ai-customer-followup-automation-2026"]
+relatedArticles: ["ai-sales-automation-for-sme", "sme-ai-workflow-automation-no-code-2026", "sme-ai-crm-customer-management-2026"]
 structuredDataType: "Article"
 ---
 

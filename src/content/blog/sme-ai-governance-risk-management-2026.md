@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AIガバナンス", "リスク管理", "中小企業", "AI活用", "社内ルール", "コンプライアンス"]
 targetKeyword: "中小企業 AIガバナンス"
-relatedArticles: ["ai-introduction-guide", "sme-ai-employee-training-guide-2026", "ai-advisor-sme-introduction-checklist"]
+relatedArticles: ["ai-introduction-guide", "sme-ai-talent-training-guide-2026", "ai-advisor-sme-introduction-checklist"]
 structuredDataType: "Article"
 ---
 
