@@ -5,6 +5,7 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import StructuredData from "../../components/common/StructuredData.astro";
 import PersonSchema from "../../components/common/PersonSchema.astro";
+import RelatedArticles from "../../components/blog/RelatedArticles.astro";
 import "../../styles/global.css";
 
 export async function getStaticPaths() {
@@ -17,6 +18,37 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// 関連記事の解決: frontmatter優先 → 不足は同カテゴリ最新でフォールバック
+const allPosts = await getCollection('blog', (p) => !p.data.noIndex);
+const explicitRelated = (post.data.relatedArticles ?? [])
+  .map((slug) => allPosts.find((p) => p.slug === slug))
+  .filter((p): p is (typeof allPosts)[number] => Boolean(p));
+
+const RELATED_COUNT = 3;
+const needFallback = Math.max(0, RELATED_COUNT - explicitRelated.length);
+const fallbackCandidates = needFallback > 0
+  ? allPosts
+      .filter(
+        (p) =>
+          p.slug !== post.slug &&
+          p.data.category === post.data.category &&
+          !explicitRelated.some((e) => e.slug === p.slug)
+      )
+      .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+      .slice(0, needFallback)
+  : [];
+
+const relatedArticles = [...explicitRelated, ...fallbackCandidates]
+  .slice(0, RELATED_COUNT)
+  .map((p) => ({
+    slug: p.slug,
+    title: p.data.title,
+    description: p.data.description,
+    publishDate: p.data.publishDate,
+    category: p.data.category,
+    image: p.data.image,
+  }));
 
 const ogImage = post.data.image
   ? post.data.image.startsWith('http')
@@ -148,6 +180,9 @@ const categoryColors: Record<string, string> = {
             <Content />
           </div>
         </div>
+
+        <!-- 関連記事: こんな記事も読まれています -->
+        <RelatedArticles articles={relatedArticles} heading="こんな記事も読まれています" />
 
         <!-- Back to Blog -->
         <div class="mt-12 text-center">

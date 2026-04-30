@@ -6,7 +6,7 @@ author: "古田 健"
 category: "AI"
 tags: ["AI導入", "中小企業", "中小企業 AI導入 ガイド 2026", "補助金", "業務効率化", "DX推進", "AI活用", "費用対効果"]
 targetKeyword: "中小企業 AI導入 ガイド 2026"
-relatedArticles: ["ai-advisor-for-sme", "business-automation-guide", "ai-sales-automation-for-sme"]
+relatedArticles: ["ai-advisor-complete-guide", "ai-advisor-for-sme", "ai-sales-automation-for-sme"]
 targetLP: "/lp/ai-advisor"
 structuredDataType: "Article"
 ---
@@ -144,7 +144,7 @@ AIが最も効果を発揮するのは、パターン化された繰り返し業
 
 ### ステップ5：横展開と社内定着（1〜3ヶ月）
 
-1業務で効果が確認できたら、次の業務へ展開します。月1回の振り返り会を設けて現場の声を拾いながら改善を続けることが定着の鍵です。戦略立案からツール選定・社員研修まで一気通貫でサポートを受ける方法については、[AI顧問とは？](/blog/ai-advisor-for-sme/)で詳しく解説しています。
+1業務で効果が確認できたら、次の業務へ展開します。月1回の振り返り会を設けて現場の声を拾いながら改善を続けることが定着の鍵です。戦略立案からツール選定・社員研修まで一気通貫でサポートを受ける方法については、[AI顧問とは？月額2万円〜の費用相場と失敗しない選び方【完全ガイド】](/blog/ai-advisor-complete-guide/)で詳しく解説しています。
 
 ---
 
