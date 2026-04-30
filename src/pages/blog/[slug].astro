@@ -6,6 +6,7 @@ import Footer from "../../components/Footer.astro";
 import StructuredData from "../../components/common/StructuredData.astro";
 import PersonSchema from "../../components/common/PersonSchema.astro";
 import RelatedArticles from "../../components/blog/RelatedArticles.astro";
+import AuthorBox from "../../components/blog/AuthorBox.astro";
 import "../../styles/global.css";
 
 export async function getStaticPaths() {
@@ -67,6 +68,59 @@ const ogImage = post.data.image
     : `https://37design.co.jp${post.data.image.startsWith('/') ? '' : '/'}${post.data.image}`
   : undefined;
 
+// 本文から FAQ セクション（## ...FAQ... or よくある質問）を抽出して FAQPage 構造化データを生成
+function extractFAQs(body: string): Array<{ question: string; answer: string }> {
+  const lines = body.split('\n');
+  const faqs: Array<{ question: string; answer: string }> = [];
+  let inFaqSection = false;
+  let current: { question: string; answer: string } | null = null;
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/\r$/, '');
+    const h2Match = line.match(/^##\s+(.+)/);
+    if (h2Match) {
+      if (current && current.answer.trim()) faqs.push(current);
+      current = null;
+      const heading = h2Match[1];
+      inFaqSection = /FAQ|よくある質問|Q\s*&\s*A/i.test(heading);
+      continue;
+    }
+    if (!inFaqSection) continue;
+    const h3Match = line.match(/^###\s+(.+)/);
+    if (h3Match) {
+      if (current && current.answer.trim()) faqs.push(current);
+      // Q1. / Q. / Q ：プレフィックスを除去
+      const question = h3Match[1].replace(/^Q\d*[\.\:：]?\s*/i, '').trim();
+      current = { question, answer: '' };
+      continue;
+    }
+    if (current) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      // A. プレフィックスを除去
+      const cleaned = trimmed.replace(/^A\d*[\.\:：]?\s*/i, '');
+      current.answer += (current.answer ? ' ' : '') + cleaned;
+    }
+  }
+  if (current && current.answer.trim()) faqs.push(current);
+  return faqs.filter((f) => f.question.length > 5 && f.answer.length > 20);
+}
+
+const faqs = extractFAQs(post.body);
+const faqStructuredData = faqs.length >= 2
+  ? {
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          // Markdownリンク記法は除去してテキスト化
+          text: f.answer.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1'),
+        },
+      })),
+    }
+  : null;
+
 const categoryColors: Record<string, string> = {
   'AI': 'bg-amber-500/10 text-amber-600',
   '業務自動化': 'bg-purple-500/10 text-purple-600',
@@ -86,6 +140,8 @@ const categoryColors: Record<string, string> = {
   <Header />
 
   <PersonSchema />
+
+  {faqStructuredData && <StructuredData type="FAQPage" data={faqStructuredData} />}
 
   <StructuredData type="Article" data={{
     headline: post.data.title,
@@ -154,10 +210,15 @@ const categoryColors: Record<string, string> = {
 
         <!-- Article Meta -->
         <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <time class="text-sm font-semibold text-text-muted">
-              {post.data.publishDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
+          <div class="flex items-center gap-3 mb-4 flex-wrap">
+            <time datetime={post.data.publishDate.toISOString()} class="text-sm font-semibold text-text-muted">
+              公開: {post.data.publishDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
+            {post.data.lastModified && post.data.lastModified.getTime() !== post.data.publishDate.getTime() && (
+              <time datetime={post.data.lastModified.toISOString()} class="text-sm font-semibold text-accent-600">
+                更新: {post.data.lastModified.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </time>
+            )}
             <span class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${categoryColors[post.data.category]}`}>
               {post.data.category}
             </span>
@@ -168,8 +229,17 @@ const categoryColors: Record<string, string> = {
           <p class="text-lg text-text-secondary leading-relaxed">
             {post.data.description}
           </p>
-          <div class="mt-6 pt-6 border-t border-border">
-            <p class="text-sm text-text-muted">執筆者: {post.data.author}</p>
+          <div class="mt-6 pt-6 border-t border-border flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-accent-400/20 flex items-center justify-center text-accent-700 font-bold text-sm shrink-0">
+              {post.data.author.charAt(0)}
+            </div>
+            <div>
+              <p class="text-sm">
+                <span class="text-text-muted">執筆者: </span>
+                <a href="/greeting/" class="font-semibold text-text-primary hover:text-accent-600 transition-colors">{post.data.author}</a>
+              </p>
+              <p class="text-xs text-text-muted leading-snug mt-0.5">株式会社37Design 代表取締役 / 14プロダクト運用中の現役AI顧問</p>
+            </div>
           </div>
         </div>
 
@@ -193,6 +263,18 @@ const categoryColors: Record<string, string> = {
             <Content />
           </div>
         </div>
+
+        <!-- 著者プロフィール: E-E-A-T強化 -->
+        <AuthorBox
+          name={post.data.author}
+          role="株式会社37Design 代表取締役"
+          bio="2012年に37Design設立、2019年からAI・マーケティング自動化の支援を本格展開。自社で14プロダクトを運用する現役AI顧問として、中小企業のDX推進を伴走支援。神戸を拠点に300以上のWebサイト運用実績あり。"
+          image="/images/ceo-photo.jpg"
+          socialLinks={[
+            { label: '会社情報', href: '/greeting/', icon: '' },
+            { label: 'X (Twitter)', href: 'https://x.com/37designfk', icon: '' },
+          ]}
+        />
 
         <!-- 関連記事: こんな記事も読まれています -->
         <RelatedArticles articles={relatedArticles} heading="こんな記事も読まれています" />
