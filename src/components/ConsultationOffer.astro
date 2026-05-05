@@ -1,0 +1,103 @@
+---
+const outcomes = [
+  {
+    label: "Webサイト改善",
+    text: "問い合わせを止めている導線・コピー・SEO課題を優先順位つきで整理",
+  },
+  {
+    label: "AI活用",
+    text: "ChatGPT・Claude・Dify・n8nなど、御社で使うべき範囲を具体化",
+  },
+  {
+    label: "業務自動化",
+    text: "手作業・属人化している業務から、最初に自動化すべき工程を選定",
+  },
+];
+
+const steps = [
+  "カレンダーで日時を選択",
+  "オンラインで30分ヒアリング",
+  "優先施策と次の一手を共有",
+];
+---
+
+<section class="py-14 md:py-18 bg-white">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-8 lg:gap-12 items-center">
+      <div class="animate-on-scroll" data-anim="left">
+        <p class="text-orange-600 text-sm font-semibold tracking-[.18em] uppercase mb-3">Free Consultation</p>
+        <h2 class="text-2xl md:text-3xl font-black text-text-primary leading-tight mb-4">
+          迷っている段階でも、<span class="marker-highlight">無料面談で整理</span>できます
+        </h2>
+        <p class="text-sm md:text-base text-text-secondary leading-relaxed mb-6">
+          「AIを入れたい」「Webから問い合わせを増やしたい」だけでも十分です。現状を聞いたうえで、売上や業務時間に効きやすい順に施策を並べます。
+        </p>
+
+        <div class="grid sm:grid-cols-3 gap-3 mb-7">
+          {outcomes.map((item) => (
+            <div class="rounded-xl border border-border bg-surface-alt p-4">
+              <p class="text-sm font-bold text-text-primary mb-1.5">{item.label}</p>
+              <p class="text-xs text-text-secondary leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a
+            href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black rounded-full hover:from-amber-400 hover:to-orange-500 transition-colors shadow-[0_8px_24px_rgba(234,88,12,0.28)]"
+            data-cta="consultation-offer-booking"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+            </svg>
+            無料面談を予約する
+          </a>
+          <a
+            href="/lp/roi-calculator/"
+            class="inline-flex items-center justify-center gap-2 px-7 py-4 border-2 border-orange-500 text-orange-700 font-bold rounded-full hover:bg-orange-50 transition-colors"
+            data-cta="consultation-offer-roi"
+          >
+            コスト削減額を試算
+          </a>
+        </div>
+      </div>
+
+      <div class="animate-on-scroll rounded-2xl border border-orange-200 bg-orange-50/70 p-5 md:p-7" data-anim="right">
+        <div class="flex items-center justify-between gap-4 mb-5">
+          <div>
+            <p class="text-xs font-bold text-orange-700 tracking-wide uppercase">What happens next</p>
+            <h3 class="text-xl font-black text-text-primary mt-1">予約後の流れ</h3>
+          </div>
+          <span class="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-bold text-orange-700 border border-orange-200">営業なし</span>
+        </div>
+
+        <ol class="space-y-3">
+          {steps.map((step, i) => (
+            <li class="flex items-center gap-3 rounded-xl bg-white p-4 border border-orange-100">
+              <span class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center text-sm font-black shrink-0">{i + 1}</span>
+              <span class="text-sm font-bold text-text-primary">{step}</span>
+            </li>
+          ))}
+        </ol>
+
+        <div class="mt-5 grid grid-cols-3 gap-2 text-center">
+          <div class="rounded-xl bg-white p-3 border border-orange-100">
+            <p class="text-lg font-black text-orange-700">30分</p>
+            <p class="text-[11px] text-text-muted">初回面談</p>
+          </div>
+          <div class="rounded-xl bg-white p-3 border border-orange-100">
+            <p class="text-lg font-black text-orange-700">無料</p>
+            <p class="text-[11px] text-text-muted">相談費用</p>
+          </div>
+          <div class="rounded-xl bg-white p-3 border border-orange-100">
+            <p class="text-lg font-black text-orange-700">OK</p>
+            <p class="text-[11px] text-text-muted">面談だけ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

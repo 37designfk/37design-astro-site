@@ -1,25 +1,72 @@
 ---
+// Source: ~/customer-voices/voices.json
+// Only use entries with approval === "approved"; display public_label, not client_label.
 const testimonials = [
   {
-    quote: "何から手をつけていいか分からなかったWeb改善が、月1回の面談で着実に進むようになりました。",
-    name: "G社 代表取締役",
-    industry: "飲食業（従業員12名）",
-    avatar: "G",
+    quote: "すごい。めっちゃはやくできた",
+    context: "商品ページ生成エディタの叩き台を共有した直後、即日スタッフレビューに回す意向を示してくださいました。",
+    service: "商品ページ生成エディタのプロトタイプ設計",
+    result: "商品ページ制作の初動を高速化し、画像生成も含めて継続活用の意向を獲得",
+    name: "EC運営会社 代表",
+    industry: "EC運営",
+    avatar: "EC",
     color: "from-amber-500 to-orange-600",
+    sourceId: "v-2026-05-001",
   },
   {
-    quote: "AIツールの選定から使い方まで教えてもらえるので、自社で試行錯誤する時間がゼロになった。",
-    name: "H社 営業部長",
-    industry: "人材紹介（従業員20名）",
-    avatar: "H",
+    quote: "本当にありがとうございます！！ さすがです！！",
+    context: "AI顧問契約成立後、決済方法の案内に対していただいたメッセージです。",
+    service: "AI顧問契約と導入初期の窓口対応",
+    result: "社内に伴走者がいない状態から、AI活用を進める体制づくりへ移行",
+    name: "一般社団法人 窓口担当者",
+    industry: "ウェルビーイング経営支援",
+    avatar: "社",
     color: "from-blue-500 to-indigo-600",
+    sourceId: "v-2026-05-002",
   },
   {
-    quote: "月2万円でこの内容は正直驚き。外部コンサルに頼んでいた頃の1/10以下のコストです。",
-    name: "I社 代表取締役",
-    industry: "士業事務所（従業員6名）",
-    avatar: "I",
+    quote: "動画すごいです",
+    context: "MTG中にプロトタイプ動画を即時生成し、チャットグループで共有した直後の反応です。",
+    service: "AI動画生成の即時プロトタイピング",
+    result: "顧客提案に使える品質の動画素材をその場で提示し、社内AIチームから評価",
+    name: "音声配信運用代行会社 社内AIチーム",
+    industry: "音声マーケティング",
+    avatar: "AI",
     color: "from-emerald-500 to-teal-600",
+    sourceId: "v-2026-05-003",
+  },
+  {
+    quote: "すごいね、これ ／ これは売れるんじゃない？ほんまに",
+    context: "商標クローリングと明細書ドラフト自動生成ツールのデモを見た提携専門家の反応です。",
+    service: "商標クローリングと明細書ドラフト生成ツールのデモ開発",
+    result: "専門家から市場性を評価され、共同事業の検討へ発展",
+    name: "提携弁理士",
+    industry: "知財・弁理士",
+    avatar: "弁",
+    color: "from-violet-500 to-purple-700",
+    sourceId: "v-2026-05-004",
+  },
+  {
+    quote: "AI驚き屋やプロンプト塾には飽きた。ちゃんと成果を出す側で組みたい",
+    context: "人財育成・組織開発系の事業者として、AI顧問月額プランをご契約いただいた際の言葉です。",
+    service: "成果実装型のAI顧問プラン設計",
+    result: "単発のAIノウハウ提供ではなく、事業成果に直結する伴走契約が成立",
+    name: "人財育成・組織開発業 代表理事",
+    industry: "人財育成・組織開発",
+    avatar: "人",
+    color: "from-rose-500 to-pink-700",
+    sourceId: "v-2026-05-005",
+  },
+  {
+    quote: "協力業者として裏にいる、と言うだけで信頼性が上がる",
+    context: "AI社員による自動診断レポートを共同提案する際、代理店パートナーからいただいた評価です。",
+    service: "AI社員による自動診断レポートと代理店向け提案支援",
+    result: "Web制作代理店の提案力を補強し、AI領域の信頼性を外部パートナーとして支援",
+    name: "Web制作代理店 代表",
+    industry: "Web制作代理店",
+    avatar: "W",
+    color: "from-cyan-500 to-blue-700",
+    sourceId: "v-2026-05-006",
   },
 ];
 ---
@@ -29,23 +76,36 @@ const testimonials = [
     <div class="text-center mb-10 animate-on-scroll">
       <p class="text-primary-500 text-sm font-semibold tracking-[.2em] uppercase mb-3">Voice</p>
       <h2 class="text-2xl md:text-3xl font-bold text-text-primary">お客様の声</h2>
+      <p class="text-sm text-text-secondary mt-3">実際のやり取りから、公開可能な声だけを匿名表記で掲載しています。</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {testimonials.map((t, i) => (
         <div
-          class="animate-on-scroll relative p-6 rounded-xl bg-surface-alt border border-border"
+          class="animate-on-scroll relative flex flex-col p-6 rounded-xl bg-surface-alt border border-border"
           style={`animation-delay: ${i * 0.1}s`}
+          data-source-id={t.sourceId}
         >
           <svg class="w-8 h-8 text-accent-400/30 mb-3" fill="currentColor" viewBox="0 0 24 24">
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
           </svg>
-          <p class="text-sm text-text-body leading-relaxed mb-4">{t.quote}</p>
-          <div class="flex items-center gap-3">
-            <div class={`w-8 h-8 rounded-full bg-gradient-to-br ${t.color} text-white flex items-center justify-center text-xs font-bold`}>
-              {t.avatar}
+          <p class="text-base font-bold text-text-primary leading-relaxed mb-3">「{t.quote}」</p>
+          <p class="text-xs text-text-secondary leading-relaxed mb-5">{t.context}</p>
+          <div class="space-y-2 mb-5 rounded-lg bg-white border border-border p-3">
+            <div>
+              <p class="text-[10px] font-bold tracking-wide uppercase text-primary-500 mb-0.5">Service</p>
+              <p class="text-xs font-bold text-text-primary leading-relaxed">{t.service}</p>
             </div>
             <div>
+              <p class="text-[10px] font-bold tracking-wide uppercase text-accent-600 mb-0.5">Outcome</p>
+              <p class="text-xs text-text-secondary leading-relaxed">{t.result}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 mt-auto pt-4 border-t border-border">
+            <div class={`w-9 h-9 rounded-full bg-gradient-to-br ${t.color} text-white flex items-center justify-center text-[11px] font-bold shrink-0`}>
+              {t.avatar}
+            </div>
+            <div class="min-w-0">
               <p class="text-xs font-bold text-text-primary">{t.name}</p>
               <p class="text-[11px] text-text-muted">{t.industry}</p>
             </div>
