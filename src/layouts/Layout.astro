@@ -147,12 +147,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         var c=document.createElement('script');c.async=1;c.src='https://www.clarity.ms/tag/voqlg18k81';document.head.appendChild(c);
       });
     </script>
-    <!-- 自動コンバージョントラッキング: tel: / mailto: / LINE クリックを generate_lead として送信 -->
+    <!-- 自動コンバージョントラッキング: 主要CTAクリックを generate_lead として送信 -->
     <script is:inline>
       (function(){
-        function send(method, url){
+        function send(method, url, cta){
           try {
-            var payload = { method: method, link_url: url, page_path: location.pathname };
+            var payload = {
+              method: method,
+              link_url: url,
+              page_path: location.pathname,
+              cta: cta || ''
+            };
             if (typeof window.gtag === 'function') {
               window.gtag('event', 'generate_lead', payload);
             } else {
@@ -165,9 +170,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           var el = e.target && e.target.closest && e.target.closest('a');
           if (!el) return;
           var href = el.getAttribute('href') || '';
-          if (href.indexOf('tel:') === 0) return send('phone', href);
-          if (href.indexOf('mailto:') === 0) return send('email', href);
-          if (/(?:line\.me|lin\.ee|autosns\.app\/line)/i.test(href)) return send('line', href);
+          var cta = el.getAttribute('data-cta') || el.textContent.trim().replace(/\s+/g, ' ').slice(0, 80);
+          if (href.indexOf('tel:') === 0) return send('phone', href, cta);
+          if (href.indexOf('mailto:') === 0) return send('email', href, cta);
+          if (/cal\.37d\.jp/i.test(href)) return send('booking', href, cta);
+          if (/(?:line\.me|lin\.ee|autosns\.app\/line)/i.test(href)) return send('line', href, cta);
         }, { capture: true });
       })();
     </script>

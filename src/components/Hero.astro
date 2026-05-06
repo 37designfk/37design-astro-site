@@ -3,6 +3,18 @@ import ParticleCanvas from "./ParticleCanvas.astro";
 ---
 
 <section class="relative min-h-[calc(100vh-4rem)] flex items-center hero-gradient hero-gradient-home overflow-x-hidden">
+  <!-- Generated cosmic FV background (DESIGN.md準拠) -->
+  <img
+    src="/hero-bg.jpg"
+    alt=""
+    aria-hidden="true"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 h-full w-full object-cover opacity-85 z-0 pointer-events-none select-none"
+  />
+  <!-- Dark center overlay for text legibility -->
+  <div class="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,rgba(10,15,30,0.65)_0%,rgba(10,15,30,0.35)_45%,transparent_75%)] pointer-events-none"></div>
+
   <ParticleCanvas />
 
   <!-- Background accents -->
@@ -36,29 +48,71 @@ import ParticleCanvas from "./ParticleCanvas.astro";
       </p>
 
       <!-- Value line -->
-      <div class="flex items-center justify-center gap-3 mb-10">
+      <div class="flex items-center justify-center gap-3 mb-8">
         <div class="h-px w-8 bg-accent-400/40"></div>
         <p class="text-accent-400/80 text-sm font-semibold">
           外部コンサルの<span class="text-accent-400 font-bold">1/10以下</span>のコスト・<span class="text-accent-400 font-bold">いつでも解約OK</span>
         </p>
         <div class="h-px w-8 bg-accent-400/40"></div>
       </div>
+
+      <!-- Primary CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-5">
+        <a
+          href="https://cal.37d.jp/37design/ai%E7%9B%B8%E8%AB%87"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black rounded-full text-base shadow-[0_8px_30px_rgba(234,88,12,0.35)] hover:shadow-[0_12px_40px_rgba(234,88,12,0.5)] transition-all w-full sm:w-auto btn-pulse"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+          </svg>
+          無料面談を予約する
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+        <a
+          href="/lp/ai-assessment/"
+          class="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/10 hover:bg-white/15 text-white font-bold rounded-full text-base border border-white/20 backdrop-blur-sm transition-colors w-full sm:w-auto"
+        >
+          <svg class="w-4 h-4 text-accent-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+          </svg>
+          無料AI診断を試す
+        </a>
+      </div>
+
+      <!-- LINE secondary -->
+      <div class="flex justify-center mb-8">
+        <a
+          href="https://jmp9xv65.autosns.app/line"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2 rounded-full text-white/70 hover:text-white text-sm transition-colors"
+        >
+          <svg class="w-4 h-4 text-[#06C755]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+          </svg>
+          LINEで気軽に相談する
+        </a>
+      </div>
     </div>
 
-    <!-- Scroll prompt -->
+    <!-- CTA qualifiers -->
     <div class="flex flex-col items-center gap-3">
       <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-white/40 text-xs">
         <span class="flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          約2分で完了
+          初回30分・無料
         </span>
         <span class="flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          登録不要
+          オンライン完結
         </span>
         <span class="flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5 text-green-400/70" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          改善ポイントがすぐ分かる
+          しつこい営業なし
         </span>
       </div>
     </div>
