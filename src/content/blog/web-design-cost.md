@@ -7,6 +7,7 @@ category: "AI"
 tags: ["ホームページ制作", "費用相場", "Web制作", "中小企業", "AI活用", "コーポレートサイト"]
 targetKeyword: "ホームページ制作費用 相場"
 relatedArticles: ["ai-introduction-guide", "sme-ai-workflow-automation-no-code-2026", "ai-advisor-for-sme", "sme-ai-tools-comparison-2026", "ai-sales-automation-for-sme"]
+targetLP: "/lp/ai-consulting"
 structuredDataType: "Article"
 ---
 
@@ -139,21 +140,78 @@ WordPressやAstroなどのCMSとテンプレートを組み合わせれば、ゼ
 
 自社の業種・規模に近い実績があるか、そしてAI・ノーコード・自動化など2026年時点の選択肢をフラットに提案してくれるかを見てください。AI活用を含む総合的なデジタル支援については、[中小企業向けAI顧問サービスの活用法](/blog/ai-advisor-for-sme/)も参考になります。
 
+<section itemscope itemtype="https://schema.org/FAQPage">
+
 ## よくある質問（ホームページ制作費用の相場FAQ）
 
-発注前によくいただく質問を、3つに絞ってお答えします。
+発注前によくいただく質問をまとめてお答えします。
 
-### Q1. 相見積もりは何社から取るべき？
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">相見積もりは何社から取るべきですか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
 
 3社が目安です。1社だけだと適正価格か判断できず、5社以上だと比較検討そのものが負担になります。3社から要件を揃えて見積もりを取り、提案内容・担当者の理解度・保守体制の3軸で比較するのがおすすめです。
 
-### Q2. 自社制作（DIY）と外注のどちらがお得？
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">自社制作（DIY）と外注のどちらがお得ですか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
 
 1〜5ページの小規模サイトで、社内に半日×2週間の作業時間を確保できるなら、ノーコードツールでの自社制作も選択肢になります。一方で、集客や採用など明確な成果を求めるなら、設計ノウハウを持つプロに任せたほうが投資回収は早まるケースが多いです。
 
-### Q3. 2026年にホームページを作る意味はあるか？
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">2026年にホームページを作る意味はありますか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
 
 SNSやポータルサイトだけで集客する企業も増えていますが、検索流入・信頼性の担保・採用ブランディングの観点で、自社ドメインのホームページは引き続き重要です。AIを組み合わせて運用を自動化すれば、コストを抑えながら24時間働く営業資産として機能します。
+
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">ホームページ制作費用に補助金は使えますか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
+
+IT導入補助金や小規模事業者持続化補助金など、ホームページ制作の費用を一部カバーできる制度があります。2026年度もIT導入補助金の通常枠（補助率1/2・上限450万円）が利用可能です。申請にはIT導入支援事業者との連携が必要なため、制作会社に補助金対応の実績があるか確認しましょう。詳しくは[中小企業のAI補助金ガイド2026](/blog/sme-ai-subsidy-guide-2026/)をご覧ください。
+
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">ホームページ制作の納期はどのくらいですか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
+
+小規模サイト（1〜5ページ）で2〜4週間、中規模サイト（10〜30ページ）で1.5〜3ヶ月、大規模サイトやECサイトで3〜6ヶ月が目安です。納期を左右する最大の要因は「素材と原稿の準備」です。テキスト・写真・ロゴが事前に揃っていれば制作期間を大幅に短縮できます。
+
+</div>
+</div>
+</div>
+
+</section>
 
 ## まとめ：ホームページ制作費用の相場と賢い投資の考え方
 

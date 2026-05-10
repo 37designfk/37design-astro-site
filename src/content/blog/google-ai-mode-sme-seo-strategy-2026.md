@@ -153,27 +153,76 @@ ChatGPTで大量にAI記事を生成して投稿するアプローチは、**Goo
 
 ---
 
+<section itemscope itemtype="https://schema.org/FAQPage">
+
 ## AIモード時代のSEOに関するFAQ
 
-### Q1. SEO対策はもう意味がないのですか？
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
 
-**意味は十分あります。むしろ難易度が上がっただけ**です。AI Overview対応・E-E-A-T強化・ロングテール戦略の3点を意識した「進化したSEO」が、中小企業の集客で重要度を増しています。
+### <span itemprop="name">AIモード時代でもSEO対策は意味がありますか？</span>
 
-### Q2. AI Overviewが出ない検索もありますよね？
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
 
-**全クエリの30〜50%程度はAI Overviewが出ません**（2026年現在）。商業的なキーワード・複雑な比較検討の検索は依然として通常SEOが効きます。**併用戦略**が現実的です。
+意味は十分あります。むしろ難易度が上がっただけです。AI Overview対応・E-E-A-T強化・ロングテール戦略の3点を意識した「進化したSEO」が、中小企業の集客で重要度を増しています。
 
-### Q3. ゼロクリック化で売上は本当に下がりますか？
+</div>
+</div>
+</div>
 
-**情報系コンテンツへの流入は確実に減ります**。しかし**問い合わせ・購買行動を伴う検索の流入は維持〜増加**するケースもあります。コンバージョンファネルの設計を「情報提供→検討→購買」から「即座にCV意図のある人を捕まえる」に切り替える必要があります。
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
 
-### Q4. 自社で対応する人材がいません。何から始めればいいですか？
+### <span itemprop="name">AI Overviewが出ない検索もありますか？</span>
 
-**まず1記事を改修してテスト**してください。FAQ Schema追加・表組み追加・著者署名追加の3点だけで、AI Overview引用率が変わるか見えます。テストの伴走支援は AI顧問サービスでも提供可能です。「[AIコンサルとは｜中小企業向けの費用相場・選び方](/blog/ai-consulting-for-sme-complete-guide-2026/)」もご参照ください。
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
 
-### Q5. AI Overviewに引用されるための裏技はありますか？
+全クエリの30〜50%程度はAI Overviewが出ません（2026年現在）。商業的なキーワード・複雑な比較検討の検索は依然として通常SEOが効きます。併用戦略が現実的です。
 
-**裏技はありません**。E-E-A-T強化・構造化データ・質の高いオリジナルコンテンツの3点に尽きます。Googleは年々アルゴリズムを高度化させているため、表面的なテクニックは数ヶ月で無効化されます。**本質的な情報品質**が長期的に効きます。
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">ゼロクリック化で売上は本当に下がりますか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
+
+情報系コンテンツへの流入は確実に減ります。しかし問い合わせ・購買行動を伴う検索の流入は維持〜増加するケースもあります。コンバージョンファネルの設計を「情報提供→検討→購買」から「即座にCV意図のある人を捕まえる」に切り替える必要があります。
+
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">自社で対応する人材がいません。何から始めればいいですか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
+
+まず1記事を改修してテストしてください。FAQ Schema追加・表組み追加・著者署名追加の3点だけで、AI Overview引用率が変わるか見えます。テストの伴走支援は AI顧問サービスでも提供可能です。「[AIコンサルとは｜中小企業向けの費用相場・選び方](/blog/ai-consulting-for-sme-complete-guide-2026/)」もご参照ください。
+
+</div>
+</div>
+</div>
+
+<div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+
+### <span itemprop="name">AI Overviewに引用されるための裏技はありますか？</span>
+
+<div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+<div itemprop="text">
+
+裏技はありません。E-E-A-T強化・構造化データ・質の高いオリジナルコンテンツの3点に尽きます。Googleは年々アルゴリズムを高度化させているため、表面的なテクニックは数ヶ月で無効化されます。本質的な情報品質が長期的に効きます。
+
+</div>
+</div>
+</div>
+
+</section>
 
 ---
 
