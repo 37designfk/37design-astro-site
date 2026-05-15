@@ -1,0 +1,916 @@
+{
+  "snapshots": [
+    {
+      "snapshot_date": "2026-05-14",
+      "total": 50,
+      "indexed": 45,
+      "not_indexed": 5,
+      "articles": [
+        {
+          "slug": "ai-advisor-complete-guide",
+          "publish_date": "2026-04-15",
+          "char_count": 6930,
+          "h2_count": 7,
+          "h3_count": 23,
+          "inbound_links": 10,
+          "inbound_from": [
+            "ai-advisor-failure-cases-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-industry-roadmap-2026",
+            "ai-advisor-small-company-guide",
+            "ai-agent-complete-guide-sme-2026",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "ai-introduction-guide",
+            "ai-replaces-consultants-truth",
+            "generative-ai-consulting-fees-2026",
+            "google-ai-mode-sme-seo-strategy-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-failure-cases-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 6316,
+          "h2_count": 6,
+          "h3_count": 15,
+          "inbound_links": 4,
+          "inbound_from": [
+            "ai-advisor-industry-roadmap-2026",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "ai-replaces-consultants-truth",
+            "generative-ai-consulting-fees-2026"
+          ],
+          "status": "Crawled - not indexed"
+        },
+        {
+          "slug": "ai-advisor-fee-comparison-2026",
+          "publish_date": "2026-05-04",
+          "char_count": 5815,
+          "h2_count": 7,
+          "h3_count": 18,
+          "inbound_links": 12,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-advisor-failure-cases-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-industry-roadmap-2026",
+            "ai-advisor-small-company-guide",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-success-cases-by-industry",
+            "ai-advisor-vs-consultant-sme",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "generative-ai-consulting-fees-2026",
+            "sme-ai-implementation-cost-guide-2026",
+            "sme-ai-subsidy-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-for-sme",
+          "publish_date": "2026-03-28",
+          "char_count": 5151,
+          "h2_count": 7,
+          "h3_count": 20,
+          "inbound_links": 16,
+          "inbound_from": [
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-success-cases-by-industry",
+            "ai-advisor-vs-consultant-sme",
+            "ai-introduction-guide",
+            "dx-promotion-guide",
+            "sme-ai-agent-tools-comparison-2026",
+            "sme-ai-document-automation-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-recruitment-automation-2026",
+            "sme-ai-security-measures-guide-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-tools-comparison-2026",
+            "sme-line-business-automation-2026",
+            "web-design-cost"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-industry-roadmap-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 6160,
+          "h2_count": 9,
+          "h3_count": 30,
+          "inbound_links": 2,
+          "inbound_from": [
+            "ai-replaces-consultants-truth",
+            "google-ai-mode-sme-seo-strategy-2026"
+          ],
+          "status": "Crawled - not indexed"
+        },
+        {
+          "slug": "ai-advisor-small-company-guide",
+          "publish_date": "2026-03-28",
+          "char_count": 5203,
+          "h2_count": 7,
+          "h3_count": 17,
+          "inbound_links": 1,
+          "inbound_from": [
+            "ai-advisor-complete-guide"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-sme-introduction-checklist",
+          "publish_date": "2026-02-22",
+          "char_count": 6647,
+          "h2_count": 7,
+          "h3_count": 15,
+          "inbound_links": 6,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-success-cases-by-industry",
+            "ai-advisor-vs-consultant-sme",
+            "sme-ai-governance-risk-management-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-success-cases-by-industry",
+          "publish_date": "2026-02-22",
+          "char_count": 6635,
+          "h2_count": 6,
+          "h3_count": 14,
+          "inbound_links": 7,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-industry-roadmap-2026",
+            "ai-advisor-small-company-guide",
+            "marketing-automation-sme",
+            "sme-ai-email-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-advisor-vs-consultant-sme",
+          "publish_date": "2026-05-05",
+          "char_count": 4114,
+          "h2_count": 6,
+          "h3_count": 16,
+          "inbound_links": 9,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-advisor-failure-cases-2026",
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-small-company-guide",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-success-cases-by-industry",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "ai-replaces-consultants-truth"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-agent-complete-guide-sme-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 5653,
+          "h2_count": 7,
+          "h3_count": 22,
+          "inbound_links": 1,
+          "inbound_from": [
+            "sme-ai-agent-introduction-steps-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-consulting-for-sme-complete-guide-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 5457,
+          "h2_count": 7,
+          "h3_count": 17,
+          "inbound_links": 3,
+          "inbound_from": [
+            "ai-replaces-consultants-truth",
+            "generative-ai-consulting-fees-2026",
+            "google-ai-mode-sme-seo-strategy-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-introduction-guide",
+          "publish_date": "2026-04-02",
+          "char_count": 5734,
+          "h2_count": 7,
+          "h3_count": 18,
+          "inbound_links": 21,
+          "inbound_from": [
+            "ai-consulting-for-sme-complete-guide-2026",
+            "ai-replaces-consultants-truth",
+            "dx-promotion-guide",
+            "sme-ai-adoption-success-failure-patterns-2026",
+            "sme-ai-agent-introduction-steps-2026",
+            "sme-ai-agent-tools-comparison-2026",
+            "sme-ai-data-analysis-business-guide-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-document-automation-2026",
+            "sme-ai-governance-risk-management-2026",
+            "sme-ai-implementation-cost-guide-2026",
+            "sme-ai-introduction-failure-prevention-2026",
+            "sme-ai-invoice-billing-automation-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-recruitment-automation-2026",
+            "sme-ai-sales-demand-forecast-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-tools-comparison-2026",
+            "sme-ai-workflow-automation-no-code-2026",
+            "web-design-cost"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "ai-replaces-consultants-truth",
+          "publish_date": "2026-04-30",
+          "char_count": 5376,
+          "h2_count": 7,
+          "h3_count": 19,
+          "inbound_links": 1,
+          "inbound_from": [
+            "generative-ai-consulting-fees-2026"
+          ],
+          "status": "Discovered - not indexed"
+        },
+        {
+          "slug": "ai-sales-automation-for-sme",
+          "publish_date": "2026-04-04",
+          "char_count": 4903,
+          "h2_count": 7,
+          "h3_count": 18,
+          "inbound_links": 14,
+          "inbound_from": [
+            "ai-introduction-guide",
+            "marketing-automation-sme",
+            "sme-ai-agent-tools-comparison-2026",
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-document-automation-2026",
+            "sme-ai-email-automation-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-implementation-cost-guide-2026",
+            "sme-ai-recruitment-automation-2026",
+            "sme-ai-tools-comparison-2026",
+            "sme-ai-web-lead-generation-guide-2026",
+            "sme-ai-workflow-automation-no-code-2026",
+            "sme-line-business-automation-2026",
+            "web-design-cost"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "dx-promotion-guide",
+          "publish_date": "2026-04-13",
+          "char_count": 6473,
+          "h2_count": 6,
+          "h3_count": 21,
+          "inbound_links": 4,
+          "inbound_from": [
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-email-automation-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-ai-workflow-automation-no-code-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "generative-ai-consulting-fees-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 5505,
+          "h2_count": 7,
+          "h3_count": 20,
+          "inbound_links": 0,
+          "inbound_from": [],
+          "status": "PASS"
+        },
+        {
+          "slug": "google-ai-mode-sme-seo-strategy-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 4960,
+          "h2_count": 7,
+          "h3_count": 21,
+          "inbound_links": 0,
+          "inbound_from": [],
+          "status": "Discovered - not indexed"
+        },
+        {
+          "slug": "marketing-automation-sme",
+          "publish_date": "2026-03-28",
+          "char_count": 6062,
+          "h2_count": 7,
+          "h3_count": 20,
+          "inbound_links": 2,
+          "inbound_from": [
+            "google-ai-mode-sme-seo-strategy-2026",
+            "sme-ai-email-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-adoption-success-failure-patterns-2026",
+          "publish_date": "2026-03-26",
+          "char_count": 5368,
+          "h2_count": 6,
+          "h3_count": 15,
+          "inbound_links": 4,
+          "inbound_from": [
+            "ai-advisor-for-sme",
+            "ai-advisor-success-cases-by-industry",
+            "ai-advisor-vs-consultant-sme",
+            "sme-ai-data-analysis-business-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-agent-introduction-steps-2026",
+          "publish_date": "2026-05-03",
+          "char_count": 5187,
+          "h2_count": 6,
+          "h3_count": 13,
+          "inbound_links": 1,
+          "inbound_from": [
+            "ai-agent-complete-guide-sme-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-agent-tools-comparison-2026",
+          "publish_date": "2026-03-16",
+          "char_count": 5784,
+          "h2_count": 7,
+          "h3_count": 13,
+          "inbound_links": 3,
+          "inbound_from": [
+            "ai-advisor-for-sme",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-agent-complete-guide-sme-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-contract-automation-2026",
+          "publish_date": "2026-03-25",
+          "char_count": 5203,
+          "h2_count": 7,
+          "h3_count": 17,
+          "inbound_links": 2,
+          "inbound_from": [
+            "sme-ai-document-automation-2026",
+            "sme-ai-invoice-billing-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-crm-customer-management-2026",
+          "publish_date": "2026-04-28",
+          "char_count": 4146,
+          "h2_count": 7,
+          "h3_count": 16,
+          "inbound_links": 2,
+          "inbound_from": [
+            "ai-advisor-success-cases-by-industry",
+            "ai-agent-complete-guide-sme-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-data-analysis-business-guide-2026",
+          "publish_date": "2026-04-19",
+          "char_count": 5059,
+          "h2_count": 7,
+          "h3_count": 14,
+          "inbound_links": 3,
+          "inbound_from": [
+            "marketing-automation-sme",
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-sales-demand-forecast-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-data-analytics-guide-2026",
+          "publish_date": "2026-04-22",
+          "char_count": 4550,
+          "h2_count": 6,
+          "h3_count": 18,
+          "inbound_links": 0,
+          "inbound_from": [],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-document-automation-2026",
+          "publish_date": "2026-04-06",
+          "char_count": 5596,
+          "h2_count": 7,
+          "h3_count": 16,
+          "inbound_links": 4,
+          "inbound_from": [
+            "sme-ai-contract-automation-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-meeting-minutes-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-ec-online-shop-guide-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 4116,
+          "h2_count": 6,
+          "h3_count": 14,
+          "inbound_links": 3,
+          "inbound_from": [
+            "sme-ai-image-generation-design-2026",
+            "sme-ai-marketing-low-cost-steps",
+            "sme-ai-sales-demand-forecast-2026"
+          ],
+          "status": "Discovered - not indexed"
+        },
+        {
+          "slug": "sme-ai-email-automation-2026",
+          "publish_date": "2026-04-09",
+          "char_count": 7164,
+          "h2_count": 6,
+          "h3_count": 18,
+          "inbound_links": 5,
+          "inbound_from": [
+            "ai-sales-automation-for-sme",
+            "marketing-automation-sme",
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-chatgpt-business-guide"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-estimate-proposal-automation-2026",
+          "publish_date": "2026-04-09",
+          "char_count": 7385,
+          "h2_count": 7,
+          "h3_count": 21,
+          "inbound_links": 3,
+          "inbound_from": [
+            "sme-ai-contract-automation-2026",
+            "sme-ai-document-automation-2026",
+            "sme-chatgpt-business-guide"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-expense-management-automation-2026",
+          "publish_date": "2026-03-24",
+          "char_count": 5160,
+          "h2_count": 7,
+          "h3_count": 14,
+          "inbound_links": 1,
+          "inbound_from": [
+            "sme-ai-invoice-billing-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-governance-risk-management-2026",
+          "publish_date": "2026-03-26",
+          "char_count": 6876,
+          "h2_count": 7,
+          "h3_count": 17,
+          "inbound_links": 5,
+          "inbound_from": [
+            "ai-advisor-for-sme",
+            "ai-sales-automation-for-sme",
+            "sme-ai-email-automation-2026",
+            "sme-ai-security-measures-guide-2026",
+            "sme-chatgpt-business-guide"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-image-generation-design-2026",
+          "publish_date": "2026-03-25",
+          "char_count": 5020,
+          "h2_count": 7,
+          "h3_count": 18,
+          "inbound_links": 1,
+          "inbound_from": [
+            "sme-ai-ec-online-shop-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-implementation-cost-guide-2026",
+          "publish_date": "2026-05-03",
+          "char_count": 5205,
+          "h2_count": 6,
+          "h3_count": 16,
+          "inbound_links": 31,
+          "inbound_from": [
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-industry-roadmap-2026",
+            "ai-advisor-small-company-guide",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-success-cases-by-industry",
+            "ai-introduction-guide",
+            "ai-sales-automation-for-sme",
+            "dx-promotion-guide",
+            "generative-ai-consulting-fees-2026",
+            "marketing-automation-sme",
+            "sme-ai-adoption-success-failure-patterns-2026",
+            "sme-ai-agent-introduction-steps-2026",
+            "sme-ai-contract-automation-2026",
+            "sme-ai-data-analysis-business-guide-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-document-automation-2026",
+            "sme-ai-email-automation-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-expense-management-automation-2026",
+            "sme-ai-image-generation-design-2026",
+            "sme-ai-introduction-failure-prevention-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-marketing-low-cost-steps",
+            "sme-ai-meeting-minutes-automation-2026",
+            "sme-ai-sales-demand-forecast-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-workflow-automation-no-code-2026",
+            "sme-chatgpt-business-guide",
+            "sme-sns-ai-automation-1hour"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-introduction-failure-prevention-2026",
+          "publish_date": "2026-03-29",
+          "char_count": 6967,
+          "h2_count": 9,
+          "h3_count": 14,
+          "inbound_links": 8,
+          "inbound_from": [
+            "ai-advisor-failure-cases-2026",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-sales-automation-for-sme",
+            "sme-ai-adoption-success-failure-patterns-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-governance-risk-management-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-web-lead-generation-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-invoice-billing-automation-2026",
+          "publish_date": "2026-05-04",
+          "char_count": 6055,
+          "h2_count": 7,
+          "h3_count": 19,
+          "inbound_links": 4,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-agent-complete-guide-sme-2026",
+            "sme-ai-expense-management-automation-2026",
+            "sme-ai-workflow-automation-no-code-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-labor-shortage-automation",
+          "publish_date": "2026-04-03",
+          "char_count": 5112,
+          "h2_count": 7,
+          "h3_count": 18,
+          "inbound_links": 7,
+          "inbound_from": [
+            "ai-sales-automation-for-sme",
+            "dx-promotion-guide",
+            "marketing-automation-sme",
+            "sme-ai-subsidy-guide-2026",
+            "sme-chatgpt-business-guide",
+            "sme-line-business-automation-2026",
+            "sme-sns-ai-automation-1hour"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-marketing-low-cost-steps",
+          "publish_date": "2026-04-02",
+          "char_count": 6041,
+          "h2_count": 7,
+          "h3_count": 14,
+          "inbound_links": 10,
+          "inbound_from": [
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-success-cases-by-industry",
+            "google-ai-mode-sme-seo-strategy-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-ec-online-shop-guide-2026",
+            "sme-ai-image-generation-design-2026",
+            "sme-ai-tools-comparison-2026",
+            "sme-ai-web-lead-generation-guide-2026",
+            "sme-chatgpt-business-guide",
+            "sme-sns-ai-automation-1hour"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-meeting-minutes-automation-2026",
+          "publish_date": "2026-04-30",
+          "char_count": 6049,
+          "h2_count": 6,
+          "h3_count": 15,
+          "inbound_links": 3,
+          "inbound_from": [
+            "sme-ai-document-automation-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-chatgpt-business-guide"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-recruitment-automation-2026",
+          "publish_date": "2026-04-08",
+          "char_count": 3200,
+          "h2_count": 6,
+          "h3_count": 10,
+          "inbound_links": 1,
+          "inbound_from": [
+            "sme-ai-labor-shortage-automation"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-sales-demand-forecast-2026",
+          "publish_date": "2026-04-28",
+          "char_count": 4248,
+          "h2_count": 6,
+          "h3_count": 14,
+          "inbound_links": 1,
+          "inbound_from": [
+            "sme-ai-ec-online-shop-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-security-measures-guide-2026",
+          "publish_date": "2026-04-24",
+          "char_count": 5115,
+          "h2_count": 6,
+          "h3_count": 17,
+          "inbound_links": 3,
+          "inbound_from": [
+            "ai-agent-complete-guide-sme-2026",
+            "sme-ai-governance-risk-management-2026",
+            "sme-ai-meeting-minutes-automation-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-subsidy-guide-2026",
+          "publish_date": "2026-04-22",
+          "char_count": 5217,
+          "h2_count": 7,
+          "h3_count": 17,
+          "inbound_links": 23,
+          "inbound_from": [
+            "ai-advisor-complete-guide",
+            "ai-advisor-failure-cases-2026",
+            "ai-advisor-fee-comparison-2026",
+            "ai-advisor-for-sme",
+            "ai-advisor-industry-roadmap-2026",
+            "ai-advisor-vs-consultant-sme",
+            "ai-agent-complete-guide-sme-2026",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "dx-promotion-guide",
+            "generative-ai-consulting-fees-2026",
+            "marketing-automation-sme",
+            "sme-ai-adoption-success-failure-patterns-2026",
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-ec-online-shop-guide-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-implementation-cost-guide-2026",
+            "sme-ai-invoice-billing-automation-2026",
+            "sme-ai-marketing-low-cost-steps",
+            "sme-ai-meeting-minutes-automation-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-tools-comparison-2026",
+            "sme-ai-workflow-automation-no-code-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-talent-training-guide-2026",
+          "publish_date": "2026-04-24",
+          "char_count": 5179,
+          "h2_count": 6,
+          "h3_count": 16,
+          "inbound_links": 2,
+          "inbound_from": [
+            "sme-ai-governance-risk-management-2026",
+            "sme-ai-security-measures-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-tools-comparison-2026",
+          "publish_date": "2026-03-01",
+          "char_count": 6276,
+          "h2_count": 6,
+          "h3_count": 16,
+          "inbound_links": 24,
+          "inbound_from": [
+            "ai-advisor-small-company-guide",
+            "ai-advisor-sme-introduction-checklist",
+            "ai-advisor-vs-consultant-sme",
+            "dx-promotion-guide",
+            "sme-ai-agent-introduction-steps-2026",
+            "sme-ai-crm-customer-management-2026",
+            "sme-ai-data-analysis-business-guide-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-ec-online-shop-guide-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-expense-management-automation-2026",
+            "sme-ai-image-generation-design-2026",
+            "sme-ai-implementation-cost-guide-2026",
+            "sme-ai-introduction-failure-prevention-2026",
+            "sme-ai-invoice-billing-automation-2026",
+            "sme-ai-meeting-minutes-automation-2026",
+            "sme-ai-sales-demand-forecast-2026",
+            "sme-ai-security-measures-guide-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-web-lead-generation-guide-2026",
+            "sme-ai-workflow-automation-no-code-2026",
+            "sme-sns-ai-automation-1hour",
+            "web-design-cost"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-web-lead-generation-guide-2026",
+          "publish_date": "2026-04-26",
+          "char_count": 3897,
+          "h2_count": 7,
+          "h3_count": 19,
+          "inbound_links": 1,
+          "inbound_from": [
+            "google-ai-mode-sme-seo-strategy-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-ai-workflow-automation-no-code-2026",
+          "publish_date": "2026-05-04",
+          "char_count": 6099,
+          "h2_count": 8,
+          "h3_count": 18,
+          "inbound_links": 22,
+          "inbound_from": [
+            "ai-agent-complete-guide-sme-2026",
+            "ai-consulting-for-sme-complete-guide-2026",
+            "ai-introduction-guide",
+            "dx-promotion-guide",
+            "generative-ai-consulting-fees-2026",
+            "marketing-automation-sme",
+            "sme-ai-agent-introduction-steps-2026",
+            "sme-ai-agent-tools-comparison-2026",
+            "sme-ai-contract-automation-2026",
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-document-automation-2026",
+            "sme-ai-email-automation-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-expense-management-automation-2026",
+            "sme-ai-invoice-billing-automation-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-meeting-minutes-automation-2026",
+            "sme-ai-recruitment-automation-2026",
+            "sme-ai-subsidy-guide-2026",
+            "sme-line-business-automation-2026",
+            "sme-sns-ai-automation-1hour",
+            "web-design-cost"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-chatgpt-business-guide",
+          "publish_date": "2026-04-01",
+          "char_count": 5876,
+          "h2_count": 7,
+          "h3_count": 15,
+          "inbound_links": 5,
+          "inbound_from": [
+            "sme-ai-data-analytics-guide-2026",
+            "sme-ai-email-automation-2026",
+            "sme-ai-estimate-proposal-automation-2026",
+            "sme-ai-talent-training-guide-2026",
+            "sme-ai-tools-comparison-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-line-business-automation-2026",
+          "publish_date": "2026-04-17",
+          "char_count": 4263,
+          "h2_count": 6,
+          "h3_count": 14,
+          "inbound_links": 6,
+          "inbound_from": [
+            "ai-advisor-success-cases-by-industry",
+            "marketing-automation-sme",
+            "sme-ai-email-automation-2026",
+            "sme-ai-marketing-low-cost-steps",
+            "sme-ai-recruitment-automation-2026",
+            "sme-ai-workflow-automation-no-code-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "sme-sns-ai-automation-1hour",
+          "publish_date": "2026-04-13",
+          "char_count": 6862,
+          "h2_count": 7,
+          "h3_count": 19,
+          "inbound_links": 6,
+          "inbound_from": [
+            "ai-advisor-success-cases-by-industry",
+            "ai-agent-complete-guide-sme-2026",
+            "sme-ai-image-generation-design-2026",
+            "sme-ai-labor-shortage-automation",
+            "sme-ai-marketing-low-cost-steps",
+            "sme-ai-web-lead-generation-guide-2026"
+          ],
+          "status": "PASS"
+        },
+        {
+          "slug": "web-design-cost",
+          "publish_date": "2026-04-14",
+          "char_count": 5422,
+          "h2_count": 8,
+          "h3_count": 23,
+          "inbound_links": 0,
+          "inbound_from": [],
+          "status": "PASS"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "date": "2026-05-14",
+      "slug": "sme-ai-ec-online-shop-guide-2026",
+      "action_type": "internal_link_added",
+      "details": "3記事に文中リンク追加: sme-ai-sales-demand-forecast-2026, sme-ai-image-generation-design-2026, sme-ai-marketing-low-cost-steps",
+      "hypothesis": "L1: 被リンク不足が主因"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "sme-ai-ec-online-shop-guide-2026",
+      "action_type": "gsc_request_indexing",
+      "details": "GSC UIから手動でインデックス登録をリクエスト",
+      "hypothesis": "被リンク追加と組み合わせた検証ケース"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "google-ai-mode-sme-seo-strategy-2026",
+      "action_type": "gsc_request_indexing",
+      "details": "GSC UIから手動でインデックス登録をリクエスト",
+      "hypothesis": "被リンク0のままリクエストのみで動くかの実験"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "ai-replaces-consultants-truth",
+      "action_type": "gsc_request_indexing",
+      "details": "GSC UIから手動でインデックス登録をリクエスト",
+      "hypothesis": "被リンク1本のままリクエストのみで動くかの実験"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "ai-advisor-failure-cases-2026",
+      "action_type": "gsc_request_indexing",
+      "details": "GSC UIから手動でインデックス登録をリクエスト（リライト前の再判定実験）",
+      "hypothesis": "Crawled-not-indexedが再リクエストで動くかの純粋実験。被リンク4本あり。動かなければリライトが必要というL2を支持"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "ai-advisor-industry-roadmap-2026",
+      "action_type": "gsc_request_indexing",
+      "details": "GSC UIから手動でインデックス登録をリクエスト（リライト前の再判定実験）",
+      "hypothesis": "Crawled-not-indexedが再リクエストで動くかの実験。h3が30個でテンプレ感強い疑い"
+    },
+    {
+      "date": "2026-05-14",
+      "slug": "(global)",
+      "action_type": "prompt_overhaul",
+      "details": "scripts/build-blog-context.mjs作成、voices(approved 6件)とfuruta_voice.mdをdaily-loop.shのプロンプトに必須素材として注入。h2/字数の可変化、固定書き出し廃止、Claude定型句を禁止フレーズに追加",
+      "hypothesis": "Crawled-not-indexed記事（内容質判定で蹴られる）の今後の発生率を下げる"
+    }
+  ]
+}
