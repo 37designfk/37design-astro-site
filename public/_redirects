@@ -2,3 +2,8 @@
 /tools/roi-calculator/ /lp/roi-calculator/ 301
 /tools/ai-assessment /lp/ai-assessment/ 301
 /tools/roi-calculator /lp/roi-calculator/ 301
+
+# SEO: targetKeyword 重複の統合 (2026-05-18)
+# 「中小企業 AI データ分析」を business-guide 1本に集約
+/blog/sme-ai-data-analytics-guide-2026/ /blog/sme-ai-data-analysis-business-guide-2026/ 301
+/blog/sme-ai-data-analytics-guide-2026 /blog/sme-ai-data-analysis-business-guide-2026/ 301
