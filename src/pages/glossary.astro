@@ -1,0 +1,199 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+const categories = [
+  {
+    id: "ai-basic",
+    title: "生成AI基礎",
+    terms: [
+      { term: "LLM (大規模言語モデル)", desc: "Large Language Model の略。膨大なテキストデータから学習し、自然言語の理解・生成を行うAIモデル。Claude / GPT / Gemini などが代表例。" },
+      { term: "生成AI", desc: "テキスト・画像・音声・コードなどを「生成」する能力を持つAIの総称。従来の分類・予測型AIに対し、創造的な出力ができるのが特徴。" },
+      { term: "プロンプト", desc: "AIに対する指示文。プロンプトの設計次第で出力品質が大きく変わるため、ビジネス利用では重要なスキル。" },
+      { term: "トークン", desc: "AIモデルが処理する最小単位。日本語1文字は概ね1-2トークン、英語1単語は1-2トークンに相当。API料金はトークン数で計算される。" },
+      { term: "コンテキストウィンドウ", desc: "AIが一度に処理できるトークンの上限。Claude は 200,000トークン (約15万字)、GPT-4o は 128,000トークン等。長い文書を扱える基準。" },
+      { term: "推論 (Inference)", desc: "学習済みAIモデルが入力に対して出力を生成する処理。学習と区別される。GPU性能が推論速度を左右する。" },
+      { term: "ハルシネーション", desc: "AIがもっともらしい誤情報を生成する現象。数字・固有名詞・法律情報は特に発生しやすく、必ず人間がファクトチェックすべき領域。" },
+      { term: "RAG (検索拡張生成)", desc: "Retrieval-Augmented Generation。AIに外部知識ベースを参照させて回答精度を上げる手法。自社ドキュメント・FAQ活用の定番アーキテクチャ。" },
+      { term: "ファインチューニング", desc: "事前学習済みAIモデルに、特定領域のデータで追加学習させること。コストは高いが、業界特化型AIを構築できる。" },
+      { term: "マルチモーダル", desc: "テキストだけでなく画像・音声・動画など複数のデータ形式を扱える性質。Claude / GPT-4o / Gemini 等は全てマルチモーダル対応。" },
+    ],
+  },
+  {
+    id: "claude",
+    title: "Claude (クロード) 関連",
+    terms: [
+      { term: "Claude (クロード)", desc: "米Anthropic社が開発したAIアシスタント。安全性設計と長文処理に強み。詳細は[Claude完全ガイド](/blog/claude-ai-complete-guide-sme-2026/)参照。" },
+      { term: "Claude Code", desc: "ターミナル (CLI) で動作するClaude。PC全体のファイル・コマンド・MCPサービスを自律操作する経営者向け最強の業務エンジン。[詳細](/blog/claude-code-complete-guide-for-business-owners-2026/)。" },
+      { term: "Claude Opus", desc: "Claudeの最高性能モデル。複雑な推論・コード生成・長文ドキュメント解析が必要な業務向け。API入力 $15/Mトークン。" },
+      { term: "Claude Sonnet", desc: "性能とコストのバランス型実務主力モデル。Anthropic公式推奨で日常業務の8割はSonnetで十分。API入力 $3/Mトークン。" },
+      { term: "Claude Haiku", desc: "軽量・高速・低コストモデル。大量分類・リアルタイム応答・短い応答処理に最適。API入力 $1/Mトークン。" },
+      { term: "Projects (プロジェクト)", desc: "Claude Pro以上で使える「業務別Claude」を作る機能。Knowledge (自社資料) + Instructions (役割定義) を設定して専用Claudeとして利用。" },
+      { term: "Artifacts (アーティファクト)", desc: "Claudeが画面右側に成果物 (コード/HTML/Markdown/SVG) を独立表示する機能。LP試作・図表生成・マニュアル作成が一瞬で可能。" },
+      { term: "Skills (スキル)", desc: "Claude Code に組み込まれた、繰り返し業務をテンプレ化する機能。1コマンドで定型業務を実行できる。Hermes / OpenClaw とも仕様互換。" },
+      { term: "MCP (Model Context Protocol)", desc: "Claudeと外部サービス (Gmail / Stripe / GitHub / WordPress 等) を繋ぐ標準プロトコル。MCPサーバーを通じてAIが直接外部操作可能になる。" },
+      { term: "CLAUDE.md", desc: "プロジェクトのルートに置く「Claudeの取扱説明書」ファイル。Claude Codeはこのファイルを記憶し、以降の指示をその文脈で処理する。" },
+    ],
+  },
+  {
+    id: "agents",
+    title: "AIエージェント関連",
+    terms: [
+      { term: "AIエージェント", desc: "目標を与えると自律的に判断・行動・実行するAIシステム。「対話して答える」チャットAIと違い、ツール利用と複数ステップ実行が可能。[詳細](/blog/ai-agent-complete-guide-for-sme-2026-business/)。" },
+      { term: "Hermes Agent", desc: "米Nous Research社が開発した完全OSSのAIエージェント。GitHub 150K+ stars、xAI公式アライアンス、Claude Code比92%コスト削減で2026年急成長中。[詳細](/blog/hermes-agent-complete-guide-for-business-2026/)。" },
+      { term: "OpenClaw", desc: "Claude Code互換のオープンソースAIエージェント。GitHub 200K+ stars、browser relay / gateway / マルチモデル切替が強み。[詳細](/blog/openclaw-complete-guide-claude-code-oss-2026/)。" },
+      { term: "Nous Research", desc: "OSS LLM分野で世界的に著名な研究組織。Hermes大規模言語モデルシリーズの開発元。公式 X: @NousResearch / @Teknium1。@_HermesAgent は偽物アカウントなので注意。" },
+      { term: "サブエージェント", desc: "メインのAIエージェントから派生する補助エージェント。並列タスク・専門領域分担に使う。Claude Code / OpenClaw / Hermes ともサポート。" },
+      { term: "ツール呼び出し (Function Calling)", desc: "AIが外部ツール (API / 関数 / コマンド) を能動的に呼び出す機能。MCPサーバーやプラグインを通じて実現される。" },
+      { term: "プランナー (Planner)", desc: "AIエージェントが目標達成のために複数ステップの実行計画を立てる機能。複雑業務を順序立てて自動化する基盤。" },
+      { term: "メモリ階層 (Tier1-3)", desc: "AIエージェントの記憶を短期 (Tier1) / 中期 (Tier2) / 長期 (Tier3) に分けるアーキテクチャ。Hermes Agent が標準実装。" },
+      { term: "Code Interpreter", desc: "AIが安全な環境でコードを実行し結果を取得する機能。ChatGPT / Claude / OpenClaw 等で標準化されつつある。" },
+      { term: "コンピュータ操作 (Computer Use)", desc: "AIがスクリーンショット解析+マウス・キーボード操作で人間のようにPCを操作する機能。Anthropic Claude / OpenClaw browser relay 等で対応。" },
+    ],
+  },
+  {
+    id: "marketing-ai",
+    title: "AIマーケティング関連",
+    terms: [
+      { term: "SEO (検索エンジン最適化)", desc: "Google等の検索エンジンで自社サイトが上位表示されるよう最適化する施策。AIを活用した記事生成・KW選定が2026年の主流。" },
+      { term: "GEO (Generative Engine Optimization)", desc: "ChatGPT / Claude / Perplexity 等のAI検索エンジンに引用されるためのコンテンツ最適化。従来のSEOとは別軸の新領域。" },
+      { term: "AEO (Answer Engine Optimization)", desc: "AIアシスタントの回答に直接引用されるためのコンテンツ最適化。GEOと近縁概念で、FAQ構造化や明示的な数値表記が効果的。" },
+      { term: "4段コンパウンド", desc: "SEO × 広告 × LINE (プロライン) × AI顧問 を1人で繋いで運用設計する37Design提唱のマーケティング自動化フレームワーク。[詳細](/blog/ai-marketing-4layer-compound-sme-2026/)。" },
+      { term: "プロライン", desc: "LINEシナリオ配信ツール。月¥7,500〜¥33,800。シナリオ分岐・タグ管理・決済リンク埋め込みが強み。認定コンサル流13億円販売実績の流派あり。" },
+      { term: "品質スコア", desc: "Google Ads の広告ランクを決める指標 (1-10)。LPの関連性・CTR・LP体験から算出され、SEO上位LPを広告ランディング先にすると自然に最大化される。" },
+      { term: "SERP占有率", desc: "Search Engine Results Page (検索結果ページ) で自社が占める枠の割合。SEOオーガニック上位 + 広告枠の同時取得で2倍化可能。" },
+      { term: "Core Web Vitals", desc: "Googleが定めたWebサイトの体験品質指標 (LCP / INP / CLS)。SEO順位に直接影響する技術指標。" },
+      { term: "E-E-A-T", desc: "Experience / Expertise / Authoritativeness / Trustworthiness の略。Google検索品質ガイドラインの最重要評価項目。現役運用者の一次情報が最強。" },
+      { term: "FAQPage schema", desc: "FAQ構造をGoogleに伝える構造化データ。SERPでアコーディオン表示が獲得可能。本サイトでは記事末尾FAQから自動抽出して出力。" },
+    ],
+  },
+  {
+    id: "business",
+    title: "経営者向けAI用語",
+    terms: [
+      { term: "AI顧問", desc: "中小企業の経営課題をAI活用で解決する継続伴走サービス。月額1〜10万円が相場。[詳細](/blog/ai-advisor-complete-guide/) / [費用相場](/blog/ai-advisor-fee-comparison-2026/)。" },
+      { term: "業務自動化", desc: "定型業務をAI・スクリプト・MCP連携で人手を介さず実行する仕組み化。AI顧問の中核業務領域。" },
+      { term: "DX (Digital Transformation)", desc: "デジタル技術で業務・組織・ビジネスモデルを変革すること。2026年現在、生成AIの導入がDXの新たな入口になっている。" },
+      { term: "IT導入補助金", desc: "中小企業庁が運営する、ITツール / AIサービス導入の補助金制度。補助率最大3/4、上限450万円。AI顧問費用が対象になるケースあり。" },
+      { term: "AI内製化", desc: "外部委託せず社内人材でAI活用を実装・運用すること。経営者がClaude Code等を直接触ることが2026年の最速ルート。" },
+      { term: "LTV (顧客生涯価値)", desc: "Life Time Value。1顧客が生涯で生み出す売上総額。AI顧問は継続契約で年¥30-100万/社のLTVを射程に入れる。" },
+      { term: "CPA (顧客獲得単価)", desc: "Cost Per Acquisition。1顧客獲得にかかる広告費。4段コンパウンドでSEO×広告連携するとCPAを30-50%圧縮可能。" },
+      { term: "LP (ランディングページ)", desc: "Landing Page。広告や検索流入の着地ページ。コンバージョン (問合せ / 購入) 最適化された専用1枚ページが王道。" },
+      { term: "MCP連携", desc: "Model Context Protocol を使ってAIと既存業務システム (Gmail / Stripe / freee / WordPress 等) を接続すること。AIを業務に「乗せる」基盤。" },
+      { term: "オンプレミスAI", desc: "クラウド利用ではなく、自社サーバーやローカルPCでAIモデルを動かす運用形態。Hermes Agent / Ollama / OpenClaw 等で実現可能。機密性が必須の業界向け。" },
+    ],
+  },
+];
+
+const allTerms = categories.flatMap((cat) =>
+  cat.terms.map((t) => ({
+    "@type": "DefinedTerm",
+    "@id": `https://37design.co.jp/glossary/#${cat.id}-${t.term.split(" ")[0]}`,
+    name: t.term,
+    description: t.desc.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"),
+    inDefinedTermSet: "https://37design.co.jp/glossary/#termset",
+  }))
+);
+
+const termSetSchema = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": "https://37design.co.jp/glossary/#termset",
+  name: "AI用語集 - 経営者・中小企業向け",
+  description: "週77時間Claude Codeを使うAI社長 古田 健が、中小企業経営者・非エンジニア向けに整理したAI用語集。生成AI基礎・Claude・AIエージェント・AIマーケティング・経営者向け用語の5カテゴリ50用語を網羅。",
+  url: "https://37design.co.jp/glossary/",
+  hasDefinedTerm: allTerms,
+};
+---
+
+<Layout
+  title="AI用語集【経営者・中小企業向け】2026年最新版 | 株式会社37Design"
+  description="週77時間Claude Codeを使うAI社長が、中小企業経営者・非エンジニア向けに整理したAI用語集。生成AI基礎・Claude・AIエージェント・AIマーケティング・経営者向けの5カテゴリ50用語を網羅。一次情報ベースで継続更新中。"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(termSetSchema)} />
+
+  <Header />
+
+  <main>
+    <section class="relative min-h-[40vh] flex items-center hero-gradient overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none z-[2]" aria-hidden="true">
+        <div class="absolute top-[20%] right-[15%] w-72 h-72 bg-glow/8 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-96 h-96 bg-accent-400/5 rounded-full blur-[120px]"></div>
+      </div>
+      <div class="relative z-20 max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-16 md:py-20 w-full text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm mb-6">
+          <span class="text-white/70 text-xs font-medium">Glossary</span>
+        </div>
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-black text-white leading-[1.15] mb-4">
+          AI用語集
+        </h1>
+        <p class="text-white/80 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
+          経営者・中小企業向け 2026年最新版<br />
+          <span class="text-white/60 text-sm">週77時間Claude Codeを使うAI社長が一次情報ベースで整理</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="py-12 md:py-16 bg-surface">
+      <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+
+        <nav class="mb-12 bg-white rounded-2xl p-6 md:p-8 border border-border">
+          <p class="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">カテゴリ目次</p>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            {categories.map((cat) => (
+              <li>
+                <a href={`#${cat.id}`} class="text-accent-600 hover:underline font-semibold">{cat.title}</a>
+                <span class="text-text-muted ml-2">({cat.terms.length}用語)</span>
+              </li>
+            ))}
+          </ul>
+          <p class="text-xs text-text-muted mt-4 leading-relaxed">
+            初版50用語。継続的に追記していきます。間違い・追加要望は <a href="/contact/" class="text-accent-600 hover:underline">お問い合わせフォーム</a> までご連絡ください。
+          </p>
+        </nav>
+
+        {categories.map((cat) => (
+          <section id={cat.id} class="mb-14 scroll-mt-24">
+            <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-6 pb-3 border-b-2 border-accent-400">
+              {cat.title}
+            </h2>
+            <dl class="space-y-6">
+              {cat.terms.map((t) => (
+                <div class="bg-white rounded-xl p-5 md:p-6 border border-border" id={`${cat.id}-${t.term.split(" ")[0]}`}>
+                  <dt class="text-lg font-bold text-text-primary mb-2">
+                    {t.term}
+                  </dt>
+                  <dd class="text-sm md:text-base text-text-body leading-relaxed" set:html={t.desc.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-accent-600 hover:underline">$1</a>')} />
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
+
+      </div>
+    </section>
+
+    <section class="py-16 md:py-20 bg-primary-800 relative overflow-hidden">
+      <div class="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          AI用語を、御社の業務に実装しませんか?
+        </h2>
+        <p class="text-white/60 text-base md:text-lg mb-8">
+          37Design の AI顧問サービスなら、用語の理解から実装・運用まで一気通貫で伴走します
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/lp/ai-consulting/" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent-400 text-primary-950 font-bold rounded-full hover:bg-accent-300 transition-colors text-base">
+            AI顧問サービスを見る
+          </a>
+          <a href="/contact/" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-semibold rounded-full hover:bg-white/15 transition-colors text-base border border-white/20">
+            無料相談のお問い合わせ
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
